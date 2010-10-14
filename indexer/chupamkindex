@@ -1,0 +1,36 @@
+#!/usr/bin/ruby
+
+GROONGA = ENV["GROONGA"] || "groonga"
+CHUPA = ENV["CHUPA"] || "chupa"
+
+require 'find'
+require 'json'
+require 'chupa'
+require 'optparse'
+
+opts = OptionParser.new
+db, *files = opts.parse!(ARGV) rescue nil
+db or abort opts.to_s
+
+newdb = ('-n' unless File.exist?(db))
+colflags = '--flags COLUMN_INDEX|WITH_POSITION'
+IO.popen([GROONGA, newdb, db].compact, "w") do |grn|
+  grn.puts <<EOF if newdb
+table_create chupa --flags TABLE_PAT_KEY|KEY_NORMALIZE --key_type ShortText --default_tokenizer TokenBigram
+column_create --table chupa --name title #{colflags} --type ShortText
+column_create --table chupa --name charset #{colflags} --type ShortText
+column_create --table chupa --name body #{colflags} --type LongText
+EOF
+  grn.puts "load --table chupa"
+  grn.puts "["
+  chupar = Chupa.new
+  Find.find(*files) do |file|
+    if File.file?(file)
+      chupar.open(file) do |chupa|
+        info = chupa.metadata
+        puts({"_key"=>info["filename"], "charset"=>info["charset"]||"", "body"=>chupa.body}.to_json)
+      end
+    end
+  end
+  grn.puts "]"
+end
