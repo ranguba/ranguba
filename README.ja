@@ -1,0 +1,48 @@
+# -*- rd -*-
+
+= はじめに --- テキスト検索ユーティリティRangubaの概要
+
+== 名前
+
+Ranguba
+
+== 作者
+
+  * Nobuyoshi Nakada <nakada@clear-code.com>
+  * Kouhei Sutou <kou@clear-code.com>
+
+== ライセンス
+
+  * ソースコード: GPLバージョン2またはそれ以降のバージョン
+    （詳細:
+    ((<"license/gpl-2.txt"|URL:http://www.gnu.org/licenses/gpl-2.0.html>))）
+    です。
+
+== Ranguba?
+
+RangubaはPDFやオフィス文書からテキストとメタデータを検索するサービスです。
+
+== 依存ライブラリ
+
+必須:
+  * ChupaText
+
+== 入手方法
+
+== リポジトリ
+
+((<GitHub|URL:http://github.com/ranguba/ranguba>))
+
+  % git clone git://github.com/ranguba/ranguba.git
+
+== インストール
+
+((<インストール|INSTALL>))を見てください。
+
+== 使い方
+
+  * ...
+
+== 感謝
+
+  * ...
