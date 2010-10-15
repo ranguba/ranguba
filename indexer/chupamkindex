@@ -28,7 +28,7 @@ EOF
     if File.file?(file)
       chupar.open(file) do |chupa|
         info = chupa.metadata
-        puts({"_key"=>info["filename"], "charset"=>info["charset"]||"", "body"=>chupa.body}.to_json)
+        grn.puts({"_key"=>info["filename"], "charset"=>info["charset"]||"", "body"=>chupa.body}.to_json)
       end
     end
   end
