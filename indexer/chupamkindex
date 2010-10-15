@@ -2,6 +2,8 @@
 
 require 'optparse'
 require 'fileutils'
+require 'chupa'
+require 'groonga'
 
 class ChupaDatabase
   def initialize
@@ -10,6 +12,12 @@ class ChupaDatabase
 
   def set_options(opts)
     opts.banner << " db-path base-directory [log...]"
+    opts.define("-f", "--from-log=FILE") do |v|
+      @log_file = v
+    end
+    opts.define("-p", "--url-prefix=URL_PREFIX") do |v|
+      @url_prefix = v
+    end
     opts.define("-i", "--[no-]ignore-errors") do |v|
       @ignore_erros = v
     end
@@ -21,49 +29,77 @@ class ChupaDatabase
 
   def prepare(args)
     db = args.shift or return
-    base = args.shift or return
-    Dir.open(base) {}
-    input = ARGF.class.new(*args)
-    return db, base, input
+    if @log_file
+      if @url_prefix
+        raise OptionParser::InvalidOption, "--url-prefix and --from-log are exclusive"
+      end
+      base = args.shift or return
+      return unless args.empty?
+      Dir.open(base) {}
+      proc {
+        if @log_file == '-'
+          process_from_log(db, base, STDIN)
+        else
+          File.open(@log_file) {|input|
+            process_from_log(db, base, input)
+          }
+        end
+      }
+    else
+      return if args.empty?
+      proc {
+        args.each {|file| process_file(db, file)}
+      }
+    end
   end
 
-  def process(db, base, input = STDIN)
-    require 'chupa'
-    require 'groonga'
+  def process_file(db, path)
+    open(db) do |grn|
+      url = @prefix ? @prefix + path : path
+      add_entry(grn, url, path)
+    end
+  end
+
+  def process_from_log(db, base, input)
     result = true
     open(db) do |grn|
       url = response = file = path = nil
       input.each("") do |log|
-        case log
-        when /^--[-\d]+.*?--\s+(.+)/
-          url = $1
+        next unless (found = log[/^--[-\d]+.*?--\s+(.+)/, 1])..(saved = log[/saved/])
+        if found
+          url = found
           puts "URL: #{url}"
           if response = log[/^(?:  .*\n)+/]
-            response = Hash[response.lines.grep(/^\s*([-A-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
+            response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
           end
           file = log[/^Saving to: \`(.+)\'$/, 1]
           path = File.join(base, file)
-        when /saved/
-          path or next
           File.file?(path) or next
-          begin
-            info = Chupa.decompose(path, response)
-            attributes = make_attributes(url, response, info.metadata)
-            attributes.update(body: chupa.body)
-            grn.entries.add(url, attributes)
-          rescue => e
-            unless @ignore_erros
-              STDERR.puts "#{e.class}: #{e.message}"
-              STDERR.puts e.backtrace.map{|s|"\t#{s}"}
-              result = false
-            end
-          ensure
-            path = nil
-          end
+        elsif saved
+          add_entry(grn, url, path, response)
         end
       end
     end
     result
+  end
+
+  def add_entry(grn, url, path, response = {})
+    begin
+      metadata, body = (decompose_file(path, response) or return false)
+      attributes = make_attributes(url, response, metadata, path)
+      attributes.update(body: body)
+      grn.entries.add(url, attributes)
+    rescue => e
+      unless @ignore_erros
+        STDERR.puts "#{e.class}: #{e.message}"
+        STDERR.puts e.backtrace.map{|s|"\t#{s}"}
+        return false
+      end
+    end
+    true
+  end
+
+  def decompose_file(path, response = {})
   end
 
   def open(path, encoding = Encoding::UTF_8)
@@ -118,17 +154,31 @@ class ChupaDatabase
     @entries ||= Groonga["Entries"]
   end
 
-  def make_attributes(url, response, meta)
+  def make_attributes(url, response, meta, path)
+    if mtime = response["last-modified"]||meta["last-modified"]
+      require 'date'
+      mtime = (DateTime.parse(mtime) rescue nil)
+    end
+    mtime ||= File.mtime(path) if path
     {
       title: meta["title"],
       type: response["content-type"]||meta["mime-type"]||"",
       charset: response["charset"]||meta["charset"]||"",
-      category: get_category(url),
-      author: get_author["meta"],
+      category: get_category(url)||"",
+      author: get_author(meta)||"",
+      last: mtime,
     }
   end
 
   private
+
+  def get_category(url)
+    ""
+  end
+
+  def get_author(meta)
+    meta["author"]
+  end
 
   def reset_context(encoding)
     Groonga::Context.default_options = {:encoding => encoding.to_s.downcase}
@@ -190,8 +240,33 @@ class ChupaDatabase
   end
 end
 
-chupadb = ChupaDatabase.new 
-opts = OptionParser.new
-opts.separator("Options:")
-chupadb.set_options(opts)
-exit chupadb.process(*((chupadb.prepare(opts.parse!(ARGV)) rescue abort $!.message) or abort opts.to_s))
+class ChupaDatabase::HTMLONLY < ChupaDatabase
+  def decompose_file(path, response = {})
+    case response["content-type"]
+    when "text/html"
+      decompose_html_file(path)
+    end
+  end
+
+  def decompose_html_file(path)
+    require 'nokogiri'
+    doc = File.open(path, 'rb') {|file| Nokogiri::HTML.parse(file)}
+    metadata = {}
+    metadata["title"] = (doc % "head/title").text
+    if encoding = doc.encoding
+      metadata["charset"] = encoding.downcase
+    end
+    body = (doc % "body").text.gsub(/^\s+|\s+$/, '')
+    return metadata, body
+  end
+end
+
+chupadb = ChupaDatabase::HTMLONLY.new
+opts = nil
+runner = ARGV.options do |o|
+  opts = o
+  opts.separator("Options:")
+  chupadb.set_options(opts)
+  chupadb.prepare(opts.parse!(ARGV))
+end or abort opts.to_s
+exit runner.call
