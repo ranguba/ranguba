@@ -16,6 +16,7 @@ class ChupaDatabase
     @url_prefix = nil
     @category_file = nil
     @category_table = {}
+    @tmpdir = nil
     @auto_delete = false
     @ignore_erros = false
     @debug = false
@@ -40,6 +41,9 @@ EOS
     end
     opts.define("-c", "--category-file=CATEGORY_FILE") do |v|
       @category_file = v
+    end
+    opts.define("-d", "--tmpdir=TMPDIR") do |v|
+      @tmpdir = v
     end
     opts.define("-d", "--[no-]auto-delete") do |v|
       @auto_delete = v
@@ -100,7 +104,7 @@ EOS
       end
       process = proc {
         @auto_delete = true
-        base = Dir.mktmpdir("ranguba")
+        base = Dir.mktmpdir("ranguba", @tmpdir)
         wget = [{"LC_ALL"=>"C"}, *@wget, "-S", *args, chdir: base, err: [:child, :out]]
         begin
           IO.popen(wget, "r", encoding: "us-ascii") {|input|
