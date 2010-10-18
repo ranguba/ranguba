@@ -109,7 +109,8 @@ EOS
 
   def add_entry(grn, url, path, response = {})
     begin
-      metadata, body = (decompose_file(path, response) or return false)
+      metadata, body = decompose_file(path, response)
+      metadata or return false
       attributes = make_attributes(url, response, metadata, path)
       attributes.update(body: body)
       grn.entries.add(url, attributes)
@@ -183,7 +184,7 @@ EOS
   def make_attributes(url, response, meta, path)
     if mtime = response["last-modified"] || meta["last-modified"]
       require 'date'
-      mtime = (DateTime.parse(mtime) rescue nil)
+      mtime = DateTime.parse(mtime) rescue mtime = nil
     end
     mtime ||= File.mtime(path) if path
     {
@@ -297,10 +298,10 @@ end
 
 chupadb = ChupaDatabase::TestOnly.new
 opts = nil
-runner = ARGV.options do |o|
+runner = ARGV.options {|o|
   opts = o
   opts.separator("Options:")
   chupadb.set_options(opts)
   chupadb.prepare(opts.parse!(ARGV))
-end or abort opts.to_s
+} or abort opts.to_s
 exit runner.call
