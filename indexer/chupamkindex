@@ -11,7 +11,13 @@ class ChupaDatabase
   end
 
   def set_options(opts)
-    opts.banner << " db-path base-directory [log...]"
+    banner = opts.banner
+    opts.banner = <<EOS
+#{banner} --from-log=LOG db-path base-directory
+#{banner} [--url-prefix=PREFIX] db-path files...
+
+EOS
+
     opts.define("-f", "--from-log=FILE") do |v|
       @log_file = v
     end
@@ -100,6 +106,7 @@ class ChupaDatabase
   end
 
   def decompose_file(path, response = {})
+    Chupa.decompose(path, response)
   end
 
   def open(path, encoding = Encoding::UTF_8)
@@ -245,6 +252,8 @@ class ChupaDatabase::HTMLONLY < ChupaDatabase
     case response["content-type"]
     when "text/html"
       decompose_html_file(path)
+    else
+      super
     end
   end
 
