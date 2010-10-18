@@ -81,7 +81,7 @@ EOS
 
   def process_file(db, path)
     open(db) do |grn|
-      url = @prefix ? @prefix + path : path
+      url = @url_prefix ? @url_prefix + path : path
       add_entry(grn, url, path)
     end
   end
