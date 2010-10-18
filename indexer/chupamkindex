@@ -10,6 +10,8 @@ class ChupaDatabase
     @database = nil
     @log_file = nil
     @url_prefix = nil
+    @category_file = nil
+    @category_table = {}
     @ignore_erros = false
     @debug = false
   end
@@ -27,6 +29,9 @@ EOS
     end
     opts.define("-p", "--url-prefix=URL_PREFIX") do |v|
       @url_prefix = v
+    end
+    opts.define("-c", "--category-file=CATEGORY_FILE") do |v|
+      @category_file = v
     end
     opts.define("-i", "--[no-]ignore-errors") do |v|
       @ignore_erros = v
@@ -46,7 +51,7 @@ EOS
       base = args.shift or return
       return unless args.empty?
       Dir.open(base) {}
-      proc {
+      process = proc {
         if @log_file == '-'
           process_from_log(db, base, STDIN)
         else
@@ -57,10 +62,19 @@ EOS
       }
     else
       return if args.empty?
-      proc {
+      process = proc {
         args.each {|file| process_file(db, file)}
       }
     end
+    
+    if @category_file
+      File.foreach(@category_file) do |line|
+        cat, title = line.strip.split(/\t+/)
+        @category_table[cat] = title
+      end
+    end
+
+    process
   end
 
   def process_file(db, path)
@@ -141,6 +155,7 @@ EOS
   end
 
   def close
+    puts "Closing database #{@database.path}" if @debug
     @database.close
     @database = nil
   end
@@ -184,7 +199,7 @@ EOS
   private
 
   def get_category(url)
-    ""
+    @category_table.select {|cat, title| url.start_with?(cat)}.max_by {|cat, title| cat.length}[1]
   end
 
   def get_author(meta)
@@ -251,11 +266,17 @@ EOS
   end
 end
 
-class ChupaDatabase::HTMLONLY < ChupaDatabase
+class ChupaDatabase::TestOnly < ChupaDatabase
   def decompose_file(path, response = {})
     case response["content-type"]
     when "text/html"
       decompose_html_file(path)
+    when "text/plain"
+      File.open(path) {|f|
+        meta = response.update("last-modified" => f.mtime,
+                               "mime-type" => response["content-type"])
+        return meta, f.read
+      }
     else
       super
     end
@@ -274,7 +295,7 @@ class ChupaDatabase::HTMLONLY < ChupaDatabase
   end
 end
 
-chupadb = ChupaDatabase::HTMLONLY.new
+chupadb = ChupaDatabase::TestOnly.new
 opts = nil
 runner = ARGV.options do |o|
   opts = o
