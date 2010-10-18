@@ -8,6 +8,10 @@ require 'groonga'
 class ChupaDatabase
   def initialize
     @database = nil
+    @log_file = nil
+    @url_prefix = nil
+    @ignore_erros = false
+    @debug = false
   end
 
   def set_options(opts)
