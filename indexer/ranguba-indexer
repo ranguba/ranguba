@@ -279,22 +279,28 @@ EOS
 end
 
 class ChupaDatabase::TestOnly < ChupaDatabase
+  SUFFIX_TYPE = {'.html' => 'text/html', '.txt' => 'text/plain'}
+
   def decompose_file(path, response = {})
-    case response["content-type"]
+    case response["content-type"] ||= SUFFIX_TYPE[File.extname(path)]
     when "text/html"
-      decompose_html_file(path)
+      return decompose_html_file(path, response)
     when "text/plain"
-      File.open(path) {|f|
-        meta = response.update("last-modified" => f.mtime,
-                               "mime-type" => response["content-type"])
-        return meta, f.read
-      }
+      return decompose_text_file(path, response)
     else
       super
     end
   end
 
-  def decompose_html_file(path)
+  def decompose_text_file(path, response)
+    File.open(path) {|f|
+      meta = response.update("last-modified" => f.mtime,
+                             "mime-type" => response["content-type"])
+      return meta, f.read
+    }
+  end
+
+  def decompose_html_file(path, response)
     require 'nokogiri'
     doc = File.open(path, 'rb') {|file| Nokogiri::HTML.parse(file)}
     metadata = {}
