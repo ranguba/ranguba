@@ -247,7 +247,7 @@ EOS
       charset: response["charset"] || meta["charset"] || "",
       category: get_category(url) || "",
       author: get_author(meta) || "",
-      last: mtime,
+      mtime: mtime,
       update: response["x-update-time"],
     }
   end
@@ -295,7 +295,7 @@ EOS
         table.reference("charset", "Charsets")
         table.reference("category", "Categories")
         table.short_text("author")
-        table.time("last")
+        table.time("mtime")
         table.time("update")
         table.text("body")
       end
