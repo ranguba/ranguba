@@ -210,7 +210,8 @@ EOS
   private
 
   def get_category(url)
-    @category_table.select {|cat, title| url.start_with?(cat)}.max_by {|cat, title| cat.length}[1]
+    cat, title = @category_table.select {|c, t| url.start_with?(c)}.max_by {|c, t| c.length}
+    title
   end
 
   def get_author(meta)
