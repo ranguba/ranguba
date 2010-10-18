@@ -181,17 +181,17 @@ EOS
   end
 
   def make_attributes(url, response, meta, path)
-    if mtime = response["last-modified"]||meta["last-modified"]
+    if mtime = response["last-modified"] || meta["last-modified"]
       require 'date'
       mtime = (DateTime.parse(mtime) rescue nil)
     end
     mtime ||= File.mtime(path) if path
     {
       title: meta["title"],
-      type: response["content-type"]||meta["mime-type"]||"",
-      charset: response["charset"]||meta["charset"]||"",
-      category: get_category(url)||"",
-      author: get_author(meta)||"",
+      type: response["content-type"] || meta["mime-type"] || "",
+      charset: response["charset"] || meta["charset"] || "",
+      category: get_category(url) || "",
+      author: get_author(meta) || "",
       last: mtime,
     }
   end
