@@ -91,18 +91,22 @@ EOS
     open(db) do |grn|
       url = response = file = path = nil
       input.each("") do |log|
-        next unless (found = log[/^--[-\d]+.*?--\s+(.+)/, 1])..(saved = log[/saved/])
-        if found
-          url = found
+        case log
+        when /^--([-\d]+.*?)\s*--\s+(.+)/
+          update = $1
+          url = $2
           puts "URL: #{url}"
           if response = log[/^(?:  .*\n)+/]
             response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
           end
           file = log[/^Saving to: \`(.+)\'$/, 1]
+          next unless file      # failed to start download
           path = File.join(base, file)
-          next unless File.file?(path)
-        elsif saved
+          response ||= {}
+        when /saved/
+          next unless url and path and File.file?(path)
           add_entry(grn, url, path, response)
+          path = nil
         end
       end
     end
