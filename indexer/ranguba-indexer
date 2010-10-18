@@ -1,6 +1,8 @@
 #!/usr/bin/ruby
 
 require 'optparse'
+require 'shellwords'
+require 'tmpdir'
 require 'fileutils'
 require 'time'
 require 'chupa'
@@ -8,6 +10,7 @@ require 'groonga'
 
 class ChupaDatabase
   def initialize
+    @wget = nil
     @database = nil
     @log_file = nil
     @url_prefix = nil
@@ -26,6 +29,9 @@ class ChupaDatabase
 
 EOS
 
+    opts.define("-w", "--wget[=WGET-PATH]") do |v|
+      @wget = v ? Shellwords.split(v) : %w[wget]
+    end
     opts.define("-f", "--from-log=FILE") do |v|
       @log_file = v
     end
@@ -50,10 +56,16 @@ EOS
   def prepare(args)
     db = args.shift
     return if db.nil?
-    if @log_file
+    if @log_file or @wget
       if @url_prefix
-        raise OptionParser::InvalidOption, "--url-prefix and --from-log are exclusive"
+        raise OptionParser::InvalidOption, "--url-prefix can't be used in wget mode"
       end
+    end
+    if @wget
+      if args.empty? and not @category_file
+        return
+      end
+    elsif @log_file
       base = args.shift
       return if base.nil?
       return unless args.empty?
@@ -79,6 +91,25 @@ EOS
         cat, title = line.strip.split(/\t+/)
         @category_table[cat] = title
       end
+    end
+
+    if @wget
+      if args.empty? and (args = @category_table.keys).empty?
+        raise OptionParser::MissingArgument, "no URL"
+        return
+      end
+      process = proc {
+        @auto_delete = true
+        base = Dir.mktmpdir("ranguba")
+        wget = [{"LC_ALL"=>"C"}, *@wget, "-S", *args, chdir: base, err: [:child, :out]]
+        begin
+          IO.popen(wget, "r", encoding: "us-ascii") {|input|
+            process_from_log(db, base, input)
+          }
+        ensure
+          FileUtils.rm_f(base)
+        end
+      }
     end
 
     process
