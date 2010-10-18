@@ -68,7 +68,7 @@ EOS
         args.each {|file| process_file(db, file)}
       }
     end
-    
+
     if @category_file
       File.foreach(@category_file) do |line|
         cat, title = line.strip.split(/\t+/)
