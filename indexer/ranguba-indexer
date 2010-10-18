@@ -13,6 +13,7 @@ class ChupaDatabase
     @url_prefix = nil
     @category_file = nil
     @category_table = {}
+    @auto_delete = false
     @ignore_erros = false
     @debug = false
   end
@@ -33,6 +34,9 @@ EOS
     end
     opts.define("-c", "--category-file=CATEGORY_FILE") do |v|
       @category_file = v
+    end
+    opts.define("-d", "--[no-]auto-delete") do |v|
+      @auto_delete = v
     end
     opts.define("-i", "--[no-]ignore-errors") do |v|
       @ignore_erros = v
@@ -84,6 +88,7 @@ EOS
     open(db) do |grn|
       url = @url_prefix ? @url_prefix + path : path
       add_entry(grn, url, path)
+      postprocess_file(path)
     end
   end
 
@@ -107,6 +112,7 @@ EOS
         when /saved/
           next unless url and path and File.file?(path)
           add_entry(grn, url, path, response)
+          postprocess_file(path)
           path = nil
         end
       end
@@ -129,6 +135,12 @@ EOS
       end
     end
     true
+  end
+
+  def postprocess_file(path)
+    if @auto_delete
+      FileUtils.rm_f(path)
+    end
   end
 
   def decompose_file(path, response = {})
