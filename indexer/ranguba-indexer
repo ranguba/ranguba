@@ -2,6 +2,7 @@
 
 require 'optparse'
 require 'fileutils'
+require 'time'
 require 'chupa'
 require 'groonga'
 
@@ -189,9 +190,8 @@ EOS
 
   def make_attributes(url, response, meta, path)
     if mtime = response["last-modified"] || meta["last-modified"]
-      require 'date'
       begin
-        mtime = DateTime.parse(mtime)
+        mtime = Time.parse(mtime)
       rescue
         mtime = nil
       end
