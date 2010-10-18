@@ -43,12 +43,14 @@ EOS
   end
 
   def prepare(args)
-    db = args.shift or return
+    db = args.shift
+    return if db.nil?
     if @log_file
       if @url_prefix
         raise OptionParser::InvalidOption, "--url-prefix and --from-log are exclusive"
       end
-      base = args.shift or return
+      base = args.shift
+      return if base.nil?
       return unless args.empty?
       Dir.open(base) {}
       process = proc {
@@ -98,7 +100,7 @@ EOS
           end
           file = log[/^Saving to: \`(.+)\'$/, 1]
           path = File.join(base, file)
-          File.file?(path) or next
+          next unless File.file?(path)
         elsif saved
           add_entry(grn, url, path, response)
         end
@@ -110,7 +112,7 @@ EOS
   def add_entry(grn, url, path, response = {})
     begin
       metadata, body = decompose_file(path, response)
-      metadata or return false
+      return false if metadata.nil?
       attributes = make_attributes(url, response, metadata, path)
       attributes.update(body: body)
       grn.entries.add(url, attributes)
@@ -184,7 +186,11 @@ EOS
   def make_attributes(url, response, meta, path)
     if mtime = response["last-modified"] || meta["last-modified"]
       require 'date'
-      mtime = DateTime.parse(mtime) rescue mtime = nil
+      begin
+        mtime = DateTime.parse(mtime)
+      rescue
+        mtime = nil
+      end
     end
     mtime ||= File.mtime(path) if path
     {
@@ -303,5 +309,6 @@ runner = ARGV.options {|o|
   opts.separator("Options:")
   chupadb.set_options(opts)
   chupadb.prepare(opts.parse!(ARGV))
-} or abort opts.to_s
+}
+abort opts.to_s if runner.nil?
 exit runner.call
