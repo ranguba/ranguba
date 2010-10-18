@@ -180,7 +180,7 @@ EOS
   end
 
   def decompose_file(path, response = {})
-    Chupa.decompose(path, response)
+    Chupa::Data.decompose(path)
   end
 
   def open(path, encoding = Encoding::UTF_8)
