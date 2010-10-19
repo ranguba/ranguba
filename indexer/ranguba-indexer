@@ -200,6 +200,7 @@ EOS
       if data
         meta = data.metadata
         body = data.read || ""
+        body.force_encoding(Encoding::UTF_8)
         return meta, body
       end
     end
