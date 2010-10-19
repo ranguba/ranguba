@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-require 'optparse'
+require 'optparse/shellwords'
 require 'shellwords'
 require 'tmpdir'
 require 'fileutils'
@@ -10,7 +10,7 @@ require 'groonga'
 
 class ChupaDatabase
   def initialize
-    @wget = nil
+    @wget = %w[wget]
     @database = nil
     @log_file = nil
     @url_prefix = nil
@@ -31,8 +31,8 @@ class ChupaDatabase
 
 EOS
 
-    opts.define("-w", "--wget[=WGET-PATH]") do |v|
-      @wget = v ? Shellwords.split(v) : %w[wget]
+    opts.define("-w", "--wget[=WGET-PATH]", Shellwords) do |v|
+      @wget = v
     end
     opts.define("-f", "--from-log=FILE") do |v|
       @log_file = v
