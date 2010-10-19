@@ -354,11 +354,15 @@ class ChupaDatabase::TestOnly < ChupaDatabase
     require 'nokogiri'
     doc = File.open(path, 'rb') {|file| Nokogiri::HTML.parse(file)}
     metadata = {}
-    metadata["title"] = (doc % "head/title").text
+    if title = (doc % "head/title")
+      metadata["title"] = title.text
+    end
     if encoding = doc.encoding
       metadata["charset"] = encoding.downcase
     end
-    body = (doc % "body").text.gsub(/^\s+|\s+$/, '')
+    if body = (doc % "body")
+      body = body.text.gsub(/^\s+|\s+$/, '')
+    end
     return metadata, body
   end
 end
