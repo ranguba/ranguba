@@ -245,21 +245,22 @@ EOS
     @database.nil? or @database.closed?
   end
 
-  def types
-    @types ||= Groonga["Types"]
+  def self.table_accessor(*names)
+    names.each do |name|
+      nv = name.gsub(/[a-z](?=[A-Z])/, '\&_').downcase
+      iv = "@#{nv}"
+      define_method(nv) do
+        nv = instance_variable_get(iv)
+        if not nv or nv.closed?
+          nv = Groonga[name]
+          instance_variable_set(iv, nv)
+        end
+        nv
+      end
+    end
   end
 
-  def charsets
-    @charsets ||= Groonga["Charsets"]
-  end
-
-  def categories
-    @categories ||= Groonga["Categories"]
-  end
-
-  def entries
-    @entries ||= Groonga["Entries"]
-  end
+  table_accessor *%w[Types Charsets Categories Entries]
 
   def make_attributes(url, response, meta, path)
     if mtime = response["last-modified"] || meta["last-modified"]
