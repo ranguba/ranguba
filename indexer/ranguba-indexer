@@ -93,7 +93,7 @@ EOS
     if @category_file
       File.foreach(@category_file) do |line|
         cat, title = line.strip.split(/\t+/)
-        @category_table[cat] = title
+        @category_table[cat] ||= title
       end
     end
 
