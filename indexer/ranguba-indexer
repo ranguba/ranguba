@@ -113,7 +113,7 @@ EOS
             process_from_log(db, base, input)
           }
         ensure
-          FileUtils.rm_f(base)
+          FileUtils.rm_rf(base)
         end
       }
     end
