@@ -18,33 +18,4 @@
 成功すれば、((|$DB_DIR|))の下に ((|index.db|)), ((|index.db.0000000|)) ...
 などのファイルができているはずです。
 
-=== オプション
-
-* -l,  --level=NUMBER
-  再帰時の階層の最大の深さを NUMBER に設定する (0 で無制限)
-* -A,  --accept=LIST
-  ダウンロードする拡張子をコンマ区切りで指定する
-* -R,  --reject=LIST
-  ダウンロードしない拡張子をコンマ区切りで指定する
-* -c, --category-file=FILE
-  ((<カテゴリ設定ファイル>))のパスを指定する
-
-=== カテゴリ設定ファイル
-
-((|--category-file|))オプションで指定するファイルです。
-URLとカテゴリタイトルの対応を記述します。
-フォーマットはTSVファイル(UTF-8)なので、Excelなどでも編集可能です。
-一列目がカテゴリを設定したいURL、二列目がタイトルです。
-カテゴリのURLに先頭が一致するURLはそのカテゴリに所属するものとみなされます。
-複数のカテゴリにマッチする場合は、最も長くマッチするカテゴリが使用されます。
-例えば、以下のように設定した場合
-
-    http://example.com/ 	Example
-    http://example.com/foo/	Foo of Example
-
-((|http://example.com/foo/index.html|))のカテゴリは(("Foo of Example"))、
-((|http://example.com/bar/index.html|))のカテゴリは(("Example"))になります。
-
-同じURLを複数指定した場合は、後に書かれたものは無視されます。
-
 == Web UIの設定
