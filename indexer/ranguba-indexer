@@ -180,7 +180,17 @@ EOS
   end
 
   def decompose_file(path, response = {})
-    Chupa::Data.decompose(path)
+    begin
+      data = Chupa::Data.decompose(path)
+    rescue GLib::Error => e
+      raise unless /unknown mime-type/ =~ e.message
+    else
+      if data
+        meta = data.metadata
+        body = data.read || ""
+        return meta, body
+      end
+    end
   end
 
   def open(path, encoding = Encoding::UTF_8)
