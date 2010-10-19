@@ -86,7 +86,7 @@ EOS
     else
       return if args.empty?
       process = proc {
-        args.each {|file| process_file(db, file)}
+        process_files(db, args)
       }
     end
 
@@ -119,12 +119,24 @@ EOS
     process
   end
 
+  def process_files(db, paths)
+    require 'find'
+    Find.find(*paths) do |path|
+      next unless File.file?(path)
+      puts "File: #{path}"
+      process_file(db, path)
+    end
+    true
+  end
+
   def process_file(db, path)
+    result = false
     open(db) do |grn|
       url = @url_prefix ? @url_prefix + path : path
-      add_entry(grn, url, path)
+      result = add_entry(grn, url, path)
       postprocess_file(path)
     end
+    result
   end
 
   def process_from_log(db, base, input)
