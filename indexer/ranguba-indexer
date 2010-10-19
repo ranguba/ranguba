@@ -25,8 +25,9 @@ class ChupaDatabase
   def set_options(opts)
     banner = opts.banner
     opts.banner = <<EOS
+#{banner} db-path [URL...]
 #{banner} --from-log=LOG db-path base-directory
-#{banner} [--url-prefix=PREFIX] db-path files...
+#{banner} --url-prefix=PREFIX db-path files...
 
 EOS
 
@@ -60,16 +61,14 @@ EOS
   def prepare(args)
     db = args.shift
     return if db.nil?
-    if @log_file or @wget
+    if @log_file
       if @url_prefix
-        raise OptionParser::InvalidOption, "--url-prefix can't be used in wget mode"
+        raise OptionParser::InvalidOption, "--url-prefix and --from-log options are exclusive"
       end
     end
-    if @wget
-      if args.empty? and not @category_file
-        return
-      end
-    elsif @log_file
+    case
+    when @log_file
+      # load log file and read local downloads
       base = args.shift
       return if base.nil?
       return unless args.empty?
@@ -83,11 +82,14 @@ EOS
           }
         end
       }
-    else
+    when @url_prefix
+      # read local files
       return if args.empty?
       process = proc {
         process_files(db, args)
       }
+    else
+      # crawl
     end
 
     if @category_file
@@ -97,7 +99,7 @@ EOS
       end
     end
 
-    if @wget
+    unless process
       if args.empty? and (args = @category_table.keys).empty?
         raise OptionParser::MissingArgument, "no URL"
         return
