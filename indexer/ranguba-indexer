@@ -195,7 +195,9 @@ EOS
     begin
       data = Chupa::Data.decompose(path)
     rescue GLib::Error => e
-      raise unless /unknown mime-type/ =~ e.message
+      if @debug
+        raise unless /unknown mime-type/ =~ e.message
+      end
     else
       if data
         meta = data.metadata
