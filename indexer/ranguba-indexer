@@ -14,6 +14,9 @@ class ChupaDatabase
     @database = nil
     @log_file = nil
     @url_prefix = nil
+    @level = 5
+    @accept = %w[html doc xls ppt pdf]
+    @reject = []
     @category_file = nil
     @category_table = {}
     @tmpdir = nil
@@ -39,6 +42,15 @@ EOS
     end
     opts.define("-p", "--url-prefix=URL_PREFIX") do |v|
       @url_prefix = v
+    end
+    opts.define("-l", "--level=NUMBER", Integer) do |v|
+      @level = v
+    end
+    opts.define("-A", "--accept=LIST", Array) do |v|
+      @accept.concat(v)
+    end
+    opts.define("-R", "--reject=LIST", Array) do |v|
+      @reject.concat(v)
     end
     opts.define("-c", "--category-file=CATEGORY_FILE") do |v|
       @category_file = v
@@ -107,7 +119,11 @@ EOS
       process = proc {
         @auto_delete = true
         base = Dir.mktmpdir("ranguba", @tmpdir)
-        wget = [{"LC_ALL"=>"C"}, *@wget, "-S", *args, chdir: base, err: [:child, :out]]
+        wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
+        wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
+        wget << "--reject=#{@reject.join(',')}" unless @reject.empty?
+        wget.concat(args)
+        wget << {chdir: base, err: [:child, :out]}
         begin
           IO.popen(wget, "r", encoding: "us-ascii") {|input|
             process_from_log(db, base, input)
