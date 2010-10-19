@@ -202,7 +202,10 @@ EOS
       if data
         meta = data.metadata
         body = data.read || ""
-        body.force_encoding(Encoding::UTF_8)
+        if body.encoding == Encoding::ASCII_8BIT
+          body.force_encoding(meta["encoding"] || Encoding::UTF_8)
+          return unless body.valid_encoding?
+        end
         return meta, body
       end
     end
