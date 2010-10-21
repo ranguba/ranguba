@@ -23,6 +23,7 @@ class ChupaDatabase
     @auto_delete = false
     @ignore_erros = false
     @debug = false
+    @oldest = nil
   end
 
   def set_options(opts)
@@ -131,6 +132,9 @@ EOS
         ensure
           FileUtils.rm_rf(base)
         end
+        if @oldest
+          purge_old_records(@oldest)
+        end
       }
     end
 
@@ -174,7 +178,11 @@ EOS
           next unless file      # failed to start download
           path = File.join(base, file)
           response ||= {}
-          response["x-update-time"] = Time.parse(update)
+          update = Time.parse(update)
+          response["x-update-time"] = update
+          if !@oldest or @oldest > update
+            @oldest = update
+          end
         when /saved/
           next unless url and path and File.file?(path)
           add_entry(grn, url, path, response)
@@ -254,6 +262,16 @@ EOS
     FileUtils.rm_f([path, *Dir[path+".*"]])
     reset_context(encoding)
     populate(path)
+  end
+
+  def purge_old_records(base_time)
+    old_entries = entries.select do |record|
+      record.update < base_time
+    end
+    old_entries.each do |record|
+      real_record = record.key
+      real_record.delete
+    end
   end
 
   def close
