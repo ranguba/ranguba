@@ -107,6 +107,7 @@ EOS
 
     if @category_file
       File.foreach(@category_file) do |line|
+        next if /^\s*(?#|$)/ =~ line
         cat, title = line.strip.split(/\t+/)
         @category_table[cat] ||= title
       end
