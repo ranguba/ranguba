@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 
-$:.unshift(p File.expand_path('../../lib', __FILE__))
+$:.unshift(File.expand_path('../../lib', __FILE__))
+
 require 'optparse/shellwords'
 require 'shellwords'
 require 'tmpdir'
