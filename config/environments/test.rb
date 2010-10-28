@@ -33,5 +33,5 @@ Ranguba::Application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
-  config.index_db_path = "#{RAILS_ROOT}/test/fixture/index_db"
+  config.index_db_path = "#{::Rails.root.to_s}/test/fixture/index_db"
 end
