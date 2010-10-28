@@ -1,7 +1,7 @@
 require 'groonga'
 
 module Ranguba
-  class Index
+  class Database
     def self.open(*args, &block)
       new.open(*args, &block)
     end
@@ -136,5 +136,5 @@ module Ranguba
 end
 
 if $0 == __FILE__
-  p Ranguba::Index.open(ARGV[0]).entries
+  p Ranguba::Database.open(ARGV[0]).entries
 end

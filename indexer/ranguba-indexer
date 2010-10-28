@@ -7,7 +7,7 @@ require 'tmpdir'
 require 'fileutils'
 require 'time'
 require 'chupa'
-require 'ranguba/index'
+require 'ranguba/database'
 
 class Ranguba::Indexer
   def initialize
@@ -154,7 +154,7 @@ EOS
 
   def process_file(db, path)
     result = false
-    Ranguba::Index.open(db) do |grn|
+    Ranguba::Database.open(db) do |grn|
       url = @url_prefix ? @url_prefix + path : path
       result = add_entry(grn, url, path)
       postprocess_file(path)
@@ -164,7 +164,7 @@ EOS
 
   def process_from_log(db, base, input)
     result = true
-    Ranguba::Index.open(db) do |grn|
+    Ranguba::Database.open(db) do |grn|
       url = response = file = path = nil
       input.each("") do |log|
         case log
