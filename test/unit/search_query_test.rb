@@ -17,13 +17,32 @@ class SearchQueryTest < ActiveSupport::TestCase
   end
 
   def test_new_with_params
-    @query = SearchQuery.new("/query/string")
-    assert_valid(:to_s => "query/string",
-                 :query => "string")
-
+    @query = SearchQuery.new({})
+    assert_valid
+    
     @query = SearchQuery.new(:query => "string")
     assert_valid(:to_s => "query/string",
                  :query => "string")
+
+    @query = SearchQuery.new(:query => "string",
+                             :category => "cat")
+    assert_valid(:to_s => "query/string/category/cat",
+                 :query => "string",
+                 :category => "cat")
+
+    @query = SearchQuery.new(:query => "string",
+                             :type => "html")
+    assert_valid(:to_s => "query/string/type/html",
+                 :query => "string",
+                 :type => "html")
+
+    @query = SearchQuery.new(:query => "string",
+                             :category => "cat",
+                             :type => "html")
+    assert_valid(:to_s => "query/string/category/cat/type/html",
+                 :query => "string",
+                 :category => "cat",
+                 :type => "html")
   end
 
   def test_parse_valid_input
@@ -61,13 +80,13 @@ class SearchQueryTest < ActiveSupport::TestCase
 
   def test_parse_mixed_order    
     @query.parse("category/cat/query/string/type/html")
-    assert_valid(:to_s => "query/string/category/cat/type/html",
+    assert_valid(:to_s => "category/cat/query/string/type/html",
                  :query => "string",
                  :category => "cat",
                  :type => "html")
 
     @query.parse("type/html/category/cat/query/string")
-    assert_valid(:to_s => "query/string/category/cat/type/html",
+    assert_valid(:to_s => "type/html/category/cat/query/string",
                  :query => "string",
                  :category => "cat",
                  :type => "html")
@@ -75,18 +94,15 @@ class SearchQueryTest < ActiveSupport::TestCase
 
   def test_parse_unknown_param
     @query.parse("unknown/value")
-    assert_invalid
+    assert_invalid(:to_s => "unknown/value")
 
     @query.parse("query/string/unknown/value")
-    assert_invalid
+    assert_invalid(:to_s => "query/string/unknown/value",
+                   :query => "string")
 
     @query.parse("unknown/value/query/string")
-    assert_invalid
-  end
-
-  def test_parse_not_string
-    @query.parse(:query => "string")
-    assert_invalid
+    assert_invalid(:to_s => "unknown/value/query/string",
+                   :query => "string")
   end
 
   def test_parse_correctly_reset
@@ -94,55 +110,16 @@ class SearchQueryTest < ActiveSupport::TestCase
     assert_valid
 
     @query.parse("unknown/value")
-    assert_invalid
+    assert_invalid(:to_s => "unknown/value")
 
     @query.parse("")
     assert_valid
   end
 
-  def test_hash_valid_input
-    @query = SearchQuery.new
-    assert_valid
-
-    @query = SearchQuery.new({})
-    assert_valid
-    
-    @query = SearchQuery.new(:query => "string")
-    assert_valid(:to_s => "query/string",
-                 :query => "string")
-
-    @query = SearchQuery.new(:query => "string",
-                             :category => "cat")
-    assert_valid(:to_s => "query/string/category/cat",
-                 :query => "string",
-                 :category => "cat")
-
-    @query = SearchQuery.new(:query => "string",
-                             :type => "html")
-    assert_valid(:to_s => "query/string/type/html",
-                 :query => "string",
-                 :type => "html")
-
-    @query = SearchQuery.new(:query => "string",
-                             :category => "cat",
-                             :type => "html")
-    assert_valid(:to_s => "query/string/category/cat/type/html",
-                 :query => "string",
-                 :category => "cat",
-                 :type => "html")
-  end
-
-  def test_hash_unknown_param
-    @query = SearchQuery.new(:unknown => "value")
-    assert_invalid
-
-    @query = SearchQuery.new(:query => "string", :unknown => "value")
-    assert_invalid
-  end
-
   def test_clear
-    @query = SearchQuery.new(:unknown => "value")
-    assert_invalid
+    @query = SearchQuery.new
+    @query.parse("unknown/value")
+    assert_invalid(:to_s => "unknown/value")
 
     @query.clear
     assert_valid
@@ -165,20 +142,24 @@ class SearchQueryTest < ActiveSupport::TestCase
 
   private
   def assert_valid(options={})
+    assert @query.valid?
+    assert_properties(options)
+  end
+
+  def assert_invalid(options={})
+    assert_false @query.valid?
+    assert_properties(options)
+  end
+
+  def assert_properties(options={})
     options[:to_s] ||= ""
     options[:query] ||= nil
     options[:category] ||= nil
     options[:type] ||= nil
 
-    assert @query.valid?
     assert_equal options[:to_s], @query.to_s
     assert_equal options[:query], @query.query
     assert_equal options[:category], @query.category
     assert_equal options[:type], @query.type
-  end
-
-  def assert_invalid(options={})
-    assert_false @query.valid?
-    assert_equal "", @query.to_s
   end
 end
