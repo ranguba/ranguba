@@ -1,2 +1,2 @@
-require "ranguba/index"
+require "ranguba/database"
 

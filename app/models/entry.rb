@@ -35,7 +35,7 @@ class Entry < ActiveModel::Base
 
     private
     def table
-      Ranguba::Index.new.open(Ranguba::Application.config.index_db_path).entries
+      Ranguba::Database.new.open(Ranguba::Application.config.index_db_path).entries
     end
 
   end
