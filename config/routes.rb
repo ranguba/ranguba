@@ -1,4 +1,5 @@
 Ranguba::Application.routes.draw do
+  match "search/", :to => "search#index"
   match "search/*query", :to => "search#index"
 
   # The priority is based upon order of creation:
