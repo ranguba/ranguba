@@ -1,8 +1,10 @@
-class SearchResult < ActiveModel::Base
+class Entry < ActiveModel::Base
 
-  attr_accessor :query
+  attr_accessor :title
+  attr_accessor :url
   attr_accessor :category
   attr_accessor :type
+  attr_accessor :body
 
   class << self
 
@@ -22,8 +24,8 @@ class SearchResult < ActiveModel::Base
         record = record.key
         results << self.new(:title => record[".title"],
                             :url => record.key,
-                            :type => record[".type"],
                             :category => record[".category"],
+                            :type => record[".type"],
                             :body => record[".body"])
       end
       { :entries => results,
@@ -31,7 +33,7 @@ class SearchResult < ActiveModel::Base
         :drill_down_types => types }
     end
 
-    @private
+    private
     def entries_index
       Ranguba::Index.new.open(...).entries
     end
