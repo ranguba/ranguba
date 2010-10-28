@@ -1,4 +1,4 @@
-# require 'groonga'
+require 'groonga'
 
 module Ranguba
   class Index

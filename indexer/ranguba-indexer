@@ -6,7 +6,7 @@ require 'tmpdir'
 require 'fileutils'
 require 'time'
 require 'chupa'
-require_relative '../lib/ranguba'
+require_relative '../lib/ranguba/index'
 
 class Ranguba::Indexer
   def initialize
