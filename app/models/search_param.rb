@@ -1,4 +1,4 @@
-class SearchQuery
+class SearchParam
   include ActiveModel::Validations
   include ActiveModel::Conversion
   extend ActiveModel::Naming

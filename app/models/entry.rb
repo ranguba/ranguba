@@ -1,8 +1,4 @@
 class Entry
-  include ActiveModel::Validations
-  include ActiveModel::Conversion
-  extend ActiveModel::Naming
-
   attr_accessor :title
   attr_accessor :url
   attr_accessor :category
