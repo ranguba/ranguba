@@ -1,0 +1,2 @@
+require "ranguba/index"
+
