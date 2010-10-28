@@ -1,4 +1,4 @@
-class Entry < ActiveModel::Base
+class Entry < ActiveModel
 
   attr_accessor :title
   attr_accessor :url
