@@ -17,7 +17,7 @@ class Entry < ActiveModel::Base
       categories = []
       types = []
 
-      records = entries_index.select do |record|
+      records = table.select do |record|
         record["body"] =~ options[:query]
       end
       records.each do |record|
@@ -34,8 +34,8 @@ class Entry < ActiveModel::Base
     end
 
     private
-    def entries_index
-      Ranguba::Index.new.open(...).entries
+    def table
+      Ranguba::Index.new.open(Ranguba::Application.config.index_db_path).entries
     end
 
   end
