@@ -1,27 +1,29 @@
-require "uri"
-$KCODE = "UTF-8"
-
 module Ranguba
   class SearchQuery
     def initialize(options=nil)
-      @hash = nil
-      @valid = true
+      clear
 
       return unless options
 
-      case options.class
-      when String
+      if options.class.ancestors.include?(String)
         parse(options)
-      when Hash
+      elsif options.class.ancestors.include?(Hash)
         self.hash = options
       end
+    end
+
+    def clear
+      @valid = true
+      @hash = nil
     end
 
     def valid?
       @valid
     end
 
-    def parse
+    def parse(query_string="")
+      clear
+
       return if query_string.empty?
         
       parts = query_string.gsub(/^\/+|\/+$/, "").split("/")
@@ -52,6 +54,7 @@ module Ranguba
     end
 
     def to_s
+      return "" unless @hash
       string = []
       @hash.each do |key, value|
         string << key.to_s
@@ -65,13 +68,14 @@ module Ranguba
     end
 
     def hash=(new_hash)
-      @valid = true
+      clear
+      return if !new_hash || new_hash.empty?
 
       new_hash.keys.each do |key|
         case key
-        when "query"
-        when "category"
-        when "type"
+        when :query
+        when :category
+        when :type
         else
           @valid = false
         end

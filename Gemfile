@@ -8,6 +8,8 @@ gem 'rails', '3.0.1'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
 gem 'rroonga'
+gem 'test-unit', '>=2'
+gem 'test-unit-notify'
 
 # Use unicorn as the web server
 # gem 'unicorn'
