@@ -84,6 +84,11 @@ class SearchQueryTest < ActiveSupport::TestCase
     assert_invalid
   end
 
+  def test_parse_not_string
+    @query.parse(:query => "string")
+    assert_invalid
+  end
+
   def test_parse_correctly_reset
     @query.parse("")
     assert_valid

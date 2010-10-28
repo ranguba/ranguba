@@ -34,6 +34,11 @@ class SearchQuery
     clear
 
     return if query_string.empty?
+
+    unless query_string.class.ancestors.include?(String)
+      @valid = false
+      return
+    end
         
     parts = query_string.gsub(/^\/+|\/+$/, "").split("/")
     if parts.size % 2 > 0
