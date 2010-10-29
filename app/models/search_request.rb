@@ -6,8 +6,9 @@ class SearchRequest
   attr_accessor :query
   attr_accessor :category
   attr_accessor :type
+  attr_accessor :page
 
-  KEYS = ["query", "category", "type"]
+  KEYS = ["query", "category", "type", "page"]
 
   validate :validate_string
 
@@ -32,11 +33,17 @@ class SearchRequest
     @type = value
   end
 
+  def page=(value)
+    @string = nil
+    @page = value
+  end
+
   def clear
     @string = nil
     @query = nil
     @category = nil
     @type = nil
+    @page = nil
   end
 
   def parse(query_string="")

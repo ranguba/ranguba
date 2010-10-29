@@ -13,7 +13,11 @@ class SearchController < ApplicationController
 
     unless @search_request.valid?
       render :action => "bad_request", :status => 400
+      return
     end
+
+    search_result = Entry.search(@search_request)
+    @entries = search_result[:entries]
   end
 
 end

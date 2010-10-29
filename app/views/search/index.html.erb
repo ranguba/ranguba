@@ -2,4 +2,12 @@
 <p>query: <%= @search_request.query %></p>
 <p>category: <%= @search_request.category %></p>
 <p>type: <%= @search_request.type %></p>
+<p>page: <%= @search_request.page %></p>
+
+<dl>
+  <% @entries.each do |entry| %>
+    <dt><%= link_to entry.title, entry.url %></dt>
+      <dd><%= entry.summary %></dd>
+  <% end %>
+</dl>
 
