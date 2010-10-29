@@ -91,6 +91,26 @@ class SearchRequest
     path_components.join("/")
   end
 
+  def path(options={})
+    options = options.merge(:options => to_hash)
+    if options[:without]
+      options[:options].delete(options[:without])
+    end
+    self.class.path(options)
+  end
+
+  def topic_path_items(options={})
+    items = []
+    KEYS.each do |key|
+      value = send(key)
+      unless value.nil?
+        items << {:label => value,
+                  :path => path(options.merge(:without => key.to_sym))}
+      end
+    end
+    items
+  end
+
   def to_hash
     hash = {}
     KEYS.each do |key|

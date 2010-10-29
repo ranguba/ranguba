@@ -4,8 +4,16 @@
                      :action => "index"}) do |f| %>
   <p><%= f.text_field :query, :size => 25 %><%= submit_tag "Search" %></p>
 <% end %>
-<p>category: <%= @search_request.category %></p>
-<p>type: <%= @search_request.type %></p>
+
+<% unless @topic_path_items.empty? %>
+  <ul>
+    <% @topic_path_items.each do |item| %>
+      <li><%= link_to "[X] #{item[:label]}",
+                      item[:path] %></li>
+    <% end %>
+  </ul>
+<% end %>
+
 <p>page: <%= @search_request.page %></p>
 
 <% unless @drilldown_groups.empty? %>

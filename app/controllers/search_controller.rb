@@ -20,6 +20,7 @@ class SearchController < ApplicationController
     search_result = Entry.search(@search_request)
     @entries = search_result[:entries]
     @drilldown_groups = search_result[:drilldown_groups]
+    @topic_path_items = @search_request.topic_path_items(:base_path => @base_path)
   end
 
 end
