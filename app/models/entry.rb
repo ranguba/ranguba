@@ -43,10 +43,12 @@ class Entry
       unless request.query.blank?
         conditions << Proc.new do |record|
           request.query.split.collect do |term|
-            record.key.key =~ term ||
-            record[".title"] =~ term ||
-            record[".body"] =~ term
-          end.flatten
+            (record.key.key =~ term) |
+            (record[".title"] =~ term) |
+            (record[".body"] =~ term)
+          end.inject do |match_conditions, match_condition|
+            match_conditions & match_condition
+          end
         end
       end
       unless request.category.blank?
