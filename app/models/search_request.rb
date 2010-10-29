@@ -80,9 +80,15 @@ class SearchRequest
       key = parts[i]
       value = parts[i+1]
       if KEYS.include?(key)
-        errors.add(key, "#{key} is not specified") if value.blank?
+        if value.blank?
+          errors.add(key.to_sym, I18n.t("search_request_blank_value",
+                                        :key => key,
+                                        :value => value))
+        end
       else
-        errors.add(key, "unknown key #{key} is specified (value is #{value})")
+        errors.add(key.to_sym, I18n.t("search_request_invalid_key",
+                                      :key => key,
+                                      :value => value))
       end
       i += 2
     end
