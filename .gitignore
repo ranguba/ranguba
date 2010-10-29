@@ -1,5 +1,6 @@
 Gemfile.lock
 db/schema.rb
 db/*.sqlite3
+db/groonga/
 log/
 tmp/
