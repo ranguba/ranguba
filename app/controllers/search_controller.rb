@@ -1,8 +1,8 @@
 class SearchController < ApplicationController
 
   def index
-    @search_query = SearchQuery.new
-    @search_query.parse(params[:query])
+    @search_request = SearchRequest.new
+    @search_request.parse(params[:search_request])
   end
 
 end
