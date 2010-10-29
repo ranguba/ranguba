@@ -9,8 +9,15 @@ class SearchRequest
   attr_accessor :page
 
   KEYS = ["query", "category", "type", "page"]
+  DELIMITER = "/"
 
   validate :validate_string
+
+  class << self
+    def encode_parameter(input)
+      URI.encode(input, /[^-_.!~*'()a-zA-Z\d?@]/n) # same to encodeURIComponent (in JavaScript)
+    end
+  end
 
   def initialize(options={})
     options.each do |key, value|
@@ -52,7 +59,7 @@ class SearchRequest
     query_string = (query_string || "").gsub(/^\/+|\/+$/, "")
     return if query_string.blank?
 
-    parts = query_string.split("/")
+    parts = query_string.split(DELIMITER)
     i = 0
     while i < parts.size
       key = parts[i]
@@ -72,10 +79,19 @@ class SearchRequest
       value = send(key)
       unless value.blank?
         path_components << key
-        path_components << URI.encode(value)
+        path_components << self.class.encode_parameter(value)
       end
     end
     path_components.join("/")
+  end
+
+  def to_hash
+    hash = {}
+    KEYS.each do |key|
+      value = send(key)
+      hash[key.to_sym] = value unless value.blank?
+    end
+    hash
   end
 
   def empty?

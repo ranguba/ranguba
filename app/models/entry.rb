@@ -11,8 +11,7 @@ class Entry
 
     def search(request)
       results = []
-      categories = []
-      types = []
+      drilldown_results = {}
 
       conditions = conditions_from_request(request)
 
@@ -29,10 +28,11 @@ class Entry
                          :type => record[".type"].to_s,
                          :body => record[".body"].to_s)
         end
+
+        drilldown_results = drilldown_groups(:records => records, :request => request)
       end
-      { :entries => results,
-        :drill_down_categories => categories,
-        :drill_down_types => types }
+      {:entries => results,
+       :drilldown_groups => drilldown_results}
     end
 
     private
@@ -55,6 +55,28 @@ class Entry
         end
       end
       conditions
+    end
+
+    def drilldown_groups(options={})
+      result = {}
+      ["category", "type"].each do |column|
+        next unless options[:request].send(column).nil?
+        group = drilldown_group(:records => options[:records],
+                                :drilldown => column,
+                                :label => "_key")
+        result[I18n.t("column_#{column}_name")] = group unless group.empty?
+      end
+      result
+    end
+
+    def drilldown_group(options={})
+      result = options[:records].group(options[:drilldown])
+      result = result.sort([["_nsubrecs", :descending]], :limit => 10)
+      result.collect do |record|
+        DrilldownItem.new(:column => options[:drilldown],
+                          :value => record[options[:label]].to_s,
+                          :count => record.n_sub_records)
+      end
     end
 
   end

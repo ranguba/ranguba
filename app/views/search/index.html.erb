@@ -4,6 +4,20 @@
 <p>type: <%= @search_request.type %></p>
 <p>page: <%= @search_request.page %></p>
 
+<% unless @drilldown_groups.empty? %>
+  <ul>
+    <% @drilldown_groups.each do |name, items| %>
+      <li><%= name %><ul>
+        <% items.each do |item| %>
+          <li><%= link_to item.label_with_count,
+                          item.path(:base_path => @base_path,
+                                    :base_options => @search_request_params) %></li>
+        <% end %>
+      </ul></li>
+    <% end %>
+  </ul>
+<% end %>
+
 <% unless @search_request.empty? %>
   <% if @entries.size > 0 %>
     <dl>

@@ -7,4 +7,12 @@ ja:
   search_request_blank_value: "%{key} に値がありません。"
   search_request_invalid_key: "不明なオプション %{key} に %{value} が指定されています。"
 
+  column_category_name: "カテゴリ"
+  column_category_label_XXX: "XXX"
+
+  column_type_name: "ファイルの種類"
+  column_type_label_text/html: "HTML"
+  column_type_label_text/plain: "プレーンテキスト"
+
+  drilldown_item_label: "%{label} (%{count})"
 

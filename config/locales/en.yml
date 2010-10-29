@@ -7,3 +7,12 @@ en:
   search_request_blank_value: "\"%{key}\" has no value."
   search_request_invalid_key: "Unknown option \"%{key}\" is specified with a value \"%{value}\"."
 
+  column_category_name: "Category"
+  column_category_label_XXX: "XXX"
+
+  column_type_name: "File Type"
+  column_type_label_text/html: "HTML"
+  column_type_label_text/plain: "Plain Text"
+
+  drilldown_item_label: "%{label} (%{count})"
+
