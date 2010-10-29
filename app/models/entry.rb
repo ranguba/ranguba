@@ -22,8 +22,10 @@ class Entry
           end.flatten
         end
         records.each do |record|
-          results << new(:title => record[".title"].to_s,
-                         :url => record.key.key.to_s,
+          url = record.key.key.to_s
+          title = record[".title"].to_s
+          results << new(:title => title.blank? ? url : title,
+                         :url => url,
                          :category => record[".category"].to_s,
                          :type => record[".type"].to_s,
                          :body => record[".body"].to_s)
