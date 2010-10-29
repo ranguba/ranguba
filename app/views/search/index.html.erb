@@ -2,7 +2,7 @@
 <% form_for(@search_request,
             :url => {:controller => "search",
                      :action => "index"}) do |f| %>
-  <p>query: <%= f.text_field :query, :size => 25 %></p>
+  <p><%= f.text_field :query, :size => 25 %><%= submit_tag "Search" %></p>
 <% end %>
 <p>category: <%= @search_request.category %></p>
 <p>type: <%= @search_request.type %></p>
