@@ -46,6 +46,9 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_parse_valid_input
+    @param.parse(nil)
+    assert_valid
+
     @param.parse("")
     assert_valid
     

@@ -42,7 +42,7 @@ class SearchRequest
   def parse(query_string="")
     clear
 
-    query_string = query_string.gsub(/^\/+|\/+$/, "")
+    query_string = (query_string || "").gsub(/^\/+|\/+$/, "")
     return if query_string.blank?
 
     parts = query_string.split("/")
