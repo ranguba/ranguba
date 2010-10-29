@@ -1,5 +1,5 @@
 class DrilldownItem
-  attr_accessor :column
+  attr_accessor :param
   attr_accessor :value
   attr_accessor :count
 
@@ -10,7 +10,7 @@ class DrilldownItem
   end
 
   def label
-    I18n.t("column_#{column}_label_#{value}")
+    I18n.t("column_#{param}_label_#{value}")
   end
 
   def label_with_count
@@ -25,7 +25,7 @@ class DrilldownItem
 
   def to_hash(base_options={})
     hash = {}.merge(base_options)
-    hash[column.to_sym] = value
+    hash[param.to_sym] = value
     hash
   end
 end

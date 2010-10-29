@@ -73,7 +73,7 @@ class Entry
       result = options[:records].group(options[:drilldown])
       result = result.sort([["_nsubrecs", :descending]], :limit => 10)
       result.collect do |record|
-        DrilldownItem.new(:column => options[:drilldown],
+        DrilldownItem.new(:param => options[:drilldown],
                           :value => record[options[:label]].to_s,
                           :count => record.n_sub_records)
       end
