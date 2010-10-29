@@ -40,8 +40,11 @@ class Entry
       conditions = []
       unless request.query.blank?
         conditions << Proc.new do |record|
-          record[".title"] =~ request.query ||
-          record[".body"] =~ request.query
+          request.query.split.all? do |term|
+            record.key.key =~ term ||
+            record[".title"] =~ term ||
+            record[".body"] =~ term
+          end
         end
       end
       unless request.category.blank?
