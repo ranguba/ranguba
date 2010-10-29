@@ -2,10 +2,10 @@
 
 require 'test_helper'
 
-class SearchParamTest < ActiveSupport::TestCase
+class SearchRequestTest < ActiveSupport::TestCase
 
   def setup
-    @param = SearchParam.new
+    @param = SearchRequest.new
   end
 
   def test_new
@@ -17,26 +17,26 @@ class SearchParamTest < ActiveSupport::TestCase
   end
 
   def test_new_with_params
-    @param = SearchParam.new({})
+    @param = SearchRequest.new({})
     assert_valid
     
-    @param = SearchParam.new(:query => "string")
+    @param = SearchRequest.new(:query => "string")
     assert_valid(:to_s => "query/string",
                  :query => "string")
 
-    @param = SearchParam.new(:query => "string",
+    @param = SearchRequest.new(:query => "string",
                              :category => "cat")
     assert_valid(:to_s => "query/string/category/cat",
                  :query => "string",
                  :category => "cat")
 
-    @param = SearchParam.new(:query => "string",
+    @param = SearchRequest.new(:query => "string",
                              :type => "html")
     assert_valid(:to_s => "query/string/type/html",
                  :query => "string",
                  :type => "html")
 
-    @param = SearchParam.new(:query => "string",
+    @param = SearchRequest.new(:query => "string",
                              :category => "cat",
                              :type => "html")
     assert_valid(:to_s => "query/string/category/cat/type/html",
@@ -117,7 +117,7 @@ class SearchParamTest < ActiveSupport::TestCase
   end
 
   def test_clear
-    @param = SearchParam.new
+    @param = SearchRequest.new
     @param.parse("unknown/value")
     assert_invalid(:to_s => "unknown/value")
 
