@@ -151,12 +151,23 @@ class SearchRequestTest < ActiveSupport::TestCase
                  :query => "日本語",
                  :empty => false)
 
-    @search_request.query = nil
-    assert_valid
+    @search_request.query = "日本"
+    encoded = URI.encode("日本")
+    assert_valid(:to_s => "query/#{encoded}",
+                 :query => "日本",
+                 :empty => false)
+  end
 
-    @search_request.query = "日本語"
+  def test_slash_io
+    query_string = "type/text%2Fhtml"
+    @search_request.parse(query_string)
     assert_valid(:to_s => query_string,
-                 :query => "日本語",
+                 :type => "text/html",
+                 :empty => false)
+
+    @search_request.type = "text/plain"
+    assert_valid(:to_s => "type/text%2Fplain",
+                 :type => "text/plain",
                  :empty => false)
   end
 
