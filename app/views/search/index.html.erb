@@ -4,14 +4,16 @@
 <p>type: <%= @search_request.type %></p>
 <p>page: <%= @search_request.page %></p>
 
-<% if @entries.size > 0 %>
-  <dl>
-    <% @entries.each do |entry| %>
-      <dt><%= link_to entry.title, entry.url %></dt>
-        <dd><%= entry.summary %></dd>
-    <% end %>
-  </dl>
-<% else %>
-  <p>not found.</p>
+<% unless @search_request.empty? %>
+  <% if @entries.size > 0 %>
+    <dl>
+      <% @entries.each do |entry| %>
+        <dt><%= link_to entry.title, entry.url %></dt>
+          <dd><%= entry.summary %></dd>
+      <% end %>
+    </dl>
+  <% else %>
+    <p>not found.</p>
+  <% end %>
 <% end %>
 

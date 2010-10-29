@@ -5,152 +5,169 @@ require 'test_helper'
 class SearchRequestTest < ActiveSupport::TestCase
 
   def setup
-    @param = SearchRequest.new
+    @search_request = SearchRequest.new
   end
 
   def test_new
-    assert @param.valid?
-    assert_equal "", @param.to_s
-    assert_nil @param.query
-    assert_nil @param.category
-    assert_nil @param.type
+    assert @search_request.valid?
+    assert_equal "", @search_request.to_s
+    assert_nil @search_request.query
+    assert_nil @search_request.category
+    assert_nil @search_request.type
+    assert @search_request.empty?
   end
 
   def test_new_with_params
-    @param = SearchRequest.new({})
+    @search_request = SearchRequest.new({})
     assert_valid
     
-    @param = SearchRequest.new(:query => "string")
+    @search_request = SearchRequest.new(:query => "string")
     assert_valid(:to_s => "query/string",
-                 :query => "string")
+                 :query => "string",
+                 :empty => false)
 
-    @param = SearchRequest.new(:query => "string",
+    @search_request = SearchRequest.new(:query => "string",
                              :category => "cat")
     assert_valid(:to_s => "query/string/category/cat",
                  :query => "string",
-                 :category => "cat")
+                 :category => "cat",
+                 :empty => false)
 
-    @param = SearchRequest.new(:query => "string",
+    @search_request = SearchRequest.new(:query => "string",
                              :type => "html")
     assert_valid(:to_s => "query/string/type/html",
                  :query => "string",
-                 :type => "html")
+                 :type => "html",
+                 :empty => false)
 
-    @param = SearchRequest.new(:query => "string",
+    @search_request = SearchRequest.new(:query => "string",
                              :category => "cat",
                              :type => "html")
     assert_valid(:to_s => "query/string/category/cat/type/html",
                  :query => "string",
                  :category => "cat",
-                 :type => "html")
+                 :type => "html",
+                 :empty => false)
   end
 
   def test_parse_valid_input
-    @param.parse(nil)
+    @search_request.parse(nil)
     assert_valid
 
-    @param.parse("")
+    @search_request.parse("")
     assert_valid
     
-    @param.parse("query/string")
+    @search_request.parse("query/string")
     assert_valid(:to_s => "query/string",
-                 :query => "string")
+                 :query => "string",
+                 :empty => false)
     
-    @param.parse("/query/string")
+    @search_request.parse("/query/string")
     assert_valid(:to_s => "query/string",
-                 :query => "string")
+                 :query => "string",
+                 :empty => false)
     
-    @param.parse("query/string/")
+    @search_request.parse("query/string/")
     assert_valid(:to_s => "query/string",
-                 :query => "string")
+                 :query => "string",
+                 :empty => false)
     
-    @param.parse("/query/string/category/cat")
+    @search_request.parse("/query/string/category/cat")
     assert_valid(:to_s => "query/string/category/cat",
                  :query => "string",
-                 :category => "cat")
+                 :category => "cat",
+                 :empty => false)
     
-    @param.parse("/query/string/type/html")
+    @search_request.parse("/query/string/type/html")
     assert_valid(:to_s => "query/string/type/html",
                  :query => "string",
-                 :type => "html")
+                 :type => "html",
+                 :empty => false)
     
-    @param.parse("/query/string/category/cat/type/html")
+    @search_request.parse("/query/string/category/cat/type/html")
     assert_valid(:to_s => "query/string/category/cat/type/html",
                  :query => "string",
                  :category => "cat",
-                 :type => "html")
+                 :type => "html",
+                 :empty => false)
   end
 
   def test_parse_mixed_order    
-    @param.parse("category/cat/query/string/type/html")
+    @search_request.parse("category/cat/query/string/type/html")
     assert_valid(:to_s => "category/cat/query/string/type/html",
                  :query => "string",
                  :category => "cat",
-                 :type => "html")
+                 :type => "html",
+                 :empty => false)
 
-    @param.parse("type/html/category/cat/query/string")
+    @search_request.parse("type/html/category/cat/query/string")
     assert_valid(:to_s => "type/html/category/cat/query/string",
                  :query => "string",
                  :category => "cat",
-                 :type => "html")
+                 :type => "html",
+                 :empty => false)
   end
 
   def test_parse_unknown_param
-    @param.parse("unknown/value")
+    @search_request.parse("unknown/value")
     assert_invalid(:to_s => "unknown/value")
 
-    @param.parse("query/string/unknown/value")
+    @search_request.parse("query/string/unknown/value")
     assert_invalid(:to_s => "query/string/unknown/value",
-                   :query => "string")
+                   :query => "string",
+                   :empty => false)
 
-    @param.parse("unknown/value/query/string")
+    @search_request.parse("unknown/value/query/string")
     assert_invalid(:to_s => "unknown/value/query/string",
-                   :query => "string")
+                   :query => "string",
+                   :empty => false)
   end
 
   def test_parse_correctly_reset
-    @param.parse("")
+    @search_request.parse("")
     assert_valid
 
-    @param.parse("unknown/value")
+    @search_request.parse("unknown/value")
     assert_invalid(:to_s => "unknown/value")
 
-    @param.parse("")
+    @search_request.parse("")
     assert_valid
   end
 
   def test_clear
-    @param = SearchRequest.new
-    @param.parse("unknown/value")
+    @search_request = SearchRequest.new
+    @search_request.parse("unknown/value")
     assert_invalid(:to_s => "unknown/value")
 
-    @param.clear
+    @search_request.clear
     assert_valid
   end
 
   def test_multibytes_io
     encoded = URI.encode("日本語")
     query_string = "query/#{encoded}"
-    @param.parse(query_string)
+    @search_request.parse(query_string)
     assert_valid(:to_s => query_string,
-                 :query => "日本語")
+                 :query => "日本語",
+                 :empty => false)
 
-    @param.query = nil
+    @search_request.query = nil
     assert_valid
 
-    @param.query = "日本語"
+    @search_request.query = "日本語"
     assert_valid(:to_s => query_string,
-                 :query => "日本語")
+                 :query => "日本語",
+                 :empty => false)
   end
 
   private
   def assert_valid(options={})
-    assert @param.valid?
+    assert @search_request.valid?
     assert_properties(options)
   end
 
   def assert_invalid(options={})
-    assert_false @param.valid?
+    assert_false @search_request.valid?
     assert_properties(options)
   end
 
@@ -159,10 +176,12 @@ class SearchRequestTest < ActiveSupport::TestCase
     options[:query] ||= nil
     options[:category] ||= nil
     options[:type] ||= nil
+    options[:empty] = true if options[:empty].nil?
 
-    assert_equal options[:to_s], @param.to_s
-    assert_equal options[:query], @param.query
-    assert_equal options[:category], @param.category
-    assert_equal options[:type], @param.type
+    assert_equal options[:to_s], @search_request.to_s
+    assert_equal options[:query], @search_request.query
+    assert_equal options[:category], @search_request.category
+    assert_equal options[:type], @search_request.type
+    assert_equal options[:empty], @search_request.empty?
   end
 end

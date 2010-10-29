@@ -78,6 +78,10 @@ class SearchRequest
     path_components.join("/")
   end
 
+  def empty?
+    (query || category || type) ? false : true
+  end
+
   private
   def validate_string
     return if @string.nil?
