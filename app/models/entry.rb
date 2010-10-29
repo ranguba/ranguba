@@ -14,23 +14,7 @@ class Entry
       categories = []
       types = []
 
-      conditions = []
-      unless request.query.blank?
-        conditions << Proc.new do |record|
-          record[".title"] =~ request.query ||
-          record[".body"] =~ request.query
-        end
-      end
-      unless request.category.blank?
-        conditions << Proc.new do |record|
-          record[".category"] =~ request.query
-        end
-      end
-      unless request.type.blank?
-        conditions << Proc.new do |record|
-          record[".type"] =~ request.query
-        end
-      end
+      conditions = conditions_from_request(request)
 
       Ranguba::Database.open(Ranguba::Application.config.index_db_path) do |db|
         records = db.entries.select do |record|
@@ -49,6 +33,28 @@ class Entry
       { :entries => results,
         :drill_down_categories => categories,
         :drill_down_types => types }
+    end
+
+    private
+    def conditions_from_request(request)
+      conditions = []
+      unless request.query.blank?
+        conditions << Proc.new do |record|
+          record[".title"] =~ request.query ||
+          record[".body"] =~ request.query
+        end
+      end
+      unless request.category.blank?
+        conditions << Proc.new do |record|
+          record[".category"] =~ request.query
+        end
+      end
+      unless request.type.blank?
+        conditions << Proc.new do |record|
+          record[".type"] =~ request.query
+        end
+      end
+      conditions
     end
 
   end
