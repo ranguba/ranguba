@@ -92,7 +92,8 @@ class SearchRequest
   end
 
   def path(options={})
-    options = options.merge(:options => to_hash)
+    options[:options] ||= {}
+    options[:options] = to_hash.merge(options[:options])
     if options[:without]
       options[:options].delete(options[:without])
     end
@@ -101,13 +102,32 @@ class SearchRequest
 
   def topic_path_items(options={})
     items = []
+    options[:options] ||= {}
+
+    unless query.nil?
+      terms = query.split
+      terms.each do |term|
+        opt = options.merge(
+                :options => options[:options].merge(
+                  :query => (terms - [term]).join(" ")
+                )
+              )
+        items << {:label => term,
+                  :path => path(opt),
+                  :param => "query"}
+      end
+    end
+
     KEYS.each do |key|
+      next if key == "query"
       value = send(key)
       unless value.nil?
         items << {:label => value,
-                  :path => path(options.merge(:without => key.to_sym))}
+                  :path => path(options.merge(:without => key.to_sym)),
+                  :param => key}
       end
     end
+
     items
   end
 

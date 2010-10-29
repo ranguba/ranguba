@@ -22,8 +22,8 @@ class DrilldownItem
                        :options => to_hash(options[:options]))
   end
 
-  def to_hash(base_options={})
-    hash = {}.merge(base_options)
+  def to_hash(options={})
+    hash = {}.merge(options)
     hash[param.to_sym] = value
     hash
   end

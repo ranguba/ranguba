@@ -31,6 +31,8 @@ class SearchRequestTest < ActiveSupport::TestCase
                  @request.path(:base_path => "/search/")
     assert_equal "/search/query/foo",
                  @request.path(:base_path => "/search/", :without => :type)
+    assert_equal "/search/query/bar/type/text%2Fhtml",
+                 @request.path(:base_path => "/search/", :options => {:query => "bar"})
   end
 
   def test_new_with_params
@@ -185,6 +187,10 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert_valid(:to_s => "type/text%2Fplain",
                  :type => "text/plain",
                  :empty => false)
+  end
+
+  def test_topic_path_items
+    assert false
   end
 
   private
