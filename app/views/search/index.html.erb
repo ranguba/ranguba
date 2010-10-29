@@ -1,5 +1,9 @@
 <h1>Search</h1>
-<p>query: <%= @search_request.query %></p>
+<% form_for(@search_request,
+            :url => {:controller => "search",
+                     :action => "index"}) do |f| %>
+  <p>query: <%= f.text_field :query, :size => 25 %></p>
+<% end %>
 <p>category: <%= @search_request.category %></p>
 <p>type: <%= @search_request.type %></p>
 <p>page: <%= @search_request.page %></p>
@@ -11,7 +15,7 @@
         <% items.each do |item| %>
           <li><%= link_to item.label_with_count,
                           item.path(:base_path => @base_path,
-                                    :base_options => @search_request_params) %></li>
+                                    :options => @search_request_params) %></li>
         <% end %>
       </ul></li>
     <% end %>

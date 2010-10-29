@@ -21,8 +21,8 @@ class DrilldownItemTest < ActiveSupport::TestCase
     @item.param = "type"
     @item.value = "text/html"
     path = @item.path(:base_path => "/search/",
-                      :base_options => {:query => "foo",
-                                        :type => "unknown"})
+                      :options => {:query => "foo",
+                                   :type => "unknown"})
     assert_equal "/search/query/foo/type/text%2Fhtml", path
   end
 

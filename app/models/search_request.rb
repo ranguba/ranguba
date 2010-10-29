@@ -14,6 +14,12 @@ class SearchRequest
   validate :validate_string
 
   class << self
+    def path(options={})
+      base = options[:base_path].sub(/\/$/, "")
+      search_request = new(options[:options]).to_s
+      [base, search_request].join(DELIMITER)
+    end
+
     def encode_parameter(input)
       URI.encode(input, /[^-_.!~*'()a-zA-Z\d?@]/n) # same to encodeURIComponent (in JavaScript)
     end
@@ -96,6 +102,14 @@ class SearchRequest
 
   def empty?
     (query || category || type) ? false : true
+  end
+
+  def persisted?
+    false
+  end
+
+  def respond_to?(name, priv=false)
+    true
   end
 
   private

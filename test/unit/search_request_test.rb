@@ -17,6 +17,13 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert @search_request.empty?
   end
 
+  def test_path
+    path = SearchRequest.path(:base_path => "/search/",
+                              :options => {:query => "foo",
+                                           :type => "text/html"})
+    assert_equal "/search/query/foo/type/text%2Fhtml", path
+  end
+
   def test_new_with_params
     @search_request = SearchRequest.new({})
     assert_valid

@@ -18,9 +18,8 @@ class DrilldownItem
   end
 
   def path(options={})
-    base = options[:base_path].sub(/\/$/, "")
-    search_request = SearchRequest.new(to_hash(options[:base_options])).to_s
-    [base, search_request].join(SearchRequest::DELIMITER)
+    SearchRequest.path(:base_path => options[:base_path],
+                       :options => to_hash(options[:options]))
   end
 
   def to_hash(base_options={})
