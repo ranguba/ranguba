@@ -13,14 +13,37 @@ class Entry
       results = []
       categories = []
       types = []
-      Ranguba::Database.open(Ranguba::Application.config.index_db_path) do |handler|
-        records = handler.entries
+
+      conditions = []
+      unless request.query.blank?
+        conditions << Proc.new do |record|
+          record[".title"] =~ request.query ||
+          record[".body"] =~ request.query
+        end
+      end
+      unless request.category.blank?
+        conditions << Proc.new do |record|
+          record[".category"] =~ request.query
+        end
+      end
+      unless request.type.blank?
+        conditions << Proc.new do |record|
+          record[".type"] =~ request.query
+        end
+      end
+
+      Ranguba::Database.open(Ranguba::Application.config.index_db_path) do |db|
+        records = db.entries.select do |record|
+          conditions.collect do |condition|
+            condition.call(record)
+          end.flatten
+        end
         records.each do |record|
-          results << new(:title => record[".title"],
-                         :url => record.key,
-                         :category => record[".category"],
-                         :type => record[".type"],
-                         :body => record[".body"])
+          results << new(:title => record[".title"].to_s,
+                         :url => record.key.to_s,
+                         :category => record[".category"].to_s,
+                         :type => record[".type"].to_s,
+                         :body => record[".body"].to_s)
         end
       end
       { :entries => results,
