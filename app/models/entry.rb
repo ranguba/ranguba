@@ -46,12 +46,12 @@ class Entry
       end
       unless request.category.blank?
         conditions << Proc.new do |record|
-          record[".category"] =~ request.query
+          record[".category"] == request.category
         end
       end
       unless request.type.blank?
         conditions << Proc.new do |record|
-          record[".type"] =~ request.query
+          record[".type"] == request.type
         end
       end
       conditions

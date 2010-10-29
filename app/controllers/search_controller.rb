@@ -1,13 +1,12 @@
 class SearchController < ApplicationController
 
   def index
-    @base_path = request.env["PATH_INFO"]
     if params[:search_request].is_a?(Hash)
       redirect_to SearchRequest.to_path(:base => @base_path,
                                         :options => params[:search_request])
       return
     end
-    @base_path = @base_path.split(params[:search_request])[0]
+    @base_path = url_for(:action => "index")
 
     @search_request = SearchRequest.new
     @search_request.parse(params[:search_request])
