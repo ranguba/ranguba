@@ -3,7 +3,7 @@ require 'shellwords'
 require 'tmpdir'
 require 'fileutils'
 require 'time'
-require 'chupa'
+require 'chupatext'
 require 'ranguba/database'
 
 class Ranguba::Indexer
