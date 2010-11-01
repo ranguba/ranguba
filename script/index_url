@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby1.9.1
+
+$LOAD_PATH.unshift(File.expand_path('../../lib/', __FILE__))
+
+require 'ranguba/indexer'
+
+indexer = Ranguba::Indexer.new
+process = indexer.create_process(:database => Ranguba::Application.config.index_db_path,
+                                 :targets => ARGV)
+process.call unless process.nil?
+
