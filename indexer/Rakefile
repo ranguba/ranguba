@@ -11,7 +11,7 @@ include FileUtils::Verbose
 prefix = RbConfig::CONFIG['prefix']
 
 dbdir = '/var/db/ranguba'
-indexer = 'ranguba-indexer'
+indexer = '../lib/ranguba/indexer.rb'
 indexer_base = File.basename(indexer)
 indexer_path = File.join("#{prefix}/bin", indexer_base)
 cron_daily = '/etc/cron.daily/ranguba-indexer-update'
