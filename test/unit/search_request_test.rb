@@ -208,6 +208,19 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert_equal "", @request.to_s
   end
 
+  def test_can_be_shorten
+    @request.parse("page/1")
+    assert @request.can_be_shorten?
+    @request.parse("page/2")
+    assert_false @request.can_be_shorten?
+
+    @request.clear
+    @request.page = 1
+    assert_false @request.can_be_shorten?
+    @request.page = 2
+    assert_false @request.can_be_shorten?
+  end
+
   def test_topic_path_items
     assert false
   end

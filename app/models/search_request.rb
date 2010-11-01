@@ -148,6 +148,10 @@ class SearchRequest
     to_hash
   end
 
+  def can_be_shorten?
+    (@string && @page.to_i == 1) ? true : false
+  end
+
   def empty?
     (query || category || type) ? false : true
   end

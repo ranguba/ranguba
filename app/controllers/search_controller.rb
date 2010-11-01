@@ -11,6 +11,13 @@ class SearchController < ApplicationController
 
     @search_request = SearchRequest.new
     @search_request.parse(params[:search_request])
+
+    if @search_request.can_be_shorten?
+      redirect_to SearchRequest.path(:base_path => @base_path,
+                                     :options => @search_request.attributes)
+      return
+    end
+
     @search_request_params = @search_request.to_hash
 
     unless @search_request.valid?
