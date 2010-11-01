@@ -11,6 +11,7 @@ gem 'rroonga'
 gem 'test-unit', '>=2'
 gem 'test-unit-notify'
 gem 'glib2'
+gem 'nokogiri'
 gem 'chupatext'
 
 # Use unicorn as the web server
