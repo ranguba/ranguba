@@ -88,6 +88,12 @@ EOS
 
   def prepare(args)
     db = args.shift
+    create_process(:database => db, :targets => args)
+  end
+
+  def create_process(options={})
+    db = options[:database]
+    args = options[:targets]
     return if db.nil?
     if @log_file
       if @url_prefix
