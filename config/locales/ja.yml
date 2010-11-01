@@ -11,8 +11,9 @@ ja:
   column_category_label_XXX: "XXX"
 
   column_type_name: "ファイルの種類"
-  column_type_label_text/html: "HTML"
-  column_type_label_text/plain: "プレーンテキスト"
+  column_type_label_html: "HTML"
+  column_type_label_plain: "プレーンテキスト"
+  column_type_label_pdf: "PDF"
 
   drilldown_item_label: "%{label} (%{count})"
 

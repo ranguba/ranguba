@@ -11,8 +11,9 @@ en:
   column_category_label_XXX: "XXX"
 
   column_type_name: "File Type"
-  column_type_label_text/html: "HTML"
-  column_type_label_text/plain: "Plain Text"
+  column_type_label_html: "HTML"
+  column_type_label_plain: "Plain Text"
+  column_type_label_pdf: "PDF"
 
   drilldown_item_label: "%{label} (%{count})"
 
