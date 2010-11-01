@@ -250,7 +250,7 @@ EOS
     mtime ||= File.mtime(path) if path
     {
       title: meta["title"],
-      type: response["content-type"] || meta["mime-type"] || "",
+      type: mime_type_to_filetype(response["content-type"] || meta["mime-type"] || ""),
       charset: response["charset"] || meta["charset"] || "",
       category: get_category(url) || "",
       author: get_author(meta) || "",
@@ -268,6 +268,11 @@ EOS
 
   def get_author(meta)
     meta["author"]
+  end
+
+  def mime_type_to_filetype(mime_type)
+    filetype = mime_type.sub(/^[^\/]+\//, "")
+    filetype.nil? ? "unknown" : filetype
   end
 end
 
