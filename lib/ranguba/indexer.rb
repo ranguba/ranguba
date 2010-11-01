@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-
 require 'optparse/shellwords'
 require 'shellwords'
 require 'tmpdir'
@@ -313,13 +311,3 @@ class Ranguba::Indexer::TestOnly < Ranguba::Indexer
   end
 end
 
-db = Ranguba::Indexer::TestOnly.new
-opts = nil
-runner = ARGV.options {|o|
-  opts = o
-  opts.separator("Options:")
-  db.set_options(opts)
-  db.prepare(opts.parse!(ARGV))
-}
-abort opts.to_s if runner.nil?
-exit runner.call

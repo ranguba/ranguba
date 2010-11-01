@@ -1,0 +1,17 @@
+#!/usr/bin/ruby
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+
+require 'ranguba/indexer'
+
+indexer = Ranguba::Indexer::TestOnly.new
+opts = nil
+runner = ARGV.options {|o|
+  opts = o
+  opts.separator("Options:")
+  indexer.set_options(opts)
+  indexer.prepare(opts.parse!(ARGV))
+}
+abort opts.to_s if runner.nil?
+exit runner.call
+
