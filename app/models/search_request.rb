@@ -86,6 +86,7 @@ class SearchRequest
     path_components = []
     KEYS.each do |key|
       value = send(key)
+      next if key == "page" && value == 1
       unless value.blank?
         path_components << key
         path_components << self.class.encode_parameter(value.to_s)

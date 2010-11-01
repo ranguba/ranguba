@@ -14,6 +14,7 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert_nil @request.query
     assert_nil @request.category
     assert_nil @request.type
+    assert_equal 1, @request.page
     assert @request.empty?
   end
 
@@ -189,6 +190,24 @@ class SearchRequestTest < ActiveSupport::TestCase
                  :empty => false)
   end
 
+  def test_page
+    @request.page = 1
+    assert_equal 1, @request.page
+    assert_equal "", @request.to_s
+
+    @request.page = 2
+    assert_equal 2, @request.page
+    assert_equal "page/2", @request.to_s
+
+    @request.page = "3"
+    assert_equal 3, @request.page
+    assert_equal "page/3", @request.to_s
+
+    @request.page = nil
+    assert_equal 1, @request.page
+    assert_equal "", @request.to_s
+  end
+
   def test_topic_path_items
     assert false
   end
@@ -209,12 +228,14 @@ class SearchRequestTest < ActiveSupport::TestCase
     options[:query] ||= nil
     options[:category] ||= nil
     options[:type] ||= nil
+    options[:page] ||= 1
     options[:empty] = true if options[:empty].nil?
 
     assert_equal options[:to_s], @request.to_s
     assert_equal options[:query], @request.query
     assert_equal options[:category], @request.category
     assert_equal options[:type], @request.type
+    assert_equal options[:page], @request.page
     assert_equal options[:empty], @request.empty?
   end
 end
