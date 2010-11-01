@@ -10,6 +10,7 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'rroonga'
 gem 'test-unit', '>=2'
 gem 'test-unit-notify'
+gem 'chupatext'
 gem 'thin'
 
 # Use unicorn as the web server
