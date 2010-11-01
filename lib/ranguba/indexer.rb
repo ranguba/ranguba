@@ -7,7 +7,21 @@ require 'chupatext'
 require 'ranguba/database'
 
 class Ranguba::Indexer
-  def initialize
+  attr_accessor :wget, :log_file, :url_prefix, :level, :accept,
+                :reject, :category_file, :tmpdir, :auto_delete,
+                :ignore_erros, :debug
+
+  def accept=(val)
+    @accept.concat(val)
+    val
+  end
+
+  def reject=(val)
+    @reject.concat(val)
+    val
+  end
+
+  def initialize(options={})
     @wget = %w[wget]
     @log_file = nil
     @url_prefix = nil
@@ -21,6 +35,10 @@ class Ranguba::Indexer
     @ignore_erros = false
     @debug = false
     @oldest = nil
+
+    options.each do |key, value|
+      send("#{key}=", value)
+    end
   end
 
   def set_options(opts)
