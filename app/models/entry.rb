@@ -1,5 +1,6 @@
 class Entry
   SUMMARY_MAX_SIZE = 30
+  DEFAULT_PAGINATION_PER_PAGE = 10
 
   attr_accessor :title
   attr_accessor :url
@@ -9,11 +10,11 @@ class Entry
 
   class << self
 
-    def search(request)
+    def search(options={})
       results = []
       drilldown_results = {}
 
-      conditions = conditions_from_request(request)
+      conditions = conditions_from_request(options)
 
       Ranguba::Database.open(Ranguba::Application.config.index_db_path) do |db|
         records = db.entries.select do |record|
@@ -21,6 +22,13 @@ class Entry
             condition.call(record)
           end.flatten
         end
+
+        drilldown_results = drilldown_groups(options.merge(:records => records))
+
+        records = records.paginate([["_score", :descending],
+                                    [".title", :ascending]],
+                                   :page => (options[:page] || 1),
+                                   :size => (options[:per_page] || DEFAULT_PAGINATION_PER_PAGE))
         records.each do |record|
           url = record.key.key.to_s
           title = record[".title"].to_s
@@ -31,19 +39,17 @@ next unless title.valid_encoding?
                          :type => record[".type"].to_s,
                          :body => record[".body"].to_s)
         end
-
-        drilldown_results = drilldown_groups(:records => records, :request => request)
       end
       {:entries => results,
        :drilldown_groups => drilldown_results}
     end
 
     private
-    def conditions_from_request(request)
+    def conditions_from_request(options)
       conditions = []
-      unless request.query.blank?
+      unless options[:query].blank?
         conditions << Proc.new do |record|
-          request.query.split.collect do |term|
+          options[:query].split.collect do |term|
             (record.key.key =~ term) |
             (record[".title"] =~ term) |
             (record[".body"] =~ term)
@@ -52,14 +58,14 @@ next unless title.valid_encoding?
           end
         end
       end
-      unless request.category.blank?
+      unless options[:category].blank?
         conditions << Proc.new do |record|
-          record[".category"] == request.category
+          record[".category"] == options[:category]
         end
       end
-      unless request.type.blank?
+      unless options[:type].blank?
         conditions << Proc.new do |record|
-          record[".type"] == request.type
+          record[".type"] == options[:type]
         end
       end
       conditions
@@ -68,7 +74,7 @@ next unless title.valid_encoding?
     def drilldown_groups(options={})
       result = {}
       ["category", "type"].each do |column|
-        next unless options[:request].send(column).nil?
+        next unless options[column.to_sym].nil?
         group = drilldown_group(:records => options[:records],
                                 :drilldown => column,
                                 :label => "_key")

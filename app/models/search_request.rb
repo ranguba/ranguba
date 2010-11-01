@@ -46,6 +46,9 @@ class SearchRequest
     @type = value
   end
 
+  def page
+    @page.nil? ? 1 : @page.to_i
+  end
   def page=(value)
     @string = nil
     @page = value
@@ -85,7 +88,7 @@ class SearchRequest
       value = send(key)
       unless value.blank?
         path_components << key
-        path_components << self.class.encode_parameter(value)
+        path_components << self.class.encode_parameter(value.to_s)
       end
     end
     path_components.join("/")
@@ -119,7 +122,7 @@ class SearchRequest
     end
 
     KEYS.each do |key|
-      next if key == "query"
+      next if ["query", "page"].include?(key)
       value = send(key)
       unless value.nil?
         items << {:label => value,
@@ -138,6 +141,10 @@ class SearchRequest
       hash[key.to_sym] = value unless value.blank?
     end
     hash
+  end
+
+  def attributes
+    to_hash
   end
 
   def empty?

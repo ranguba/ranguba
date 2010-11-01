@@ -1,4 +1,5 @@
 class SearchController < ApplicationController
+  ENTRIES_PER_PAGE = 20
 
   def index
     @base_path = url_for(:action => "index")
@@ -17,7 +18,8 @@ class SearchController < ApplicationController
       return
     end
 
-    search_result = Entry.search(@search_request)
+    options = @search_request.attributes.merge(:per_page => ENTRIES_PER_PAGE)
+    search_result = Entry.search(options)
     @entries = search_result[:entries]
     @drilldown_groups = search_result[:drilldown_groups]
     @topic_path_items = @search_request.topic_path_items(:base_path => @base_path)
