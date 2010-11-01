@@ -272,7 +272,7 @@ EOS
 
   def mime_type_to_filetype(mime_type)
     filetype = mime_type.sub(/^[^\/]+\//, "")
-    filetype.nil? ? "unknown" : filetype
+    filetype.blank? ? "unknown" : filetype
   end
 end
 
