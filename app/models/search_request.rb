@@ -6,9 +6,8 @@ class SearchRequest
   attr_accessor :query
   attr_accessor :category
   attr_accessor :type
-  attr_accessor :page
 
-  KEYS = ["query", "category", "type", "page"]
+  KEYS = ["query", "category", "type"]
   DELIMITER = "/"
 
   validate :validate_string
@@ -46,20 +45,11 @@ class SearchRequest
     @type = value
   end
 
-  def page
-    @page.nil? ? 1 : @page.to_i
-  end
-  def page=(value)
-    @string = nil
-    @page = value
-  end
-
   def clear
     @string = nil
     @query = nil
     @category = nil
     @type = nil
-    @page = nil
   end
 
   def parse(query_string="")
@@ -86,7 +76,6 @@ class SearchRequest
     path_components = []
     KEYS.each do |key|
       value = send(key)
-      next if key == "page" && value == 1
       unless value.blank?
         path_components << key
         path_components << self.class.encode_parameter(value.to_s)
@@ -123,7 +112,7 @@ class SearchRequest
     end
 
     KEYS.each do |key|
-      next if ["query", "page"].include?(key)
+      next if ["query"].include?(key)
       value = send(key)
       unless value.nil?
         items << {:label => value,
@@ -146,10 +135,6 @@ class SearchRequest
 
   def attributes
     to_hash
-  end
-
-  def can_be_shorten?
-    (@string && @page.to_i == 1) ? true : false
   end
 
   def empty?

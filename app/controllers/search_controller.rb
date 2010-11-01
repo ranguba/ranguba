@@ -11,13 +11,6 @@ class SearchController < ApplicationController
 
     @search_request = SearchRequest.new
     @search_request.parse(params[:search_request])
-
-    if @search_request.can_be_shorten?
-      redirect_to SearchRequest.path(:base_path => @base_path,
-                                     :options => @search_request.attributes)
-      return
-    end
-
     @search_request_params = @search_request.to_hash
 
     unless @search_request.valid?
@@ -25,7 +18,8 @@ class SearchController < ApplicationController
       return
     end
 
-    options = @search_request.attributes.merge(:per_page => ENTRIES_PER_PAGE)
+    options = @search_request.attributes.merge(:per_page => ENTRIES_PER_PAGE,
+                                               :page => params[:page])
     search_result = Entry.search(options)
     @entries = search_result[:entries]
     @drilldown_groups = search_result[:drilldown_groups]
