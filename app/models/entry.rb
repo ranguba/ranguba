@@ -24,6 +24,7 @@ class Entry
         records.each do |record|
           url = record.key.key.to_s
           title = record[".title"].to_s
+next unless title.valid_encoding?
           results << new(:title => title.blank? ? url : title,
                          :url => url,
                          :category => record[".category"].to_s,
