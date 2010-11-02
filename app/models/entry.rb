@@ -30,9 +30,16 @@ class Entry
 
       drilldown_results = drilldown_groups(options.merge(:records => records))
 
+      current = options[:page]
+      if current.blank?
+        current = 1
+      elsif current.is_a?(String)
+        current = current.to_i
+      end
+
       records = records.paginate([["_score", :descending],
                                   [".title", :ascending]],
-                                 :page => (options[:page] || 1),
+                                 :page => current,
                                  :size => (options[:per_page] || DEFAULT_PAGINATION_PER_PAGE))
       records.each do |record|
         url = record.key.key.to_s
