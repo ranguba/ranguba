@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  ENTRIES_PER_PAGE = 20
+  ENTRIES_PER_PAGE = 10
 
   def index
     @base_path = url_for(:action => "index")

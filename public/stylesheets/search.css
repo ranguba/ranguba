@@ -1,0 +1,55 @@
+/* pagination */
+
+.pagination {
+  margin: 1em 2em;
+  text-align: center;
+}
+
+.pagination em {
+  font-style: normal;
+  font-weight: bold;
+}
+
+
+/* search results */
+
+.search_result {
+  border: 0 none;
+  margin: 2em 2em 2em;
+}
+
+.search_result th,
+.search_result td {
+  padding: 0;
+}
+
+.search_result th {
+  padding: 0.5em 0 0;
+  font-weight: normal;
+  text-align: left;
+}
+
+.search_result_icon {
+  vertical-align: top;
+}
+
+.search_result_icon img {
+  margin: 0.5em 4px 0 0;
+}
+
+.search_result .search_result_location {
+  font-size: 70%;
+  padding: 0.2em 0 0.2em;
+}
+
+.search_result .search_result_location :link,
+.search_result .search_result_location :visited {
+  color: gray;
+  text-decoration: none;
+}
+
+.search_result .search_result_summary {
+  font-size: 90%;
+  padding-left: 2em;
+}
+

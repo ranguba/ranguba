@@ -44,10 +44,11 @@ class Entry
         url = record.key.key.to_s
         title = record[".title"].to_s
         next unless title.valid_encoding?
+        p record[".type"].to_s
         results << new(:title => title.blank? ? url : title,
                        :url => url,
-                       :category => record[".category"].to_s,
-                       :type => record[".type"].to_s,
+                       :category => record[".category"] ? record[".category"].key : nil,
+                       :type => record[".type"] ? record[".type"].key : nil,
                        :body => record[".body"].to_s)
       end
 
