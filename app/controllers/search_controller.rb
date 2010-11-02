@@ -17,6 +17,8 @@ class SearchController < ApplicationController
     if @search_request.valid?
       options = @search_request.attributes.merge(:page => params[:page])
       @search_request.base_params = @search_request.to_s
+      @canonical = @search_request.path(:base_path => @base_path,
+                                        :canonical => true)
     else
       @bad_request = @search_request
       @search_request = SearchRequest.new
