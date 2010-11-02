@@ -22,7 +22,7 @@
       <table class="search_result">
         <% @entries.each do |entry| %>
           <tbody class="search_result_item">
-            <tr><td class="search_result_icon" rowspan="3"><%= file_type_icon(entry.type) %></td>
+            <tr><td class="search_result_icon" rowspan="3"><%= filetype_icon(entry.type) %></td>
                 <th class="search_result_title"><%= link_to entry.title, entry.url %></th></tr>
             <tr><td class="search_result_location"><%= link_to entry.url, entry.url %></td></tr>
             <tr><td class="search_result_summary"><%=
