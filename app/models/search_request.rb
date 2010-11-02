@@ -115,7 +115,9 @@ class SearchRequest
       next if ["query"].include?(key)
       value = send(key)
       unless value.nil?
-        items << {:label => value,
+        items << {:label => I18n.t("topic_path_item_label",
+                                   :type => I18n.t("column_#{key}_name"),
+                                   :label => value),
                   :path => path(options.merge(:without => key.to_sym)),
                   :param => key}
       end

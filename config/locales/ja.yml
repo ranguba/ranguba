@@ -16,5 +16,7 @@ ja:
   column_type_label_plain: "プレーンテキスト"
   column_type_label_pdf: "PDF"
 
+  topic_path_item_label: "%{type}：%{label}"
+
   drilldown_item_label: "%{label} (%{count})"
 
