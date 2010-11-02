@@ -14,8 +14,6 @@
   </ul>
 <% end %>
 
-<p>page: <%= @search_request.page %></p>
-
 <% unless @drilldown_groups.empty? %>
   <ul>
     <% @drilldown_groups.each do |name, items| %>
@@ -32,12 +30,14 @@
 
 <% unless @search_request.empty? %>
   <% if @entries.size > 0 %>
+    <p><%= will_paginate @raw_entries %></p>
     <dl>
       <% @entries.each do |entry| %>
         <dt><%= link_to entry.title, entry.url %></dt>
           <dd><%= entry.summary %></dd>
       <% end %>
     </dl>
+    <p><%= will_paginate @raw_entries %></p>
   <% else %>
     <p>not found.</p>
   <% end %>
