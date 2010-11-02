@@ -9,7 +9,8 @@
 
 <%= unless @topic_path_items.empty?
       render(:partial => "topic_path",
-             :locals => {:items => @topic_path_items})
+             :locals => {:items => @topic_path_items,
+                         :title => "Reduce this condition: %{label}"})
     end %>
 
 <%= unless @drilldown_groups.empty?
