@@ -3,11 +3,17 @@ module Ranguba
     class << self
       def load
         @@title = File.read("#{base}/title.txt").strip
+        @@title = I18n.t("global_title") if @@title.blank?
+
         @@content_header = File.read("#{base}/content_header.txt")
         @@content_footer = File.read("#{base}/content_footer.txt")
 
         @@categories = read_key_value_list("#{base}/categories.txt")
         @@types = read_key_value_list("#{base}/types.txt")
+      end
+
+      def title
+        @@title
       end
 
       def content_header

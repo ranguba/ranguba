@@ -39,7 +39,7 @@ class SearchController < ApplicationController
         title = I18n.t("search_result_title",
                        :conditions => @search_request.to_readable_string)
       end
-      @title = [title, I18n.t("global_title")].join(I18n.t("title_delimiter"))
+      @title = [title, Ranguba::Customize.title].join(I18n.t("title_delimiter"))
     end
   end
 
