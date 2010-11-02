@@ -1,0 +1,45 @@
+<h1>全文検索</h1>
+<% form_for(@search_request,
+            :url => {:controller => "search",
+                     :action => "index"}) do |f| %>
+  <p><%= f.text_field :query, :size => 25 %><%= submit_tag "検索" %></p>
+<% end %>
+
+<% unless @topic_path_items.empty? %>
+  <ul>
+    <% @topic_path_items.each do |item| %>
+      <li><%= link_to "[X] #{item[:label]}",
+                      item[:path] %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% unless @drilldown_groups.empty? %>
+  <ul>
+    <% @drilldown_groups.each do |name, items| %>
+      <li><%= name %><ul>
+        <% items.each do |item| %>
+          <li><%= link_to item.label_with_count,
+                          item.path(:base_path => @base_path,
+                                    :options => @search_request_params) %></li>
+        <% end %>
+      </ul></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% unless @search_request.empty? %>
+  <% if @entries.size > 0 %>
+    <p><%= will_paginate @raw_entries %></p>
+    <dl>
+      <% @entries.each do |entry| %>
+        <dt><%= link_to entry.title, entry.url %></dt>
+          <dd><%= entry.summary %></dd>
+      <% end %>
+    </dl>
+    <p><%= will_paginate @raw_entries %></p>
+  <% else %>
+    <p>not found.</p>
+  <% end %>
+<% end %>
+
