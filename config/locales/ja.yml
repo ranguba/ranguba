@@ -13,9 +13,9 @@ ja:
   column_category_name: "カテゴリ"
   column_type_name: "ファイルの種類"
 
-
   search_result_title: "%{conditions} の検索結果"
   search_result_title_paginated: "%{conditions} の検索結果（%{page}/%{max_page}ページ）"
+  search_result_count: "%{count}件ヒットしました。"
   search_result_previous_link: "«前"
   search_result_next_link: "次»"
 

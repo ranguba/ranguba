@@ -15,6 +15,7 @@ en:
 
   search_result_title: "Search results of %{conditions}"
   search_result_title_paginated: "Search results of %{conditions} (page %{page}/%{max_page})"
+  search_result_count: "%{count} entry(es) found."
   search_result_previous_link: "«Previous"
   search_result_next_link: "Next»"
 

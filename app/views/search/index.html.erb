@@ -14,6 +14,7 @@
 
 <% unless @search_request.empty? %>
     <% if @entries.size > 0 %>
+      <p class="search_result_count"><%= t("search_result_count", :count => @raw_entries.total_entries ) %></p>
       <%= will_paginate @raw_entries,
                         :previous_label => t("search_result_previous_link"),
                         :next_label => t("search_result_next_link"),

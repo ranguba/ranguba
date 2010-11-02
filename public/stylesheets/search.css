@@ -21,6 +21,10 @@
 
 /* search results */
 
+.search_result_count {
+  text-align: center;
+}
+
 .search_result {
   border: 0 none;
   margin: 1em 2em 2em;
