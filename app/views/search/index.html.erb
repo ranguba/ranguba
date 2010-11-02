@@ -16,7 +16,8 @@
     <% if @entries.size > 0 %>
       <%= will_paginate @raw_entries,
                         :previous_label => t("search_result_previous_link"),
-                        :next_label => t("search_result_next_link") %>
+                        :next_label => t("search_result_next_link"),
+                        :id => "pagination_top" %>
       <table class="search_result">
         <% @entries.each do |entry| %>
           <tbody class="search_result_item">
@@ -29,7 +30,8 @@
       </table>
       <%= will_paginate @raw_entries,
                         :previous_label => t("search_result_previous_link"),
-                        :next_label => t("search_result_next_link") %>
+                        :next_label => t("search_result_next_link"),
+                        :id => "pagination_bottom" %>
     <% else %>
       <p><%= t("not_found_message") %></p>
     <% end %>

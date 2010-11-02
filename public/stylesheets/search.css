@@ -1,8 +1,16 @@
 /* pagination */
 
 .pagination {
-  margin: 1em 2em;
+  margin: 0 2em;
   text-align: center;
+}
+
+#pagination_top {
+  margin-top: 1em;
+}
+
+#pagination_bottom {
+  margin-bottom: 1em;
 }
 
 .pagination em {
@@ -15,7 +23,7 @@
 
 .search_result {
   border: 0 none;
-  margin: 2em 2em 2em;
+  margin: 1em 2em 2em;
 }
 
 .search_result th,
