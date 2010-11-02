@@ -1,3 +1,4 @@
+<div class="search_form">
 <% form_for(@search_request,
             :url => {:controller => "search",
                      :action => "index"}) do |f| %>
@@ -5,4 +6,5 @@
   <%= f.hidden_field :category %>
   <%= f.hidden_field :type %>
 <% end %>
+</div>
 

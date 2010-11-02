@@ -1,11 +1,11 @@
 <% unless @drilldown_groups.empty? %>
-  <ul>
+  <ul class="drilldown_groups">
     <% @drilldown_groups.each do |name, items| %>
-      <li><%= name %><ul>
+      <li class="drilldown_group"><span class="drilldown_group_name"><%= name %></span><ul>
         <% items.each do |item| %>
-          <li><%= link_to item.label_with_count,
-                          item.path(:base_path => @base_path,
-                                    :options => @search_request_params) %></li>
+          <li class="drilldown_item"><%= link_to item.label_with_count,
+                                                 item.path(:base_path => @base_path,
+                                                           :options => @search_request_params) %></li>
         <% end %>
       </ul></li>
     <% end %>

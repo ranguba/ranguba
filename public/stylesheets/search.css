@@ -1,3 +1,10 @@
+/* search form */
+
+.search_form {
+  text-align: center;
+}
+
+
 /* pagination */
 
 .pagination {
@@ -63,5 +70,37 @@
 .search_result .search_result_summary {
   font-size: 90%;
   padding-left: 2em;
+}
+
+/* drilldown */
+
+.drilldown_groups {
+  margin: 1em 3em;
+  padding: 0;
+}
+
+.drilldown_group {
+  display: block;
+  list-style: none;
+  margin: 0 0 1em;
+  padding: 0;
+}
+
+.drilldown_group_name {
+  background: white;
+  left: 1em;
+  position: relative;
+  top: 0.4em;
+}
+
+.drilldown_group ul {
+  border: 1px solid gray;
+  margin: 0;
+  padding: 0.5em 1em;
+}
+
+.drilldown_item {
+  display: inline;
+  list-style: none;
 }
 
