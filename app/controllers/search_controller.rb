@@ -27,7 +27,20 @@ class SearchController < ApplicationController
     @drilldown_groups = search_result[:drilldown_groups]
     @topic_path_items = @search_request.topic_path_items(:base_path => @base_path)
 
-    render :action => "bad_request", :status => 400 if @bad_request
+    if @bad_request
+      render :action => "bad_request", :status => 400
+    else
+      if @raw_entries.total_pages > 1
+        title = I18n.t("search_result_title_paginated",
+                       :conditions => @search_request.to_readable_string,
+                       :page => @raw_entries.current_page,
+                       :max_page => @raw_entries.total_pages)
+      else
+        title = I18n.t("search_result_title",
+                       :conditions => @search_request.to_readable_string)
+      end
+      @title = [title, I18n.t("global_title")].join(I18n.t("title_delimiter"))
+    end
   end
 
 end

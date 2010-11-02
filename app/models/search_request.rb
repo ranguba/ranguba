@@ -93,6 +93,22 @@ class SearchRequest
     self.class.path(options)
   end
 
+  def to_readable_string
+    conditions = []
+    conditions << query unless query.blank?
+    unless category.blank?
+      conditions << I18n.t("topic_path_item_label",
+                           :type => I18n.t("column_category_name"),
+                           :label => I18n.t("column_category_label_#{category}"))
+    end
+    unless type.blank?
+      conditions << I18n.t("topic_path_item_label",
+                           :type => I18n.t("column_type_name"),
+                           :label => I18n.t("column_type_label_#{type}"))
+    end
+    conditions.join(I18n.t("search_conditions_delimiter"))
+  end
+
   def topic_path_items(options={})
     items = []
     options[:options] ||= {}

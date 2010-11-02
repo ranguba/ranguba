@@ -2,6 +2,10 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  global_title: "Ranguba"
+  title_delimiter: " - "
+
+  search_conditions_delimiter: ", "
   search_request_blank_value: "\"%{key}\" has no value."
   search_request_invalid_key: "Unknown option \"%{key}\" is specified with a value \"%{value}\"."
   search_request_invalid_key_blank_value: "Unknown option \"%{key}\" is specified."
@@ -14,6 +18,9 @@ en:
   column_type_label_plain: "Plain Text"
   column_type_label_pdf: "PDF"
 
+
+  search_result_title: "Search results of %{conditions}"
+  search_result_title_paginated: "Search results of %{conditions} (page %{page}/%{max_page})"
 
   search_button_label: "Search"
 
