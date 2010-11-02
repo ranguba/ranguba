@@ -6,6 +6,7 @@ en:
 
   search_request_blank_value: "\"%{key}\" has no value."
   search_request_invalid_key: "Unknown option \"%{key}\" is specified with a value \"%{value}\"."
+  search_request_invalid_key_blank_value: "Unknown option \"%{key}\" is specified."
 
   column_category_name: "Category"
   column_category_label_XXX: "XXX"

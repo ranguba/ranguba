@@ -157,12 +157,16 @@ class SearchRequest
     while i < parts.size
       key = parts[i]
       value = parts[i+1]
-      if KEYS.include?(key)
+      case
+      when KEYS.include?(key)
         if value.blank?
           errors.add(key.to_sym, I18n.t("search_request_blank_value",
                                         :key => key,
                                         :value => value))
         end
+      when value.blank?
+        errors.add(key.to_sym, I18n.t("search_request_invalid_key_blank_value",
+                                      :key => key))
       else
         errors.add(key.to_sym, I18n.t("search_request_invalid_key",
                                       :key => key,
