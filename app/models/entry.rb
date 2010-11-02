@@ -1,3 +1,5 @@
+require "racknga/will_paginate"
+
 class Entry
   SUMMARY_MAX_SIZE = 30
   DEFAULT_PAGINATION_PER_PAGE = 10
@@ -9,6 +11,10 @@ class Entry
   attr_accessor :body
 
   class << self
+  
+    def table
+      @@table ||= Groonga["Entries"]
+    end
 
     def search(options={})
       results = []
@@ -16,31 +22,31 @@ class Entry
 
       conditions = conditions_from_request(options)
 
-      Ranguba::Database.open(Ranguba::Application.config.index_db_path) do |db|
-        records = db.entries.select do |record|
-          conditions.collect do |condition|
-            condition.call(record)
-          end.flatten
-        end
-
-        drilldown_results = drilldown_groups(options.merge(:records => records))
-
-        records = records.paginate([["_score", :descending],
-                                    [".title", :ascending]],
-                                   :page => (options[:page] || 1),
-                                   :size => (options[:per_page] || DEFAULT_PAGINATION_PER_PAGE))
-        records.each do |record|
-          url = record.key.key.to_s
-          title = record[".title"].to_s
-next unless title.valid_encoding?
-          results << new(:title => title.blank? ? url : title,
-                         :url => url,
-                         :category => record[".category"].to_s,
-                         :type => record[".type"].to_s,
-                         :body => record[".body"].to_s)
-        end
+      records = table.select do |record|
+        conditions.collect do |condition|
+          condition.call(record)
+        end.flatten
       end
+
+      drilldown_results = drilldown_groups(options.merge(:records => records))
+
+      records = records.paginate([["_score", :descending],
+                                  [".title", :ascending]],
+                                 :page => (options[:page] || 1),
+                                 :size => (options[:per_page] || DEFAULT_PAGINATION_PER_PAGE))
+      records.each do |record|
+        url = record.key.key.to_s
+        title = record[".title"].to_s
+next unless title.valid_encoding?
+        results << new(:title => title.blank? ? url : title,
+                       :url => url,
+                       :category => record[".category"].to_s,
+                       :type => record[".type"].to_s,
+                       :body => record[".body"].to_s)
+      end
+
       {:entries => results,
+       :raw_entries => records,
        :drilldown_groups => drilldown_results}
     end
 
@@ -106,3 +112,4 @@ next unless title.valid_encoding?
   end
 
 end
+
