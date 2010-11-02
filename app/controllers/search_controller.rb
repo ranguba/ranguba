@@ -13,18 +13,21 @@ class SearchController < ApplicationController
     @search_request.parse(params[:search_request])
     @search_request_params = @search_request.to_hash
 
-    unless @search_request.valid?
-      render :action => "bad_request", :status => 400
-      return
+    if @search_request.valid?
+      options = @search_request.attributes.merge(:page => params[:page])
+    else
+      @bad_request = @search_request
+      @search_request = SearchRequest.new
+      options = {}
     end
 
-    options = @search_request.attributes.merge(:per_page => ENTRIES_PER_PAGE,
-                                               :page => params[:page])
-    search_result = Entry.search(options)
+    search_result = Entry.search(options.merge(:per_page => ENTRIES_PER_PAGE))
     @entries = search_result[:entries]
     @raw_entries = search_result[:raw_entries]
     @drilldown_groups = search_result[:drilldown_groups]
     @topic_path_items = @search_request.topic_path_items(:base_path => @base_path)
+
+    render :action => "bad_request", :status => 400 if @bad_request
   end
 
 end

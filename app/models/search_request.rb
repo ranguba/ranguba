@@ -118,6 +118,9 @@ class SearchRequest
         items << {:label => I18n.t("topic_path_item_label",
                                    :type => I18n.t("column_#{key}_name"),
                                    :label => value),
+                  :title => I18n.t("topic_path_reduce_item_label",
+                                   :type => I18n.t("column_#{key}_name"),
+                                   :label => value),
                   :path => path(options.merge(:without => key.to_sym)),
                   :param => key}
       end

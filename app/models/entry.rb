@@ -21,7 +21,6 @@ class Entry
       drilldown_results = {}
 
       conditions = conditions_from_request(options)
-
       records = table.select do |record|
         conditions.collect do |condition|
           condition.call(record)

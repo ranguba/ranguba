@@ -2,8 +2,6 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 ja:
-  hello: "こんにちは"
-
   search_request_blank_value: "%{key} に値がありません。"
   search_request_invalid_key: "不明なオプション %{key} に %{value} が指定されています。"
   search_request_invalid_key_blank_value: "不明なオプション %{key} が指定されています。"
@@ -16,7 +14,15 @@ ja:
   column_type_label_plain: "プレーンテキスト"
   column_type_label_pdf: "PDF"
 
+
+  search_button_label: "検索"
+
   topic_path_item_label: "%{type}：%{label}"
+  topic_path_reduce_item_label: "この条件を外す：%{type}が%{label}"
 
   drilldown_item_label: "%{label} (%{count})"
+
+  not_found_message: "ヒットする検索結果はありませんでした。"
+
+  invalid_request_message: "不正な要求です。"
 

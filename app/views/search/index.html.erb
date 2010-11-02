@@ -1,32 +1,29 @@
-<h1>Search</h1>
-<% form_for(@search_request,
-            :url => {:controller => "search",
-                     :action => "index"}) do |f| %>
-  <p><%= f.text_field :query, :size => 25 %><%= submit_tag "Search" %></p>
-  <%= f.hidden_field :category %>
-  <%= f.hidden_field :type %>
+<%= render :partial => "form" %>
+
+<% unless @topic_path_items.empty? %>
+  <ul class="topic_path">
+    <% @topic_path_items.each do |item| %>
+      <li class="topic_path_item"><%= link_to "[X] #{item[:label]}",
+                                              item[:path],
+                                              :title => item[:title] %></li>
+    <% end %>
+  </ul>
 <% end %>
 
-<%= unless @topic_path_items.empty?
-      render(:partial => "topic_path",
-             :locals => {:items => @topic_path_items,
-                         :title => "Reduce this condition: %{label}"})
-    end %>
+<%= render :partial => "drilldown_groups" %>
 
-<%= unless @drilldown_groups.empty?
-      render(:partial => "drilldown_groups",
-             :locals => {:groups => @drilldown_groups,
-                         :base_path => @base_path,
-                         :search_request_params => @search_request_params})
-    end %>
-
-<% unless @search_request.empty?
-     if @entries.size > 0
-       %><%= render(:partial => "results",
-                    :locals => {:entries => @entries,
-                                :raw_entries => @raw_entries}) %><%
-     else
-       %><p>No entry found.</p><%
-     end
-   end %>
+<% unless @search_request.empty? %>
+    <% if @entries.size > 0 %>
+      <p><%= will_paginate @raw_entries %></p>
+      <dl>
+        <% @entries.each do |entry| %>
+          <dt><%= link_to entry.title, entry.url %></dt>
+            <dd><%= entry.summary %></dd>
+        <% end %>
+      </dl>
+      <p><%= will_paginate @raw_entries %></p>
+    <% else %>
+      <p><%= t("not_found_message") %></p>
+    <% end %>
+<% end %>
 

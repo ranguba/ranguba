@@ -1,3 +1,9 @@
-<h1>Error</h1>
-<p>Invalid request.</p>
-<p><%= @search_request.errors.full_messages %></p>
+<%= render :partial => "form" %>
+<%= render :partial => "drilldown_groups" %>
+<p><%= t("invalid_request_message") %></p>
+<ul class="error_messages">
+  <% @bad_request.errors.each do |field, message| %>
+    <li><%= message %></li>
+  <% end %>
+</ul>
+

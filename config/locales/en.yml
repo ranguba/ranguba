@@ -2,8 +2,6 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
-
   search_request_blank_value: "\"%{key}\" has no value."
   search_request_invalid_key: "Unknown option \"%{key}\" is specified with a value \"%{value}\"."
   search_request_invalid_key_blank_value: "Unknown option \"%{key}\" is specified."
@@ -16,7 +14,15 @@ en:
   column_type_label_plain: "Plain Text"
   column_type_label_pdf: "PDF"
 
+
+  search_button_label: "Search"
+
   topic_path_item_label: "%{type}: %{label}"
+  topic_path_reduce_item_label: "Reduce this condition: %{type} is %{label}"
 
   drilldown_item_label: "%{label} (%{count})"
+
+  not_found_message: "No entry found."
+
+  invalid_request_message: "Invalid request."
 

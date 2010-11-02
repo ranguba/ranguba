@@ -1,12 +1,14 @@
-<ul>
-  <% groups.each do |name, items| %>
-    <li><%= name %><ul>
-      <% items.each do |item| %>
-        <li><%= link_to item.label_with_count,
-                        item.path(:base_path => base_path,
-                                  :options => search_request_params) %></li>
-      <% end %>
-    </ul></li>
-  <% end %>
-</ul>
+<% unless @drilldown_groups.empty? %>
+  <ul>
+    <% @drilldown_groups.each do |name, items| %>
+      <li><%= name %><ul>
+        <% items.each do |item| %>
+          <li><%= link_to item.label_with_count,
+                          item.path(:base_path => @base_path,
+                                    :options => @search_request_params) %></li>
+        <% end %>
+      </ul></li>
+    <% end %>
+  </ul>
+<% end %>
 
