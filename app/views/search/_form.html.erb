@@ -3,8 +3,7 @@
             :url => {:controller => "search",
                      :action => "index"}) do |f| %>
   <p><%= f.text_field :query, :size => 25 %><%= submit_tag t("search_button_label") %></p>
-  <%= f.hidden_field :category %>
-  <%= f.hidden_field :type %>
+  <%= f.hidden_field :base_params %>
 <% end %>
 </div>
 

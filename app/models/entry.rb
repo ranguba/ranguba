@@ -47,7 +47,6 @@ class Entry
         url = record.key.key.to_s
         title = record[".title"].to_s
         next unless title.valid_encoding?
-        p record[".type"].to_s
         results << new(:title => title.blank? ? url : title,
                        :url => url,
                        :category => record[".category"] ? record[".category"].key : nil,
@@ -94,7 +93,8 @@ class Entry
         next unless options[column.to_sym].nil?
         group = drilldown_group(:records => options[:records],
                                 :drilldown => column,
-                                :label => "_key")
+                                :label => "_key",
+                                :search_request => options[:search_request])
         result[I18n.t("column_#{column}_name")] = group unless group.empty?
       end
       result
@@ -104,9 +104,12 @@ class Entry
       result = options[:records].group(options[:drilldown])
       result = result.sort([["_nsubrecs", :descending]], :limit => 10)
       result.collect do |record|
-        DrilldownItem.new(:param => options[:drilldown],
-                          :value => record[options[:label]].to_s,
-                          :count => record.n_sub_records)
+        key = options[:drilldown]
+        value = record[options[:label]].to_s
+        DrilldownItem.new(:param => key,
+                          :value => value,
+                          :count => record.n_sub_records,
+                          :base_params => options[:search_request] ? options[:search_request].to_s : nil)
       end
     end
 

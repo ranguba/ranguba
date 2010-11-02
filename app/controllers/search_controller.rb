@@ -16,13 +16,15 @@ class SearchController < ApplicationController
 
     if @search_request.valid?
       options = @search_request.attributes.merge(:page => params[:page])
+      @search_request.base_params = @search_request.to_s
     else
       @bad_request = @search_request
       @search_request = SearchRequest.new
       options = {}
     end
 
-    search_result = Entry.search(options.merge(:per_page => ENTRIES_PER_PAGE))
+    search_result = Entry.search(options.merge(:per_page => ENTRIES_PER_PAGE,
+                                               :search_request => @search_request))
     @entries = search_result[:entries]
     @raw_entries = search_result[:raw_entries]
     @drilldown_groups = search_result[:drilldown_groups]

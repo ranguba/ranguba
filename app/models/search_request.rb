@@ -6,6 +6,7 @@ class SearchRequest
   attr_accessor :query
   attr_accessor :category
   attr_accessor :type
+  attr_accessor :base_params
 
   KEYS = ["query", "category", "type"]
   DELIMITER = "/"
@@ -15,8 +16,8 @@ class SearchRequest
   class << self
     def path(options={})
       base = options[:base_path].sub(/\/$/, "")
-      search_request = new(options[:options]).to_s
-      [base, search_request].join(DELIMITER)
+      search_request_options = options[:path] || new(options[:options]).to_s
+      [base, search_request_options].join(DELIMITER)
     end
 
     def encode_parameter(input)
@@ -25,24 +26,33 @@ class SearchRequest
   end
 
   def initialize(options={})
+    clear
+    parse(options[:base_params]) unless options[:base_params].blank?
+    update(options)
+  end
+
+  def update(options={})
     options.each do |key, value|
-      send("#{key}=", value)
+      send("#{key}=", value) unless send(key) == value
     end
   end
 
   def query=(value)
-    @string = nil
     @query = value
+    @ordered_keys = @ordered_keys - ["query"]
+    @ordered_keys << "query"
   end
 
   def category=(value)
-    @string = nil
     @category = value
+    @ordered_keys = @ordered_keys - ["category"]
+    @ordered_keys << "category"
   end
 
   def type=(value)
-    @string = nil
     @type = value
+    @ordered_keys = @ordered_keys - ["type"]
+    @ordered_keys << "type"
   end
 
   def clear
@@ -50,6 +60,11 @@ class SearchRequest
     @query = nil
     @category = nil
     @type = nil
+    @ordered_keys = []
+  end
+
+  def ordered_keys(options={})
+    options[:canonical] ? KEYS : (@ordered_keys + (KEYS - @ordered_keys))
   end
 
   def parse(query_string="")
@@ -70,11 +85,9 @@ class SearchRequest
     @string = query_string
   end
 
-  def to_s
-    return @string unless @string.nil?
-
+  def to_s(options={})
     path_components = []
-    KEYS.each do |key|
+    ordered_keys(options).each do |key|
       value = send(key)
       unless value.blank?
         path_components << key
@@ -93,13 +106,13 @@ class SearchRequest
     self.class.path(options)
   end
 
-  def to_readable_string
+  def to_readable_string(options={})
     conditions = []
 
     conditions << query unless query.blank?
 
-    KEYS.each do |key|
-      next if ["query"].include?(key)
+    ordered_keys(options).each do |key|
+      next if key == "query"
       value = send(key)
       unless value.nil?
         value = Ranguba::Customize.get(key, value)
@@ -117,51 +130,52 @@ class SearchRequest
     items = []
     options[:options] ||= {}
 
-    unless query.nil?
-      terms = query.split
-      terms.each do |term|
-        opt = options.merge(
-                :options => options[:options].merge(
-                  :query => (terms - [term]).join(" ")
+    ordered_keys(options).each do |key|
+      case key
+      when "query"
+        next if query.blank?
+        terms = query.split
+        terms.each do |term|
+          opt = options.merge(
+                  :options => options[:options].merge(
+                    :query => (terms - [term]).join(" ")
+                  )
                 )
-              )
-        items << {:label => term,
-                  :path => path(opt),
-                  :param => "query"}
-      end
-    end
-
-    KEYS.each do |key|
-      next if ["query"].include?(key)
-      value = send(key)
-      unless value.nil?
-        value = Ranguba::Customize.get(key, value)
-        type = I18n.t("column_#{key}_name")
-        items << {:label => I18n.t("topic_path_item_label",
-                                   :type => type,
-                                   :label => value),
-                  :title => I18n.t("topic_path_reduce_item_label",
-                                   :type => type,
-                                   :label => value),
-                  :path => path(options.merge(:without => key.to_sym)),
-                  :param => key}
+          items << {:label => term,
+                    :path => path(opt),
+                    :param => "query"}
+        end
+      else
+        value = send(key)
+        unless value.nil?
+          value = Ranguba::Customize.get(key, value)
+          type = I18n.t("column_#{key}_name")
+          items << {:label => I18n.t("topic_path_item_label",
+                                     :type => type,
+                                     :label => value),
+                    :title => I18n.t("topic_path_reduce_item_label",
+                                     :type => type,
+                                     :label => value),
+                    :path => path(options.merge(:without => key.to_sym)),
+                    :param => key}
+        end
       end
     end
 
     items
   end
 
-  def to_hash
+  def to_hash(options={})
     hash = {}
-    KEYS.each do |key|
+    ordered_keys(options).each do |key|
       value = send(key)
       hash[key.to_sym] = value unless value.blank?
     end
     hash
   end
 
-  def attributes
-    to_hash
+  def attributes(options={})
+    to_hash(options)
   end
 
   def empty?
