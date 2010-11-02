@@ -8,8 +8,8 @@
   <%= csrf_meta_tag %>
 </head>
 <body>
-
+<%= Ranguba::Customize.content_header %>
 <%= yield %>
-
+<%= Ranguba::Customize.content_footer %>
 </body>
 </html>
