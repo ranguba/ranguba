@@ -1,5 +1,6 @@
 class SearchController < ApplicationController
   ENTRIES_PER_PAGE = 10
+  SUMMARY_SIZE = 140
 
   def index
     @base_path = url_for(:action => "index")
@@ -40,6 +41,8 @@ class SearchController < ApplicationController
                        :conditions => @search_request.to_readable_string)
       end
       @title = [title, Ranguba::Customize.title].join(I18n.t("title_delimiter"))
+
+      @summary_size = SUMMARY_SIZE
     end
   end
 

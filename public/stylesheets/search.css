@@ -72,6 +72,12 @@
   padding-left: 2em;
 }
 
+.search_result_summary em {
+  background: #FFCC66;
+  font-style: normal;
+  font-weight: bold;
+}
+
 /* drilldown */
 
 .drilldown_groups {

@@ -25,7 +25,12 @@
             <tr><td class="search_result_icon" rowspan="3"><%= file_type_icon(entry.type) %></td>
                 <th class="search_result_title"><%= link_to entry.title, entry.url %></th></tr>
             <tr><td class="search_result_location"><%= link_to entry.url, entry.url %></td></tr>
-            <tr><td class="search_result_summary"><%= entry.summary %></td></tr>
+            <tr><td class="search_result_summary"><%=
+                   raw(entry.summary(:size => @summary_size,
+                                     :highlight => "<em>%S</em>",
+                                     :separator => t("search_result_summary_ellipses"),
+                                     :html_escape => true))
+            %></td></tr>
           </tbody>
         <% end %>
       </table>

@@ -3,12 +3,14 @@ require "racknga/will_paginate"
 class Entry
   SUMMARY_MAX_SIZE = 30
   DEFAULT_PAGINATION_PER_PAGE = 10
+  DEFAULT_SUMMARY_SIZE = 140
 
   attr_accessor :title
   attr_accessor :url
   attr_accessor :category
   attr_accessor :type
   attr_accessor :body
+  attr_accessor :expression
 
   class << self
   
@@ -26,6 +28,7 @@ class Entry
           condition.call(record)
         end.flatten
       end
+      expression = records.expression
 
       drilldown_results = drilldown_groups(options.merge(:records => records))
 
@@ -49,7 +52,8 @@ class Entry
                        :url => url,
                        :category => record[".category"] ? record[".category"].key : nil,
                        :type => record[".type"] ? record[".type"].key : nil,
-                       :body => record[".body"].to_s)
+                       :body => record[".body"].to_s,
+                       :expression => expression)
       end
 
       {:entries => results,
@@ -114,9 +118,31 @@ class Entry
     end
   end
 
-  def summary
-    !body.blank? && body.size > SUMMARY_MAX_SIZE ? "#{body[0..SUMMARY_MAX_SIZE]}..." : ""
-  end
+  def summary(options={})
+    highlight = options[:highlight] || "*%S*"
+    separator = options[:separator] || "..."
+    part = options[:part] || "%S"
 
+    highlight_tags = highlight.split("%S")
+
+    snippet_options = {:normalize => true,
+                       :width => options[:size] || DEFAULT_SUMMARY_SIZE,
+                       :html_escape => options[:html_escape]}
+
+    snippet = expression.snippet(highlight_tags, snippet_options)
+    snippet ||= Groonga::Snippet.new(snippet_options)
+
+    summarized = ""
+    if snippet && !body.blank?
+      snippets = snippet.execute(body)
+      unless snippets.empty?
+        snippets = snippets.collect do |snippet|
+          part.sub("%S", "#{separator}#{snippet}#{separator}")
+        end
+        summarized = snippets.join("")
+      end
+    end
+    summarized
+  end
 end
 

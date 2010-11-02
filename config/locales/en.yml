@@ -18,6 +18,7 @@ en:
   search_result_count: "%{count} entry(es) found."
   search_result_previous_link: "«Previous"
   search_result_next_link: "Next»"
+  search_result_summary_ellipses: "…"
 
   search_button_label: "Search"
 

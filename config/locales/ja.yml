@@ -18,6 +18,7 @@ ja:
   search_result_count: "%{count}件ヒットしました。"
   search_result_previous_link: "«前"
   search_result_next_link: "次»"
+  search_result_summary_ellipses: "…"
 
   search_button_label: "検索"
 
