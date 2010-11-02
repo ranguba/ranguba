@@ -14,14 +14,18 @@
 
 <% unless @search_request.empty? %>
     <% if @entries.size > 0 %>
-      <p><%= will_paginate @raw_entries %></p>
+      <%= will_paginate @raw_entries,
+                        :previous_label => t("search_result_previous_link"),
+                        :next_label => t("search_result_next_link") %>
       <dl>
         <% @entries.each do |entry| %>
           <dt><%= link_to entry.title, entry.url %></dt>
             <dd><%= entry.summary %></dd>
         <% end %>
       </dl>
-      <p><%= will_paginate @raw_entries %></p>
+      <%= will_paginate @raw_entries,
+                        :previous_label => t("search_result_previous_link"),
+                        :next_label => t("search_result_next_link") %>
     <% else %>
       <p><%= t("not_found_message") %></p>
     <% end %>
