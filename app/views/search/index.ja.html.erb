@@ -5,41 +5,25 @@
   <p><%= f.text_field :query, :size => 25 %><%= submit_tag "検索" %></p>
 <% end %>
 
-<% unless @topic_path_items.empty? %>
-  <ul>
-    <% @topic_path_items.each do |item| %>
-      <li><%= link_to "[X] #{item[:label]}",
-                      item[:path] %></li>
-    <% end %>
-  </ul>
-<% end %>
+<%= unless @topic_path_items.empty?
+      render(:partial => "topic_path",
+             :locals => {:items => @topic_path_items})
+    end %>
 
-<% unless @drilldown_groups.empty? %>
-  <ul>
-    <% @drilldown_groups.each do |name, items| %>
-      <li><%= name %><ul>
-        <% items.each do |item| %>
-          <li><%= link_to item.label_with_count,
-                          item.path(:base_path => @base_path,
-                                    :options => @search_request_params) %></li>
-        <% end %>
-      </ul></li>
-    <% end %>
-  </ul>
-<% end %>
+<%= unless @drilldown_groups.empty?
+      render(:partial => "drilldown_groups",
+             :locals => {:groups => @drilldown_groups,
+                         :base_path => @base_path,
+                         :search_request_params => @search_request_params})
+    end %>
 
-<% unless @search_request.empty? %>
-  <% if @entries.size > 0 %>
-    <p><%= will_paginate @raw_entries %></p>
-    <dl>
-      <% @entries.each do |entry| %>
-        <dt><%= link_to entry.title, entry.url %></dt>
-          <dd><%= entry.summary %></dd>
-      <% end %>
-    </dl>
-    <p><%= will_paginate @raw_entries %></p>
-  <% else %>
-    <p>not found.</p>
-  <% end %>
-<% end %>
+<% unless @search_request.empty?
+     if @entries.size > 0
+       %><%= render(:partial => "results",
+                    :locals => {:entries => @entries,
+                                :raw_entries => @raw_entries}) %><%
+     else
+       %><p>ヒットする検索結果はありませんでした。</p><%
+     end
+   end %>
 

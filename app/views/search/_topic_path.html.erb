@@ -1,0 +1,7 @@
+<ul class="topic_path">
+  <% items.each do |item| %>
+    <li class="topic_path_item"><%= link_to "[X] #{item[:label]}",
+                                            item[:path] %></li>
+  <% end %>
+</ul>
+
