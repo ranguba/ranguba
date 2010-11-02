@@ -11,13 +11,7 @@ en:
   search_request_invalid_key_blank_value: "Unknown option \"%{key}\" is specified."
 
   column_category_name: "Category"
-  column_category_label_XXX: "XXX"
-
   column_type_name: "File Type"
-  column_type_label_html: "HTML"
-  column_type_label_plain: "Plain Text"
-  column_type_label_pdf: "PDF"
-
 
   search_result_title: "Search results of %{conditions}"
   search_result_title_paginated: "Search results of %{conditions} (page %{page}/%{max_page})"

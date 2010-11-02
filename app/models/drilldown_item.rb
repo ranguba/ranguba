@@ -10,7 +10,7 @@ class DrilldownItem
   end
 
   def label
-    I18n.t("column_#{param}_label_#{value}")
+    Ranguba::Customize.get(param, value)
   end
 
   def label_with_count

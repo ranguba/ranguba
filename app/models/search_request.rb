@@ -95,17 +95,21 @@ class SearchRequest
 
   def to_readable_string
     conditions = []
+
     conditions << query unless query.blank?
-    unless category.blank?
-      conditions << I18n.t("topic_path_item_label",
-                           :type => I18n.t("column_category_name"),
-                           :label => I18n.t("column_category_label_#{category}"))
+
+    KEYS.each do |key|
+      next if ["query"].include?(key)
+      value = send(key)
+      unless value.nil?
+        value = Ranguba::Customize.get(key, value)
+        type = I18n.t("column_#{key}_name")
+        conditions << I18n.t("topic_path_item_label",
+                             :type => type,
+                             :label => value)
+      end
     end
-    unless type.blank?
-      conditions << I18n.t("topic_path_item_label",
-                           :type => I18n.t("column_type_name"),
-                           :label => I18n.t("column_type_label_#{type}"))
-    end
+
     conditions.join(I18n.t("search_conditions_delimiter"))
   end
 
@@ -131,11 +135,13 @@ class SearchRequest
       next if ["query"].include?(key)
       value = send(key)
       unless value.nil?
+        value = Ranguba::Customize.get(key, value)
+        type = I18n.t("column_#{key}_name")
         items << {:label => I18n.t("topic_path_item_label",
-                                   :type => I18n.t("column_#{key}_name"),
+                                   :type => type,
                                    :label => value),
                   :title => I18n.t("topic_path_reduce_item_label",
-                                   :type => I18n.t("column_#{key}_name"),
+                                   :type => type,
                                    :label => value),
                   :path => path(options.merge(:without => key.to_sym)),
                   :param => key}

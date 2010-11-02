@@ -11,12 +11,7 @@ ja:
   search_request_invalid_key_blank_value: "不明なオプション %{key} が指定されています。"
 
   column_category_name: "カテゴリ"
-  column_category_label_XXX: "XXX"
-
   column_type_name: "ファイルの種類"
-  column_type_label_html: "HTML"
-  column_type_label_plain: "プレーンテキスト"
-  column_type_label_pdf: "PDF"
 
 
   search_result_title: "%{conditions} の検索結果"
