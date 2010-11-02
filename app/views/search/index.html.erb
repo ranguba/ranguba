@@ -3,6 +3,8 @@
             :url => {:controller => "search",
                      :action => "index"}) do |f| %>
   <p><%= f.text_field :query, :size => 25 %><%= submit_tag "Search" %></p>
+  <%= f.hidden_field :category %>
+  <%= f.hidden_field :type %>
 <% end %>
 
 <%= unless @topic_path_items.empty?
