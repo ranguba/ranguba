@@ -209,7 +209,7 @@ case $ARCH in
 esac
 
 if test "$noinst" = no; then
-    exec 3> setup.log
+    exec 3> install.log
     log=3
 else
     log=
