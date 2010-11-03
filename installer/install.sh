@@ -58,6 +58,7 @@ packages=(
     which
     tar
     gzip
+    cpio
 
     fontconfig-devel
     gamin-devel
