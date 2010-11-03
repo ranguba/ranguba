@@ -1,0 +1,124 @@
+= 全文検索システムインストール方法
+
+== 手順
+
+install.shファイルがあるディレクトリを$SETUP_DIRと表記します。
+
+: $SETUP_DIR/install.sh
+  インストーラスクリプト本体。
+
+: $SETUP_DIR/sources
+  依存するソフトウェアのソースが保存されているディレクトリ。
+  なければ自動でダウンロードします(全部で約100MB)。
+
+(1) 作業用のディレクトリを用意して、そこにcdします。
+
+      $ mkdir -p ~/tmp/ranguba-install
+      $ cd ~/tmp/ranguba-install
+
+(2) install.shファイルを実行します。
+
+      $ $SETUP_DIR/install.sh
+
+(3) カテゴリファイルを編集してください。
+    上記の例でいえば、((|/opt/ranguba/etc/ranguba/category.tsv|))
+    に空のファイルが用意されています。
+
+== インストール物一覧
+
+=== RPMパッケージ
+
+以下のパッケージ、およびその依存パッケージがインストールされている必要
+があります。
+
+* bison
+* diffutils
+* file
+* gcc
+* gcc-c++
+* intltool
+* make
+* pkgconfig
+* scrollkeeper
+* wget
+* which
+* tar
+* gzip
+* cpio
+* fontconfig-devel
+* gamin-devel
+* gettext-devel
+* gtk+-devel
+* gtk2-devel
+* libgsf-devel
+* libjpeg-devel
+* libpng-devel
+* libtiff-devel
+* openssl-devel
+* readline-devel
+* bzip2-devel
+* zlib-devel
+
+=== ソースからのインストール
+
+以下のソフトウェアがインストールされます。
+
+* atk-1.29.4
+* autoconf-2.68
+* cairo-1.8.10
+* chupatext-0.4.0
+* fontconfig-2.8.0
+* freetype-2.4.3
+* gettext-0.18.1.1
+* glib-2.24.2
+* gnumeric-1.10.11
+* goffice-0.8.11
+* groonga-1.0.3
+* gtk+-2.20.1
+* libglade-2.6.4
+* libgsf-1.14.19
+* libxml2-2.7.7
+* libxslt-1.1.26
+* pango-1.28.3
+* pixman-0.18.4
+* poppler-0.14.4
+* poppler-data-0.4.3
+* ranguba-0.1.0
+* ruby-1.9.2-p0
+* ruby-gtk2-0.90.5
+* wv-1.2.4
+
+=== Rubygemsによるインストール
+
+以下のRubygemsがインストールされます。
+
+* chuparuby-0.4.0
+* nokogiri-1.4.3.1
+* pkg-config-1.0.7
+* rails-3.0.1
+* rroonga-1.0.1
+
+また、railsが依存する以下のgemも同時にインストールされます。
+
+* abstract-1.0.0
+* actionmailer-3.0.1
+* actionpack-3.0.1
+* activemodel-3.0.1
+* activerecord-3.0.1
+* activeresource-3.0.1
+* activesupport-3.0.1
+* arel-1.0.1
+* builder-2.1.2
+* bundler-1.0.3
+* erubis-2.6.6
+* i18n-0.4.1
+* mail-2.2.7
+* mime-types-1.16
+* polyglot-0.3.1
+* rack-1.2.1
+* rack-mount-0.6.13
+* rack-test-0.5.6
+* railties-3.0.1
+* thor-0.14.3
+* treetop-1.4.8
+* tzinfo-0.3.23
