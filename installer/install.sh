@@ -217,8 +217,8 @@ fi
 test $log && echo "Start: $(LC_ALL=C date)" 1>&$log
 
 if ! test -d "${SOURCE}"; then
-    mkdir -p SOURCES
-    SOURCE=SOURCES
+    mkdir -p sources
+    SOURCE=sources
 fi
 
 if test "$nocheck" != yes; then
