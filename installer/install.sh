@@ -266,7 +266,7 @@ inst http://www.ring.gr.jp/archives/X/gnome/sources/gnumeric/1.10/gnumeric-1.10.
 inst http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p0.tar.bz2 \
      --disable-install-doc
 inst http://rubygems.org/downloads/pkg-config-1.0.7.gem
-inst http://downloads.sourceforge.net/project/ruby-gnome2/ruby-gnome2/ruby-gnome2-0.90.4/ruby-gtk2-0.90.4.tar.gz
+inst http://downloads.sourceforge.net/project/ruby-gnome2/ruby-gnome2/ruby-gnome2-0.90.5/ruby-gtk2-0.90.5.tar.gz
 
 inst http://rubygems.org/downloads/nokogiri-1.4.3.1.gem
 
