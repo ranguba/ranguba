@@ -264,12 +264,13 @@ inst http://downloads.sourceforge.net/project/wvware/wv/1.2.4/wv-1.2.4.tar.gz
 inst http://www.ring.gr.jp/archives/X/gnome/sources/goffice/0.8/goffice-0.8.11.tar.bz2
 inst http://www.ring.gr.jp/archives/X/gnome/sources/gnumeric/1.10/gnumeric-1.10.11.tar.gz
 inst http://www.ring.gr.jp/archives/X/gnome/sources/gnumeric/1.10/gnumeric-1.10.11.tar.gz
+inst http://sourceforge.net/projects/asciidoc/files/asciidoc/8.6.2/asciidoc-8.6.2.tar.gz
 inst http://dag.wieers.com/home-made/unoconv/unoconv-0.4.tar.bz2
 
 inst http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p0.tar.bz2 \
      --disable-install-doc
 inst http://rubygems.org/downloads/pkg-config-1.0.7.gem
-inst http://downloads.sourceforge.net/project/ruby-gnome2/ruby-gnome2/ruby-gnome2-0.90.5/ruby-gtk2-0.90.5.tar.gz
+inst http://downloads.sourceforge.net/project/ruby-gnome2/ruby-gnome2/ruby-gnome2-0.90.4/ruby-gtk2-0.90.4.tar.gz
 
 inst http://rubygems.org/downloads/nokogiri-1.4.3.1.gem
 
