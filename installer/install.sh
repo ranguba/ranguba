@@ -163,7 +163,7 @@ function do_install1() {
 	test "$patched" = yes && make -C "build/$base" prereq 1>&$log 2>&1 || true
 	make -C "build/$base" 1>&$log 2>&1 || abort
     elif test -f "build/$base/Rakefile"; then
-	ruby -C "build/$base" "$PREFIX/bin/rake" 1>&$log 2>&1 || abort
+	ruby -C "build/$base" -S rake 1>&$log 2>&1 || abort
     fi
     echo done
 
@@ -171,7 +171,7 @@ function do_install1() {
     if test -f "build/$base/GNUmakefile" -o -f "build/$base/Makefile"; then
 	make -C "build/$base" prefix="$PREFIX" install 1>&$log 2>&1 || abort
     elif test -f "build/$base/Rakefile"; then
-	ruby -C "build/$base" "$PREFIX/bin/rake" install 1>&$log 2>&1 || abort
+	ruby -C "build/$base" -S rake install 1>&$log 2>&1 || abort
     fi
     echo done
 
