@@ -3,7 +3,7 @@
 set -e
 
 BASE_DIR=$(dirname "$0")
-SOURCE="$BASE_DIR/SOURCES"
+SOURCE="$BASE_DIR/sources"
 
 nocheck=no
 noinst=no
