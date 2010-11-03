@@ -123,7 +123,7 @@ function do_install1() {
 	;;
       (*.gem)
 	echo -n "Installing $1..."
-	ruby -C "${SOURCE}" "$PREFIX/bin/gem" install --no-ri --no-rdoc --local "$1" 1>&$log 2>&1 || abort
+	ruby -C "${SOURCE}" -S gem install --no-ri --no-rdoc --local "$1" 1>&$log 2>&1 || abort
 	echo done
 	return
 	;;
