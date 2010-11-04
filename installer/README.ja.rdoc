@@ -59,6 +59,10 @@ install.shファイルがあるディレクトリを$SETUP_DIRと表記します
 * bzip2-devel
 * zlib-devel
 
+* libreoffice
+  * http://download.documentfoundation.org/libreoffice/testing/3.3.0-beta2/rpm/x86_64/LibO_3.3.0_beta2_Linux_x86-64_install-rpm_en-US.tar.gz
+  * http://download.documentfoundation.org/libreoffice/testing/3.3.0-beta2/rpm/x86_64/LibO_3.3.0_beta2_Linux_x86-64_langpack-rpm_ja.tar.gz
+
 === ソースからのインストール
 
 以下のソフトウェアがインストールされます。
