@@ -44,9 +44,9 @@ class Ranguba::Indexer
   def set_options(opts)
     banner = opts.banner
     opts.banner = <<EOS
-#{banner} db-path [URL...]
-#{banner} --from-log=LOG db-path base-directory
-#{banner} --url-prefix=PREFIX db-path files...
+#{banner} [URL...]
+#{banner} --from-log=LOG base-directory
+#{banner} --url-prefix=PREFIX files...
 
 EOS
 
@@ -87,14 +87,6 @@ EOS
   end
 
   def prepare(args)
-    db = args.shift
-    create_process(:database => db, :targets => args)
-  end
-
-  def create_process(options={})
-    db = options[:database]
-    args = options[:targets]
-    return if db.nil?
     if @log_file
       if @url_prefix
         raise OptionParser::InvalidOption, "--url-prefix and --from-log options are exclusive"
@@ -109,10 +101,10 @@ EOS
       Dir.open(base) {}
       process = proc {
         if @log_file == '-'
-          process_from_log(db, base, STDIN)
+          process_from_log(base, STDIN)
         else
           File.open(@log_file) {|input|
-            process_from_log(db, base, input)
+            process_from_log(base, input)
           }
         end
       }
@@ -120,7 +112,7 @@ EOS
       # read local files
       return if args.empty?
       process = proc {
-        process_files(db, args)
+        process_files(args)
       }
     else
       # crawl
@@ -149,7 +141,7 @@ EOS
         wget << {chdir: base, err: [:child, :out]}
         begin
           IO.popen(wget, "r", encoding: "us-ascii") {|input|
-            process_from_log(db, base, input)
+            process_from_log(base, input)
           }
         ensure
           FileUtils.rm_rf(base)
@@ -163,66 +155,61 @@ EOS
     process
   end
 
-  def process_files(db, paths)
+  def process_files(paths)
     require 'find'
     Find.find(*paths) do |path|
       next unless File.file?(path)
       puts "File: #{path}"
-      process_file(db, path)
+      process_file(path)
     end
     true
   end
 
-  def process_file(db, path)
-    result = false
-    Ranguba::Database.open(db) do |grn|
-      url = @url_prefix ? @url_prefix + path : path
-      result = add_entry(grn, url, path)
-      postprocess_file(path)
-    end
+  def process_file(path)
+    url = @url_prefix ? @url_prefix + path : path
+    result = add_entry(url, path)
+    postprocess_file(path)
     result
   end
 
-  def process_from_log(db, base, input)
+  def process_from_log(base, input)
     result = true
-    Ranguba::Database.open(db) do |grn|
-      url = response = file = path = nil
-      input.each("") do |log|
-        case log
-        when /^--([-\d]+.*?)\s*--\s+(.+)/
-          update = $1
-          url = $2
-          puts "URL: #{url}"
-          if response = log[/^(?:  .*\n)+/]
-            response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
-          end
-          file = log[/^Saving to: \`(.+)\'$/, 1]
-          next unless file      # failed to start download
-          path = File.join(base, file)
-          response ||= {}
-          update = Time.parse(update)
-          response["x-update-time"] = update
-          if !@oldest or @oldest > update
-            @oldest = update
-          end
-        when /saved/
-          next unless url and path and File.file?(path)
-          add_entry(grn, url, path, response)
-          postprocess_file(path)
-          path = nil
+    url = response = file = path = nil
+    input.each("") do |log|
+      case log
+      when /^--([-\d]+.*?)\s*--\s+(.+)/
+        update = $1
+        url = $2
+        puts "URL: #{url}"
+        if response = log[/^(?:  .*\n)+/]
+          response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
         end
+        file = log[/^Saving to: \`(.+)\'$/, 1]
+        next unless file      # failed to start download
+        path = File.join(base, file)
+        response ||= {}
+        update = Time.parse(update)
+        response["x-update-time"] = update
+        if !@oldest or @oldest > update
+          @oldest = update
+        end
+      when /saved/
+        next unless url and path and File.file?(path)
+        add_entry(url, path, response)
+        postprocess_file(path)
+        path = nil
       end
     end
     result
   end
 
-  def add_entry(grn, url, path, response = {})
+  def add_entry(url, path, response = {})
     begin
       metadata, body = decompose_file(path, response)
       return false if metadata.nil?
       attributes = make_attributes(url, response, metadata, path)
       attributes.update(body: body)
-      grn.entries.add(url, attributes)
+      Entry.add(url, attributes)
     rescue => e
       unless @ignore_erros
         STDERR.puts "#{e.class}: #{e.message}"

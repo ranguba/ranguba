@@ -60,6 +60,10 @@ class Entry
        :drilldown_groups => drilldown_results}
     end
 
+    def add(url, attributes)
+      table.add(url, attributes)
+    end
+
     private
     def conditions_from_request(options)
       conditions = []
