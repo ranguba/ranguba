@@ -119,7 +119,7 @@ class SearchRequest
         type = I18n.t("column_#{key}_name")
         conditions << I18n.t("topic_path_item_label",
                              :type => type,
-                             :label => value)
+                             :value => value)
       end
     end
 
@@ -142,6 +142,8 @@ class SearchRequest
                   )
                 )
           items << {:label => term,
+                    :title => I18n.t("topic_path_reduce_query_item_label",
+                                     :value => term),
                     :path => path(opt),
                     :param => "query"}
         end
@@ -152,10 +154,10 @@ class SearchRequest
           type = I18n.t("column_#{key}_name")
           items << {:label => I18n.t("topic_path_item_label",
                                      :type => type,
-                                     :label => value),
+                                     :value => value),
                     :title => I18n.t("topic_path_reduce_item_label",
                                      :type => type,
-                                     :label => value),
+                                     :value => value),
                     :path => path(options.merge(:without => key.to_sym)),
                     :param => key}
         end

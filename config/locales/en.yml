@@ -24,7 +24,8 @@ en:
   search_button_label: "Search"
 
   topic_path_item_label: "%{type}: %{label}"
-  topic_path_reduce_item_label: "Reduce this condition: %{type} is %{label}"
+  topic_path_reduce_item_label: "Reduce this condition: %{type} is \"%{value}\""
+  topic_path_reduce_query_item_label: "Reduce this condition: contains \"%{value}\""
 
   drilldown_item_label: "%{label} (%{count})"
 

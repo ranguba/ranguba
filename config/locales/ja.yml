@@ -23,8 +23,9 @@ ja:
 
   search_button_label: "検索"
 
-  topic_path_item_label: "%{type}：%{label}"
-  topic_path_reduce_item_label: "この条件を外す：%{type}が%{label}"
+  topic_path_item_label: "%{type}：%{value}"
+  topic_path_reduce_item_label: "この条件を外す：%{type}が「%{value}」"
+  topic_path_reduce_query_item_label: "この条件を外す：「%{value}」を含む"
 
   drilldown_item_label: "%{label} (%{count})"
 
