@@ -122,14 +122,28 @@ class Entry
   end
 
   def summary(options={})
-    highlight = options[:highlight] || "*%S*"
-    separator = options[:separator] || "..."
-    part = options[:part] || "%S"
+    summary = summary_by_query(options)
+    summary = summary_by_head(options) if summary.blank?
+    summary
+  end
 
-    highlight_tags = highlight.split("%S")
+  private
+  def summary_by_head(options={})
+    options = normalize_summary_options(options)
+    summary = body
+    if !summary.blank? && summary.size > options[:size]
+      summary = summary[0..options[:size]] + options[:separator]
+    end
+    summary
+  end
+
+  def summary_by_query(options={})
+    options = normalize_summary_options(options)
+
+    highlight_tags = options[:highlight].split("%S")
 
     snippet_options = {:normalize => true,
-                       :width => options[:size] || DEFAULT_SUMMARY_SIZE,
+                       :width => options[:size],
                        :html_escape => options[:html_escape]}
 
     snippet = expression.snippet(highlight_tags, snippet_options)
@@ -140,12 +154,20 @@ class Entry
       snippets = snippet.execute(body)
       unless snippets.empty?
         snippets = snippets.collect do |snippet|
-          part.sub("%S", "#{separator}#{snippet}#{separator}")
+          options[:part].sub("%S", "#{options[:separator]}#{snippet}#{options[:separator]}")
         end
         summarized = snippets.join("")
       end
     end
     summarized
+  end
+
+  def normalize_summary_options(options={})
+    options[:size] ||= DEFAULT_SUMMARY_SIZE
+    options[:highlight] ||= "*%S*"
+    options[:separator] ||= "..."
+    options[:part] ||= "%S"
+    options
   end
 end
 
