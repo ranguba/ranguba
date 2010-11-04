@@ -2,6 +2,6 @@ Gemfile.lock
 db/schema.rb
 db/*.sqlite3
 db/groonga/
-log/
+log/*
 tmp/
 vendor/plugins/racknga/
