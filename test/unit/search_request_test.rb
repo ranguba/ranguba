@@ -190,14 +190,57 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert_valid
   end
 
+  def test_to_s
+    @request = SearchRequest.new(:type => "html", :query => "foo")
+
+    assert_equal "type/html/query/foo",
+                 @request.to_s
+    assert_equal "query/foo/type/html",
+                 @request.to_s(:canonical => true)
+
+    assert_equal "query/foo",
+                 @request.to_s(:without => :type)
+    assert_equal "query/foo",
+                 @request.to_s(:without => :type,
+                               :canonical => true)
+
+    # to_s must ignore search parameters
+    assert_equal "type/html/query/foo",
+                 @request.to_s(:query => "bar",
+                               :type => "new")
+    assert_equal "query/foo/type/html",
+                 @request.to_s(:query => "bar",
+                               :type => "new",
+                               :canonical => true)
+  end
+
   def test_path
-    @request = SearchRequest.new(:query => "foo", :type => "html")
-    assert_equal "/search/query/foo/type/html",
+    @request = SearchRequest.new(:type => "html", :query => "foo")
+
+    assert_equal "/search/type/html/query/foo",
                  @request.path(:base_path => "/search/")
+    assert_equal "/search/query/foo/type/html",
+                 @request.path(:base_path => "/search/",
+                               :canonical => true)
+
     assert_equal "/search/query/foo",
-                 @request.path(:base_path => "/search/", :without => :type)
-    assert_equal "/search/query/bar/type/html",
-                 @request.path(:base_path => "/search/", :query => "bar")
+                 @request.path(:base_path => "/search/",
+                               :without => :type)
+    assert_equal "/search/query/foo",
+                 @request.path(:base_path => "/search/",
+                               :without => :type,
+                               :canonical => true)
+
+    # path must ignore search parameters
+    assert_equal "/search/type/html/query/foo",
+                 @request.path(:base_path => "/search/",
+                               :query => "bar",
+                               :type => "new")
+    assert_equal "/search/query/foo/type/html",
+                 @request.path(:base_path => "/search/",
+                               :query => "bar",
+                               :type => "new",
+                               :canonical => true)
   end
 
   def test_multibytes_io

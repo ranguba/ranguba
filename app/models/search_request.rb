@@ -113,12 +113,12 @@ class SearchRequest
   end
 
   def path(options={})
+    options = sanitize_options(options)
     self.class.path(to_hash.merge(options))
   end
 
   def to_readable_string(options={})
     conditions = []
-
     ordered_keys(options).each do |key|
       if key == :query
         conditions << query unless query.blank?
@@ -133,7 +133,6 @@ class SearchRequest
         end
       end
     end
-
     conditions.join(I18n.t("search_conditions_delimiter"))
   end
 
@@ -208,6 +207,13 @@ class SearchRequest
       end
       i += 2
     end
+  end
+
+  def sanitize_options(options={})
+    KEYS.each do |key|
+      options.delete(key) if options[key]
+    end
+    options
   end
 end
 
