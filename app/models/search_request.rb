@@ -88,6 +88,7 @@ class SearchRequest
   def to_s(options={})
     path_components = []
     ordered_keys(options).each do |key|
+      next if key == options[:without]
       key = key.to_s
       value = send(key)
       unless value.blank?
@@ -99,11 +100,7 @@ class SearchRequest
   end
 
   def path(options={})
-    options = to_hash.merge(options)
-    if options[:without]
-      options.delete(options[:without])
-    end
-    self.class.path(options)
+    self.class.path(to_hash.merge(options))
   end
 
   def to_readable_string(options={})
@@ -137,11 +134,7 @@ class SearchRequest
         next if query.blank?
         terms = query.split
         terms.each do |term|
-          opt = options.merge(
-                  :options => options[:options].merge(
-                    :query => (terms - [term]).join(" ")
-                  )
-                )
+          opt = options.merge(:query => (terms - [term]).join(" "))
           items << {:label => term,
                     :title => I18n.t("topic_path_reduce_query_item_label",
                                      :value => term),
