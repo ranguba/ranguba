@@ -74,9 +74,7 @@ packages=(
     bzip2-devel
     zlib-devel
 
-    xorg-x11-server-Xorg
-    xorg-x11-server-Xvfb
-    xorg-x11-server-utils
+    fonts-japanese
 )
 
 function abort() {
