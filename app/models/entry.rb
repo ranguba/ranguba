@@ -93,8 +93,8 @@ class Entry
 
     def drilldown_groups(options={})
       result = {}
-      ["category", "type"].each do |column|
-        next unless options[column.to_sym].nil?
+      [:category, :type].each do |column|
+        next unless options[column].nil?
         group = drilldown_group(:records => options[:records],
                                 :drilldown => column,
                                 :label => "_key",
@@ -105,7 +105,7 @@ class Entry
     end
 
     def drilldown_group(options={})
-      result = options[:records].group(options[:drilldown])
+      result = options[:records].group(options[:drilldown].to_s)
       result = result.sort([["_nsubrecs", :descending]], :limit => 10)
       result.collect do |record|
         key = options[:drilldown]

@@ -8,7 +8,7 @@ class SearchRequest
   attr_accessor :type
   attr_accessor :base_params
 
-  KEYS = ["query", "category", "type"]
+  KEYS = [:query, :category, :type]
   DELIMITER = "/"
 
   validate :validate_string
@@ -16,7 +16,7 @@ class SearchRequest
   class << self
     def path(options={})
       base = options[:base_path].sub(/\/$/, "")
-      search_request_options = options[:path] || new(options[:options]).to_s(options)
+      search_request_options = options[:path] || new(options).to_s(options)
       [base, search_request_options].join(DELIMITER)
     end
 
@@ -33,26 +33,26 @@ class SearchRequest
 
   def update(options={})
     options.each do |key, value|
-      send("#{key}=", value) unless send(key) == value
+      send("#{key.to_s}=", value) if KEYS.include?(key)
     end
   end
 
   def query=(value)
     @query = value
-    @ordered_keys = @ordered_keys - ["query"]
-    @ordered_keys << "query"
+    @ordered_keys = @ordered_keys - [:query]
+    @ordered_keys << :query
   end
 
   def category=(value)
     @category = value
-    @ordered_keys = @ordered_keys - ["category"]
-    @ordered_keys << "category"
+    @ordered_keys = @ordered_keys - [:category]
+    @ordered_keys << :category
   end
 
   def type=(value)
     @type = value
-    @ordered_keys = @ordered_keys - ["type"]
-    @ordered_keys << "type"
+    @ordered_keys = @ordered_keys - [:type]
+    @ordered_keys << :type
   end
 
   def clear
@@ -78,7 +78,7 @@ class SearchRequest
     while i < parts.size
       key = parts[i]
       value = parts[i+1]
-      send("#{key}=", URI.decode(value)) if KEYS.include?(key) && !value.blank?
+      send("#{key}=", URI.decode(value)) if KEYS.include?(key.to_sym) && !value.blank?
       i += 2
     end
 
@@ -88,6 +88,7 @@ class SearchRequest
   def to_s(options={})
     path_components = []
     ordered_keys(options).each do |key|
+      key = key.to_s
       value = send(key)
       unless value.blank?
         path_components << key
@@ -98,10 +99,9 @@ class SearchRequest
   end
 
   def path(options={})
-    options[:options] ||= {}
-    options[:options] = to_hash.merge(options[:options])
+    options = to_hash.merge(options)
     if options[:without]
-      options[:options].delete(options[:without])
+      options.delete(options[:without])
     end
     self.class.path(options)
   end
@@ -109,17 +109,18 @@ class SearchRequest
   def to_readable_string(options={})
     conditions = []
 
-    conditions << query unless query.blank?
-
     ordered_keys(options).each do |key|
-      next if key == "query"
-      value = send(key)
-      unless value.nil?
-        value = Ranguba::Customize.get(key, value)
-        type = I18n.t("column_#{key}_name")
-        conditions << I18n.t("topic_path_item_label",
-                             :type => type,
-                             :value => value)
+      if key == :query
+        conditions << query unless query.blank?
+      else
+        key = key.to_s
+        value = send(key)
+        unless value.nil?
+          value = Ranguba::Customize.get(key, value)
+          conditions << I18n.t("topic_path_item_label",
+                               :type => I18n.t("column_#{key}_name"),
+                               :value => value)
+        end
       end
     end
 
@@ -132,7 +133,7 @@ class SearchRequest
 
     ordered_keys(options).each do |key|
       case key
-      when "query"
+      when :query
         next if query.blank?
         terms = query.split
         terms.each do |term|
@@ -145,12 +146,12 @@ class SearchRequest
                     :title => I18n.t("topic_path_reduce_query_item_label",
                                      :value => term),
                     :path => path(opt),
-                    :param => "query"}
+                    :param => :query}
         end
       else
-        value = send(key)
+        value = send(key.to_s)
         unless value.nil?
-          value = Ranguba::Customize.get(key, value)
+          value = Ranguba::Customize.get(key.to_s, value)
           type = I18n.t("column_#{key}_name")
           items << {:label => I18n.t("topic_path_item_label",
                                      :type => type,
@@ -158,7 +159,7 @@ class SearchRequest
                     :title => I18n.t("topic_path_reduce_item_label",
                                      :type => type,
                                      :value => value),
-                    :path => path(options.merge(:without => key.to_sym)),
+                    :path => path(options.merge(:without => key)),
                     :param => key}
         end
       end
@@ -170,8 +171,8 @@ class SearchRequest
   def to_hash(options={})
     hash = {}
     ordered_keys(options).each do |key|
-      value = send(key)
-      hash[key.to_sym] = value unless value.blank?
+      value = send(key.to_s)
+      hash[key] = value unless value.blank?
     end
     hash
   end
@@ -201,7 +202,7 @@ class SearchRequest
       key = parts[i]
       value = parts[i+1]
       case
-      when KEYS.include?(key)
+      when KEYS.include?(key.to_sym)
         if value.blank?
           errors.add(key.to_sym, I18n.t("search_request_blank_value",
                                         :key => key,

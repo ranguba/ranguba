@@ -33,7 +33,7 @@ module Ranguba
       end
 
       def get(table, key)
-        send(table, key)
+        send(table.to_s, key)
       end
 
       private
