@@ -80,6 +80,20 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert_valid
   end
 
+  def test_ordered_keys
+    assert_equal [:query, :category, :type], @request.ordered_keys
+    @request.query = "q"
+    assert_equal [:category, :type, :query], @request.ordered_keys
+    @request.type = "t"
+    assert_equal [:category, :query, :type], @request.ordered_keys
+    @request.category = "c"
+    assert_equal [:query, :type, :category], @request.ordered_keys
+    @request.clear
+    assert_equal [:query, :category, :type], @request.ordered_keys
+    @request.parse("type/t/category/c/query/q")
+    assert_equal [:type, :category, :query], @request.ordered_keys
+  end
+
   def test_parse_valid_input
     @request.parse("query/string")
     assert_valid(:to_s => "query/string",

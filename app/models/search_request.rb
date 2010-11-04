@@ -64,7 +64,7 @@ class SearchRequest
   end
 
   def ordered_keys(options={})
-    options[:canonical] ? KEYS : (@ordered_keys + (KEYS - @ordered_keys))
+    options[:canonical] ? KEYS : ((KEYS - @ordered_keys) + @ordered_keys)
   end
 
   def to_hash(options={})
