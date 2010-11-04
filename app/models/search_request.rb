@@ -70,6 +70,7 @@ class SearchRequest
   def to_hash(options={})
     hash = {}
     ordered_keys(options).each do |key|
+      next if key == options[:without]
       value = send(key.to_s)
       hash[key] = value unless value.blank?
     end
