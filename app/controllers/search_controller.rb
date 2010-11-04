@@ -44,8 +44,8 @@ class SearchController < ApplicationController
 
   private
   def handle_bad_request
-      @bad_request = @search_request
-      @search_request = SearchRequest.new
+    @bad_request = @search_request
+    @search_request = SearchRequest.new
   end
 
   def setup_search_result(options={})

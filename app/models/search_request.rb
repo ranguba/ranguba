@@ -16,7 +16,7 @@ class SearchRequest
   class << self
     def path(options={})
       base = options[:base_path].sub(/\/$/, "")
-      search_request_options = options[:path] || new(options[:options]).to_s
+      search_request_options = options[:path] || new(options[:options]).to_s(options)
       [base, search_request_options].join(DELIMITER)
     end
 
