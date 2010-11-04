@@ -105,10 +105,10 @@ class Entry
     end
 
     def drilldown_group(options={})
-      result = options[:records].group(options[:drilldown].to_s)
+      key = options[:drilldown]
+      result = options[:records].group(key.to_s)
       result = result.sort([["_nsubrecs", :descending]], :limit => 10)
       result.collect do |record|
-        key = options[:drilldown]
         value = record[options[:label]].to_s
         DrilldownItem.new(:param => key,
                           :value => value,
