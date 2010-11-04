@@ -280,6 +280,17 @@ class SearchRequestTest < ActiveSupport::TestCase
                               :query => "foo",
                               :type => "html")
     assert_equal "/search/query/foo/type/html", path
+
+    path = SearchRequest.path(:base_path => "/search/",
+                              :type => "html",
+                              :query => "foo")
+    assert_equal "/search/type/html/query/foo", path
+
+    path = SearchRequest.path(:base_path => "/search/",
+                              :type => "html",
+                              :query => "foo",
+                              :canonical => true)
+    assert_equal "/search/query/foo/type/html", path
   end
 
   private
