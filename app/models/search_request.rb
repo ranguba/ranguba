@@ -126,8 +126,6 @@ class SearchRequest
 
   def topic_path_items(options={})
     items = []
-    options[:options] ||= {}
-
     ordered_keys(options).each do |key|
       case key
       when :query
@@ -157,7 +155,6 @@ class SearchRequest
         end
       end
     end
-
     items
   end
 
