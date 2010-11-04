@@ -33,7 +33,7 @@ class SearchRequest
 
   def update(options={})
     options.each do |key, value|
-      send("#{key.to_s}=", value) if KEYS.include?(key)
+      send("#{key.to_s}=", value) if KEYS.include?(key.to_sym)
     end
   end
 

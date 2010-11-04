@@ -5,8 +5,7 @@ class SearchController < ApplicationController
   def index
     @base_path = url_for(:action => "index")
     if params[:search_request].is_a?(Hash)
-      redirect_to SearchRequest.path(:base_path => @base_path,
-                                     :options => params[:search_request])
+      redirect_to SearchRequest.path(params[:search_request].merge(:base_path => @base_path))
       return
     end
 
