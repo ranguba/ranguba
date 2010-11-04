@@ -67,6 +67,19 @@ class SearchRequest
     options[:canonical] ? KEYS : (@ordered_keys + (KEYS - @ordered_keys))
   end
 
+  def to_hash(options={})
+    hash = {}
+    ordered_keys(options).each do |key|
+      value = send(key.to_s)
+      hash[key] = value unless value.blank?
+    end
+    hash
+  end
+
+  def attributes(options={})
+    to_hash(options)
+  end
+
   def parse(query_string="")
     clear
 
@@ -156,19 +169,6 @@ class SearchRequest
       end
     end
     items
-  end
-
-  def to_hash(options={})
-    hash = {}
-    ordered_keys(options).each do |key|
-      value = send(key.to_s)
-      hash[key] = value unless value.blank?
-    end
-    hash
-  end
-
-  def attributes(options={})
-    to_hash(options)
   end
 
   def empty?
