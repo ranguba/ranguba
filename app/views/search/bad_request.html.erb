@@ -1,9 +1,13 @@
-<%= render :partial => "form" %>
-<%= render :partial => "drilldown_groups" %>
-<p><%= t("invalid_request_message") %></p>
-<ul class="error_messages">
-  <% @bad_request.errors.each do |field, message| %>
-    <li><%= message %></li>
-  <% end %>
-</ul>
+<div class="search_request">
+  <%= render :partial => "form" %>
+  <%= render :partial => "drilldown_groups" %>
+</div>
+<div class="search_result">
+  <p class="search_result_error_message"><%= t("invalid_request_message") %></p>
+  <ul class="search_result_error_messages">
+    <% @bad_request.errors.each do |field, message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+</div>
 

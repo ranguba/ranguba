@@ -15,39 +15,58 @@ class SearchController < ApplicationController
     @search_request_params = @search_request.to_hash
 
     if @search_request.valid?
-      options = @search_request.attributes.merge(:page => params[:page])
+      search_options = @search_request.attributes.merge(:page => params[:page])
       @search_request.base_params = @search_request.to_s
       @canonical = @search_request.path(:base_path => @base_path,
                                         :canonical => true)
     else
-      @bad_request = @search_request
-      @search_request = SearchRequest.new
-      options = {}
+      handle_bad_request
+      search_options = {}
     end
 
-    search_result = Entry.search(options.merge(:per_page => ENTRIES_PER_PAGE,
-                                               :search_request => @search_request))
-    @entries = search_result[:entries]
-    @raw_entries = search_result[:raw_entries]
-    @drilldown_groups = search_result[:drilldown_groups]
-    @topic_path_items = @search_request.topic_path_items(:base_path => @base_path)
+    setup_search_result(search_options.merge(:per_page => ENTRIES_PER_PAGE))
 
     if @bad_request
       render :action => "bad_request", :status => 400
     else
-      if @raw_entries.total_pages > 1
-        title = I18n.t("search_result_title_paginated",
-                       :conditions => @search_request.to_readable_string,
-                       :page => @raw_entries.current_page,
-                       :max_page => @raw_entries.total_pages)
-      else
-        title = I18n.t("search_result_title",
-                       :conditions => @search_request.to_readable_string)
-      end
-      @title = [title, Ranguba::Customize.title].join(I18n.t("title_delimiter"))
-
+      setup_search_result_title
       @summary_size = SUMMARY_SIZE
     end
+  rescue Groonga::TooSmallPage
+    handle_bad_request
+    setup_search_result
+    render :action => "not_found", :status => 404
+  rescue Groonga::TooLargePage
+    handle_bad_request
+    setup_search_result
+    render :action => "not_found", :status => 404
+  end
+
+  private
+  def handle_bad_request
+      @bad_request = @search_request
+      @search_request = SearchRequest.new
+  end
+
+  def setup_search_result(options={})
+    search_result = Entry.search(options.merge(:search_request => @search_request))
+    @entries = search_result[:entries]
+    @raw_entries = search_result[:raw_entries]
+    @drilldown_groups = search_result[:drilldown_groups]
+    @topic_path_items = @search_request.topic_path_items(:base_path => @base_path)
+  end
+
+  def setup_search_result_title
+    if @raw_entries.total_pages > 1
+      title = I18n.t("search_result_title_paginated",
+                     :conditions => @search_request.to_readable_string,
+                     :page => @raw_entries.current_page,
+                     :max_page => @raw_entries.total_pages)
+    else
+      title = I18n.t("search_result_title",
+                     :conditions => @search_request.to_readable_string)
+    end
+    @title = [title, Ranguba::Customize.title].join(I18n.t("title_delimiter"))
   end
 
 end

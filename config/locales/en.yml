@@ -19,6 +19,7 @@ en:
   search_result_previous_link: "«Previous"
   search_result_next_link: "Next»"
   search_result_summary_ellipses: "…"
+  search_result_not_found_message: "No entry found."
 
   search_button_label: "Search"
 
@@ -27,7 +28,6 @@ en:
 
   drilldown_item_label: "%{label} (%{count})"
 
-  not_found_message: "No entry found."
-
+  not_found_message: "Page not found."
   invalid_request_message: "Invalid request."
 

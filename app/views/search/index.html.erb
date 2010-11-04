@@ -1,17 +1,20 @@
-<%= render :partial => "form" %>
+<div class="search_request">
+  <%= render :partial => "form" %>
 
-<% unless @topic_path_items.empty? %>
-  <ul class="topic_path">
-    <% @topic_path_items.each do |item| %>
-      <li class="topic_path_item"><%= link_to "[X] #{item[:label]}",
-                                              item[:path],
-                                              :title => item[:title] %></li>
-    <% end %>
-  </ul>
-<% end %>
+  <% unless @topic_path_items.empty? %>
+    <ul class="topic_path">
+      <% @topic_path_items.each do |item| %>
+        <li class="topic_path_item"><%= link_to "[X] #{item[:label]}",
+                                                item[:path],
+                                                :title => item[:title] %></li>
+      <% end %>
+    </ul>
+  <% end %>
 
-<%= render :partial => "drilldown_groups" %>
+  <%= render :partial => "drilldown_groups" %>
+</div>
 
+<div class="search_result">
 <% unless @search_request.empty? %>
     <% if @entries.size > 0 %>
       <p class="search_result_count"><%= t("search_result_count", :count => @raw_entries.total_entries ) %></p>
@@ -19,7 +22,7 @@
                         :previous_label => t("search_result_previous_link"),
                         :next_label => t("search_result_next_link"),
                         :id => "pagination_top" %>
-      <table class="search_result">
+      <table class="search_result_items">
         <% @entries.each do |entry| %>
           <tbody class="search_result_item">
             <tr><td class="search_result_icon" rowspan="3"><%= filetype_icon(entry.type) %></td>
@@ -39,7 +42,8 @@
                         :next_label => t("search_result_next_link"),
                         :id => "pagination_bottom" %>
     <% else %>
-      <p><%= t("not_found_message") %></p>
+      <p class="search_result_message><%= t("search_result_not_found_message") %></p>
     <% end %>
 <% end %>
+</div>
 

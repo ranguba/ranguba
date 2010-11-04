@@ -19,6 +19,7 @@ ja:
   search_result_previous_link: "«前"
   search_result_next_link: "次»"
   search_result_summary_ellipses: "…"
+  search_result_not_found_message: "ヒットする検索結果はありませんでした。"
 
   search_button_label: "検索"
 
@@ -27,7 +28,6 @@ ja:
 
   drilldown_item_label: "%{label} (%{count})"
 
-  not_found_message: "ヒットする検索結果はありませんでした。"
-
+  not_found_message: "ページは存在しません。"
   invalid_request_message: "不正な要求です。"
 
