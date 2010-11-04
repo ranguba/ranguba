@@ -280,7 +280,7 @@ inst http://rubygems.org/downloads/nokogiri-1.4.3.1.gem
 inst http://groonga.org/files/groonga/groonga-1.0.2.tar.gz
 inst http://rubygems.org/downloads/rroonga-1.0.1.gem
 inst http://rubygems.org/downloads/racknga-0.9.0.gem
-inst http://rubyforge.org/frs/download.php/73144/chupatext-0.4.0.tar.gz
+inst http://rubyforge.org/frs/download.php/73173/chupatext-0.4.0.tar.gz
 # inst http://rubygems.org/downloads/chuparuby-0.5.0.gem
 inst http://rubygems.org/downloads/chupatext-0.4.0.gem
 # inst ranguba-0.1.0.tar.gz
