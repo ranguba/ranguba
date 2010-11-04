@@ -5,6 +5,9 @@ class DrilldownItem < SearchRequest
 
   def initialize(options={})
     super
+    self.param = options[:param] unless options[:param].nil?
+    self.value = options[:value] unless options[:value].nil?
+    self.count = options[:count] unless options[:count].nil?
     send("#{param.to_s}=", value) unless param.blank?
   end
 
