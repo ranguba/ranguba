@@ -387,6 +387,10 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert_equal "/search/query/q/type/t", path
   end
 
+  def test_class_ecncode_parameter
+    assert_equal "abcABC%20%2F", SearchRequest.encode_parameter("abcABC /")
+  end
+
   private
   def assert_valid(options={})
     assert @request.valid?
