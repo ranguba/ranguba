@@ -32,14 +32,25 @@ class SearchTest < ActionController::IntegrationTest
     assert_search_result
   end
 
-  private
-  def assert_search_form
-    assert page.has_selector?('div.search_form')
-    assert page.has_no_selector?('div.search_result')
+  def test_do_search
+    visit "/search/"
+    assert_search_form
+    fill_in "search_request_query", :with => "HTML"
+    click "Search"
+    assert_search_result
   end
 
-  def assert_search_result
-    assert page.has_selector?('div.search_form')
-    assert page.has_selector?('div.search_result')
+  private
+  def assert_search_form(options={})
+    assert page.has_selector?(".search_form")
+    assert page.has_no_selector?(".search_result")
+    assert page.has_no_selector?(".search_result_error_message")
+  end
+
+  def assert_search_result(options={})
+    assert page.has_selector?(".search_form")
+    assert page.has_selector?(".search_result")
+    assert page.has_selector?(".search_result_items")
+    assert page.has_no_selector?(".search_result_error_message")
   end
 end

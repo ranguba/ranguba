@@ -14,8 +14,8 @@
   <%= render :partial => "drilldown_groups" %>
 </div>
 
-<div class="search_result">
 <% unless @search_request.empty? %>
+  <div class="search_result">
     <% if @entries.size > 0 %>
       <p class="search_result_count"><%= t("search_result_count", :count => @raw_entries.total_entries ) %></p>
       <%= will_paginate @raw_entries,
@@ -57,6 +57,6 @@
     <% else %>
       <p class="search_result_message><%= t("search_result_not_found_message") %></p>
     <% end %>
+  </div>
 <% end %>
-</div>
 
