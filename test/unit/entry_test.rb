@@ -62,6 +62,10 @@ class EntryTest < ActiveSupport::TestCase
                  entry.summary(options)
   end
 
+  def test_class_table
+    assert_equal Groonga::Hash, Entry.table.class
+  end
+
   def test_class_search
     result = Entry.search(:query => "HTML")
 
@@ -90,6 +94,22 @@ class EntryTest < ActiveSupport::TestCase
                           :param => :type,
                           :value => "html",
                           :to_s => "query/HTML/type/html"
+  end
+
+  def test_class_add
+    result = Entry.search(:query => "HTML")
+    assert_equal 1, result[:entries].size
+    Entry.add("http://www.example.com/another-html",
+              :title => "Another HTML",
+              :type => "html",
+              :charset => "UTF-8",
+              :category => "test",
+              :author => "html author",
+              :mtime => Time.now,
+              :update => Time.now,
+              :body => "This is the contents of another HTML entry.")
+    result = Entry.search(:query => "HTML")
+    assert_equal 2, result[:entries].size
   end
 
   private
