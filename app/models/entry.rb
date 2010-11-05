@@ -173,6 +173,8 @@ class Entry
   end
 
   def summary_by_query(options={})
+    return nil unless expression
+
     options = normalize_summary_options(options)
 
     highlight_tags = options[:highlight].split("%S")
