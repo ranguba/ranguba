@@ -1,2 +1,0 @@
-Ranguba::Customize.load
-

@@ -1,35 +1,37 @@
 module Ranguba
   class Customize
     class << self
-      def load
-        @@title = File.read("#{base}/title.txt").strip
-        @@title = I18n.t("global_title") if @@title.blank?
-
-        @@content_header = File.read("#{base}/content_header.txt")
-        @@content_footer = File.read("#{base}/content_footer.txt")
-
-        @@categories = read_key_value_list("#{base}/categories.txt")
-        @@types = read_key_value_list("#{base}/types.txt")
-      end
+      @@titles = {}
+      @@content_headers = {}
+      @@content_footers = {}
+      @@categories = {}
+      @@types = {}
 
       def title
-        @@title
+        unless @@titles[I18n.locale]
+          title = read("#{base}/title.#{I18n.locale.to_s}.txt").strip
+          title = I18n.t("global_title") if title.blank?
+          @@titles[I18n.locale] = title
+        end
+        @@titles[I18n.locale]
       end
 
       def content_header
-        @@content_header
+        @@content_headers[I18n.locale] ||= read("#{base}/content_header.#{I18n.locale.to_s}.txt")
       end
 
       def content_footer
-        @@content_footer
+        @@content_footers[I18n.locale] ||= read("#{base}/content_footer.#{I18n.locale.to_s}.txt")
       end
 
       def category(key)
-         @@categorie[key] || key
+        @@categories[I18n.locale] ||= read_hash("#{base}/categories.#{I18n.locale.to_s}.txt")
+        @@categories[I18n.locale][key] || key
       end
 
       def type(key)
-         @@types[key] || key
+        @@types[I18n.locale] ||= read_hash("#{base}/types.#{I18n.locale.to_s}.txt")
+        @@types[I18n.locale][key] || key
       end
 
       def get(table, key)
@@ -41,8 +43,12 @@ module Ranguba
        "#{::Rails.root.to_s}/config/customize"
       end
 
-      def read_key_value_list(path)
-        contents = File.read(path)
+      def read(path)
+        File.exists?(path) ? File.read(path) : ""
+      end
+
+      def read_hash(path)
+        contents = read(path)
         hash = {}
         contents.split("\n").each do |line|
           line.strip!
