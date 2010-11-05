@@ -319,8 +319,54 @@ class SearchRequestTest < ActiveSupport::TestCase
                  :empty => false)
   end
 
+  def test_to_readable_string
+    @request.type = "t"
+    @request.query = "q"
+
+    type = I18n.t("topic_path_item_label",
+                  :type => I18n.t("column_type_name"),
+                  :value => "t")
+    separator = I18n.t("search_conditions_delimiter")
+    
+    assert_equal [type, "q"].join(separator), @request.to_readable_string
+    assert_equal ["q", type].join(separator), @request.to_readable_string(:canonical => true)
+    assert_equal type, @request.to_readable_string(:without => :query)
+  end
+
   def test_topic_path_items
-    assert false
+    @request.type = "t"
+    @request.query = "q1 q2"
+
+    type = {:label => I18n.t("topic_path_item_label",
+                             :type => I18n.t("column_type_name"),
+                             :value => "t"),
+            :title => I18n.t("topic_path_reduce_item_label",
+                             :type => I18n.t("column_type_name"),
+                             :value => "t"),
+            :path => "",
+            :param => :type}
+    query1 = {:label => "q1",
+              :title => I18n.t("topic_path_reduce_query_item_label",
+                               :value => "q1"),
+              :path => "",
+              :param => :query}
+    query2 = {:label => "q2",
+              :title => I18n.t("topic_path_reduce_query_item_label",
+                               :value => "q2"),
+              :path => "",
+              :param => :query}
+
+    type[:path] = "/base/query/q1%20q2"
+    query1[:path] = "/base/type/t/query/q2"
+    query2[:path] = "/base/type/t/query/q1"
+    assert_equal [type, query1, query2],
+                 @request.topic_path_items(:base_path => "/base")
+
+    type[:path] = "/base/query/q1%20q2"
+    query1[:path] = "/base/query/q2/type/t"
+    query2[:path] = "/base/query/q1/type/t"
+    assert_equal [query1, query2, type],
+                 @request.topic_path_items(:base_path => "/base", :canonical => true)
   end
 
   def test_class_path

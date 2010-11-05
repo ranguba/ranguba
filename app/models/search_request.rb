@@ -121,12 +121,13 @@ class SearchRequest
   def to_readable_string(options={})
     conditions = []
     ordered_keys(options).each do |key|
+      next if key == options[:without]
       if key == :query
         conditions << query unless query.blank?
       else
         key = key.to_s
         value = send(key)
-        unless value.nil?
+        unless value.blank?
           value = Ranguba::Customize.get(key, value)
           conditions << I18n.t("topic_path_item_label",
                                :type => I18n.t("column_#{key}_name"),
@@ -145,11 +146,11 @@ class SearchRequest
         next if query.blank?
         terms = query.split
         terms.each do |term|
-          opt = options.merge(:query => (terms - [term]).join(" "))
+          opt = to_hash.merge(options).merge(:query => (terms - [term]).join(" "))
           items << {:label => term,
                     :title => I18n.t("topic_path_reduce_query_item_label",
                                      :value => term),
-                    :path => path(opt),
+                    :path => self.class.path(opt),
                     :param => :query}
         end
       else
