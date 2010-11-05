@@ -38,24 +38,31 @@ class DrilldownItemTest < ActiveSupport::TestCase
                  :empty => false)
   end
 
-
-
   def test_to_hash
-    @item.param = :type
-    @item.value = "html"
-    assert_equal({:type => "text/html"}, @item.to_hash)
-    assert_equal({:type => "text/html"}, @item.to_hash(:type => "unknown"))
-    assert_equal({:type => "text/html", :query => "foo"},
-                 @item.to_hash(:query => "foo"))
+    @item = DrilldownItem.new(:base_params => "type/t")
+    @item.param = :category
+    @item.value = "c"
+    assert_equal({:type => "t", :category => "c"}, @item.to_hash)
+    assert_equal({:category => "c", :type => "t"}, @item.to_hash(:canonical => true))
+    assert_equal({:type => "t", :category => "c"}, @item.to_hash(:query => "foo"))
+  end
+
+  def test_to_s
+    @item = DrilldownItem.new(:base_params => "type/t")
+    @item.param = :category
+    @item.value = "c"
+    assert_equal "type/t/category/c", @item.to_s
+    assert_equal "category/c/type/t", @item.to_s(:canonical => true)
+    assert_equal "type/t/category/c", @item.to_s(:query => "q")
   end
 
   def test_path
-    @item.param = "type"
-    @item.value = "text/html"
-    path = @item.path(:base_path => "/search/",
-                      :options => {:query => "foo",
-                                   :type => "unknown"})
-    assert_equal "/search/query/foo/type/text%2Fhtml", path
+    @item = DrilldownItem.new(:base_params => "type/t")
+    @item.param = :category
+    @item.value = "c"
+    assert_equal "/base/type/t/category/c", @item.path(:base_path => "/base/")
+    assert_equal "/base/category/c/type/t", @item.path(:base_path => "/base/", :canonical => true)
+    assert_equal "/base/type/t/category/c", @item.path(:base_path => "/base/", :query => "q")
   end
 
   private
