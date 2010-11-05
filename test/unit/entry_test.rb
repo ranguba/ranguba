@@ -4,35 +4,33 @@ require 'test_helper'
 class EntryTest < ActiveSupport::TestCase
   def setup
     setup_database
-    @entry = Entry.new
   end
 
   def teardown
     teardown_database
-    @entry = nil
   end
 
   def test_attributes
-    @entry = get_first_entry(:query => "plain")
+    entry = get_first_entry(:query => "plain")
     source = @db_source[:plain]
-    assert_equal source[:url], @entry.title
-    assert_equal source[:url], @entry.url
-    assert_equal source[:category], @entry.category
-    assert_equal source[:type], @entry.type
-    assert_equal source[:body], @entry.body
+    assert_equal source[:url], entry.title
+    assert_equal source[:url], entry.url
+    assert_equal source[:category], entry.category
+    assert_equal source[:type], entry.type
+    assert_equal source[:body], entry.body
 
-    @entry = get_first_entry(:query => "html")
+    entry = get_first_entry(:query => "html")
     source = @db_source[:html]
-    assert_equal source[:title], @entry.title
-    assert_equal source[:url], @entry.url
-    assert_equal source[:category], @entry.category
-    assert_equal source[:type], @entry.type
-    assert_equal source[:body], @entry.body
+    assert_equal source[:title], entry.title
+    assert_equal source[:url], entry.url
+    assert_equal source[:category], entry.category
+    assert_equal source[:type], entry.type
+    assert_equal source[:body], entry.body
   end
 
   def test_entry_drilldown_items
-    @entry = get_first_entry(:query => "HTML")
-    items = @entry.drilldown_items
+    entry = get_first_entry(:query => "HTML")
+    items = entry.drilldown_items
     assert_equal 2, items.size
     assert_drilldown_item(items[0],
                           :param => :category,
@@ -50,18 +48,48 @@ class EntryTest < ActiveSupport::TestCase
                :highlight => "[%S]"}
 
     # without query
-    @entry = get_first_entry(:type => "html")
-    assert_equal @entry.body[0..9]+"-", @entry.summary_by_head(options)
-    assert_equal "", @entry.summary_by_query(options)
-    assert_equal @entry.body[0..9]+"-", @entry.summary(options)
+    entry = get_first_entry(:type => "html")
+    assert_equal entry.body[0..9]+"-", entry.summary_by_head(options)
+    assert_equal "", entry.summary_by_query(options)
+    assert_equal entry.body[0..9]+"-", entry.summary(options)
 
     # with query
-    @entry = get_first_entry(:query => "HTML")
-    assert_equal @entry.body[0..9]+"-", @entry.summary_by_head(options)
+    entry = get_first_entry(:query => "HTML")
+    assert_equal entry.body[0..9]+"-", entry.summary_by_head(options)
     assert_equal "-the[ HTML] e-",
-                 @entry.summary_by_query(options)
+                 entry.summary_by_query(options)
     assert_equal "-the[ HTML] e-",
-                 @entry.summary(options)
+                 entry.summary(options)
+  end
+
+  def test_class_search
+    result = Entry.search(:query => "HTML")
+
+    assert_equal Array, result[:entries].class
+    assert_equal 1, result[:entries].size
+    assert_equal Entry, result[:entries][0].class
+
+    assert_equal Array, result[:raw_entries].class
+    assert_equal 1, result[:raw_entries].size
+    assert_equal Groonga::Record, result[:raw_entries][0].class
+
+    groups = result[:drilldown_groups]
+    assert_equal Hash, groups.class
+    assert_equal 2, groups.size
+
+    keys = groups.keys
+    assert_equal Array, groups[keys[0]].class
+    assert_equal 1, groups[keys[0]].size
+    assert_drilldown_item groups[keys[0]][0],
+                          :param => :category,
+                          :value => "test",
+                          :to_s => "query/HTML/category/test"
+    assert_equal Array, groups[keys[1]].class
+    assert_equal 1, groups[keys[1]].size
+    assert_drilldown_item groups[keys[1]][0],
+                          :param => :type,
+                          :value => "html",
+                          :to_s => "query/HTML/type/html"
   end
 
   private
@@ -76,7 +104,7 @@ class EntryTest < ActiveSupport::TestCase
   end
 
   def assert_drilldown_item(item, options)
-    assert item.is_a?(DrilldownItem)
+    assert_equal DrilldownItem, item.class
     assert_equal options[:param], item.param
     assert_equal options[:value], item.value
     assert_equal options[:to_s], item.to_s
