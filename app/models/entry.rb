@@ -5,13 +5,9 @@ class Entry
   DEFAULT_PAGINATION_PER_PAGE = 10
   DEFAULT_SUMMARY_SIZE = 140
 
-  attr_accessor :title
-  attr_accessor :url
-  attr_accessor :category
-  attr_accessor :type
-  attr_accessor :body
-  attr_accessor :base_params
+  attr_accessor :raw
   attr_accessor :expression
+  attr_accessor :base_params
 
   class << self
   
@@ -31,6 +27,7 @@ class Entry
       end
       expression = records.expression
 
+      options[:base_params] = options[:search_request] ? options[:search_request].to_s : nil
       drilldown_results = drilldown_groups(options.merge(:records => records))
 
       current = options[:page]
@@ -40,21 +37,16 @@ class Entry
         current = current.to_i
       end
 
+
       records = records.paginate([["_score", :descending],
                                   [".title", :ascending]],
                                  :page => current,
                                  :size => (options[:per_page] || DEFAULT_PAGINATION_PER_PAGE))
       records.each do |record|
-        url = record.key.key.to_s
-        title = record[".title"].to_s
-        next unless title.valid_encoding?
-        results << new(:title => title.blank? ? url : title,
-                       :url => url,
-                       :category => record[".category"] ? record[".category"].key : nil,
-                       :type => record[".type"] ? record[".type"].key : nil,
-                       :body => record[".body"].to_s,
-                       :base_params => options[:search_request] ? options[:search_request].to_s : nil,
-                       :expression => expression)
+        next unless record[".title"].to_s.valid_encoding?
+        results << new(:raw => record,
+                       :expression => expression,
+                       :base_params => options[:base_params])
       end
 
       {:entries => results,
@@ -100,7 +92,7 @@ class Entry
         group = drilldown_group(:records => options[:records],
                                 :drilldown => column,
                                 :label => "_key",
-                                :search_request => options[:search_request])
+                                :base_params => options[:base_params])
         result[I18n.t("column_#{column}_name")] = group unless group.empty?
       end
       result
@@ -115,7 +107,7 @@ class Entry
         DrilldownItem.new(:param => key,
                           :value => value,
                           :count => record.n_sub_records,
-                          :base_params => options[:search_request] ? options[:search_request].to_s : nil)
+                          :base_params => options[:base_params])
       end
     end
 
@@ -125,6 +117,30 @@ class Entry
     options.each do |key, value|
       send("#{key}=", value)
     end
+  end
+
+  def title
+    unless @title
+      @title = raw[".title"].to_s
+      @title = url if @title.blank?
+    end
+    @title
+  end
+
+  def url
+    @url ||= raw.key.key.to_s
+  end
+
+  def body
+    @body ||= raw[".body"].to_s
+  end
+
+  def category
+    @category ||= raw[".category"] ? raw[".category"].key : ""
+  end
+
+  def type
+    @type ||= raw[".type"] ? raw[".type"].key : ""
   end
 
   def summary(options={})
