@@ -43,7 +43,6 @@ class Entry
         current = current.to_i
       end
 
-
       records = records.paginate([["_score", :descending],
                                   [".title", :ascending]],
                                  :page => current,
