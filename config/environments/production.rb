@@ -46,4 +46,7 @@ Ranguba::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  config.index_db_path = "#{::Rails.root.to_s}/db/groonga/db"
+  config.customize_base_path = "#{::Rails.root.to_s}/config/customize"
 end

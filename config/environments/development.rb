@@ -24,5 +24,6 @@ Ranguba::Application.configure do
   config.action_dispatch.best_standards_support = :builtin
 
   config.index_db_path = "#{::Rails.root.to_s}/db/groonga/db"
+  config.customize_base_path = "#{::Rails.root.to_s}/config/customize"
 end
 

@@ -1,0 +1,4 @@
+category1	カテゴリ1
+category2	カテゴリ2
+category3	カテゴリ3
+

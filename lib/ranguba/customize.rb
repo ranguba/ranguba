@@ -40,7 +40,7 @@ module Ranguba
 
       private
       def base
-       "#{::Rails.root.to_s}/config/customize"
+       Ranguba::Application.config.customize_base_path
       end
 
       def read(path)
