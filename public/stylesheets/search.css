@@ -74,47 +74,55 @@
 .search_result_items {
   border: 0 none;
   margin: 1em 0 2em;
-}
-
-.search_result_items th,
-.search_result_items td {
   padding: 0;
 }
 
-.search_result_items th {
-  padding: 0.5em 0 0;
-  font-weight: normal;
-  text-align: left;
+.search_result_item {
+  margin: 0 0 0.5em 0;
 }
 
-.search_result_icon {
-  vertical-align: top;
+.search_result_title a,
+.search_result_location a {
+  display: block;
 }
 
-.search_result_icon img {
-  margin: 0.5em 4px 0 0;
-}
-
-.search_result_items .search_result_location {
+.search_result_location {
   font-size: 70%;
   padding: 0.2em 0 0.2em;
 }
 
-.search_result_items .search_result_location :link,
-.search_result_items .search_result_location :visited {
+.search_result_location :link,
+.search_result_location :visited {
   color: gray;
   text-decoration: none;
 }
 
-.search_result_items .search_result_summary {
+.search_result_summary {
   font-size: 90%;
-  padding-left: 2em;
+  margin: 0 0 0 2em;
 }
 
 .search_result_summary em {
   background: #FFCC66;
   font-style: normal;
   font-weight: bold;
+}
+
+.search_result_drilldown_items {
+  list-style: none;
+  margin: 0 0 0 2em;
+  padding: 0;
+}
+
+.search_result_drilldown_items li {
+  display: inline;
+  list-style: none;
+  margin: 0 0.5em 0 0;
+  padding: 0;
+}
+
+.search_result_drilldown_items img {
+  border: 0 none;
 }
 
 /* pagination */

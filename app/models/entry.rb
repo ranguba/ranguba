@@ -10,6 +10,7 @@ class Entry
   attr_accessor :category
   attr_accessor :type
   attr_accessor :body
+  attr_accessor :base_params
   attr_accessor :expression
 
   class << self
@@ -52,6 +53,7 @@ class Entry
                        :category => record[".category"] ? record[".category"].key : nil,
                        :type => record[".type"] ? record[".type"].key : nil,
                        :body => record[".body"].to_s,
+                       :base_params => options[:search_request] ? options[:search_request].to_s : nil,
                        :expression => expression)
       end
 
@@ -129,6 +131,19 @@ class Entry
     summary = summary_by_query(options)
     summary = summary_by_head(options) if summary.blank?
     summary
+  end
+
+  def drilldown_items
+    unless @drilldown_items
+      @drilldown_items = []
+      SearchRequest::KEYS.each do |key|
+        next if key == :query || !send(key)
+        @drilldown_items << DrilldownItem.new(:param => key,
+                                              :value => send(key),
+                                              :base_params => base_params)
+      end
+    end
+    @drilldown_items
   end
 
   private
