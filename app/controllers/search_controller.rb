@@ -48,7 +48,7 @@ class SearchController < ApplicationController
   end
 
   def setup_search_result(options={})
-    search_result = Entry.search(options.merge(:search_request => @search_request))
+    search_result = Entry.search(options)
     @entries = search_result[:entries]
     @raw_entries = search_result[:raw_entries]
     @drilldown_groups = search_result[:drilldown_groups]

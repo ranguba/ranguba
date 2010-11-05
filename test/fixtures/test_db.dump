@@ -1,0 +1,36 @@
+table_create Types TABLE_HASH_KEY ShortText
+table_create Charsets TABLE_HASH_KEY ShortText
+table_create Categories TABLE_HASH_KEY ShortText
+column_create Categories title COLUMN_SCALAR Text
+table_create Entries TABLE_HASH_KEY ShortText
+column_create Entries update COLUMN_SCALAR Time
+column_create Entries title COLUMN_SCALAR Text
+column_create Entries mtime COLUMN_SCALAR Time
+column_create Entries body COLUMN_SCALAR Text
+column_create Entries author COLUMN_SCALAR ShortText
+table_create Bigram TABLE_PAT_KEY|KEY_NORMALIZE ShortText --default_tokenizer TokenBigram
+column_create Bigram Entries_body COLUMN_INDEX|WITH_POSITION Entries body
+column_create Bigram Entries_title COLUMN_INDEX|WITH_POSITION Entries title
+column_create Entries category COLUMN_SCALAR Categories
+column_create Entries charset COLUMN_SCALAR Charsets
+column_create Entries type COLUMN_SCALAR Types
+column_create Categories Entries_category COLUMN_INDEX Entries category
+column_create Charsets Entries_charset COLUMN_INDEX Entries charset
+column_create Types Entries_type COLUMN_INDEX Entries type
+load --table Types
+[
+["_key"],
+["html"],
+["plain"]
+]
+load --table Categories
+[
+["_key"],
+["test"]
+]
+load --table Charsets
+[
+["_key"],
+["utf-8"]
+]
+

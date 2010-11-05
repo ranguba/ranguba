@@ -18,7 +18,7 @@ class Entry
   class << self
   
     def table
-      @@table ||= Groonga["Entries"]
+      Groonga["Entries"]
     end
 
     def search(options={})
@@ -33,7 +33,7 @@ class Entry
       end
       expression = records.expression
 
-      options[:base_params] = options[:search_request] ? options[:search_request].to_s : nil
+      options[:base_params] = SearchRequest.new(options).to_s
       drilldown_results = drilldown_groups(options.merge(:records => records))
 
       current = options[:page]
@@ -94,7 +94,7 @@ class Entry
     def drilldown_groups(options={})
       result = {}
       [:category, :type].each do |column|
-        next unless options[column].nil?
+        next unless options[column].blank?
         group = drilldown_group(:records => options[:records],
                                 :drilldown => column,
                                 :label => "_key",
@@ -153,17 +153,11 @@ class Entry
     @type
   end
 
-  def summary(options={})
-    summary = summary_by_query(options)
-    summary = summary_by_head(options) if summary.blank?
-    summary
-  end
-
   def drilldown_items
     unless @drilldown_items
       @drilldown_items = []
       SearchRequest::KEYS.each do |key|
-        next if key == :query || !send(key)
+        next if key == :query || send(key).blank?
         @drilldown_items << DrilldownItem.new(:param => key,
                                               :value => send(key),
                                               :base_params => base_params)
@@ -172,7 +166,12 @@ class Entry
     @drilldown_items
   end
 
-  private
+  def summary(options={})
+    summary = summary_by_query(options)
+    summary = summary_by_head(options) if summary.blank?
+    summary
+  end
+
   def summary_by_head(options={})
     options = normalize_summary_options(options)
     summary = body
@@ -183,7 +182,7 @@ class Entry
   end
 
   def summary_by_query(options={})
-    return nil unless expression
+    return "" unless expression
 
     options = normalize_summary_options(options)
 
@@ -209,6 +208,7 @@ class Entry
     summarized
   end
 
+  private
   def normalize_summary_options(options={})
     options[:size] ||= DEFAULT_SUMMARY_SIZE
     options[:highlight] ||= "*%S*"

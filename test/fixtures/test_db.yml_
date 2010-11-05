@@ -1,0 +1,33 @@
+html:
+  url:      "http://www.example.com/html"
+  title:    "This is an HTML entry!"
+  type:     "html"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "html author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the HTML entry."
+
+plain:
+  url:      "http://www.example.com/plaintext"
+  title:    ""
+  type:     "plain"
+  charset:  "UTF-8"
+  category: "test"
+  author:   ""
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the plain text entry."
+
+pdf:
+  url:      "http://www.example.com/pdf"
+  title:    "This is a PDF entry!"
+  type:     "pdf"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "pdf author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the PDF entry."
+
