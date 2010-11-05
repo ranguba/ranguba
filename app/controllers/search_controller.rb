@@ -56,6 +56,7 @@ class SearchController < ApplicationController
   end
 
   def setup_search_result_title
+    return if @search_request.empty?
     if @raw_entries.total_pages > 1
       title = I18n.t("search_result_title_paginated",
                      :conditions => @search_request.to_readable_string,
