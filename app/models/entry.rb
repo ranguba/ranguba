@@ -5,6 +5,12 @@ class Entry
   DEFAULT_PAGINATION_PER_PAGE = 10
   DEFAULT_SUMMARY_SIZE = 140
 
+  attr_accessor :title
+  attr_accessor :url
+  attr_accessor :body
+  attr_accessor :category
+  attr_accessor :type
+
   attr_accessor :raw
   attr_accessor :expression
   attr_accessor :base_params
@@ -120,7 +126,7 @@ class Entry
   end
 
   def title
-    unless @title
+    if @title.nil? && raw
       @title = raw[".title"].to_s
       @title = url if @title.blank?
     end
@@ -128,19 +134,23 @@ class Entry
   end
 
   def url
-    @url ||= raw.key.key.to_s
+    @url ||= raw.key.key.to_s if raw
+    @url
   end
 
   def body
-    @body ||= raw[".body"].to_s
+    @body ||= raw[".body"].to_s if raw
+    @body
   end
 
   def category
-    @category ||= raw[".category"] ? raw[".category"].key : ""
+    @category ||= raw[".category"] ? raw[".category"].key : "" if raw
+    @category
   end
 
   def type
-    @type ||= raw[".type"] ? raw[".type"].key : ""
+    @type ||= raw[".type"] ? raw[".type"].key : "" if raw
+    @type
   end
 
   def summary(options={})
@@ -167,7 +177,7 @@ class Entry
     options = normalize_summary_options(options)
     summary = body
     if !summary.blank? && summary.size > options[:size]
-      summary = summary[0..options[:size]] + options[:separator]
+      summary = summary[0..(options[:size]-1)] + options[:separator]
     end
     summary
   end

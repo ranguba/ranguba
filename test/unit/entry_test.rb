@@ -1,8 +1,12 @@
 require 'test_helper'
 
 class EntryTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
-  test "the truth" do
-    assert true
+  def setup
+    @entry = Entry.new
+  end
+
+  def test_summary_by_head
+    @entry.body = "0123456789"
+    assert_equal "012-", @entry.summary(:size => 3, :separator => "-")
   end
 end
