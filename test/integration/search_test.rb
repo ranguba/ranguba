@@ -25,7 +25,9 @@ class SearchTest < ActionController::IntegrationTest
   def test_result_with_query
     visit "/search/query/HTML"
     assert_search_result
+  end
 
+  def test_result_with_query_including_slash
     visit "/search/query/text%2Fhtml"
     assert_search_result
   end
@@ -33,11 +35,11 @@ class SearchTest < ActionController::IntegrationTest
   private
   def assert_search_form
     assert page.has_selector?('div.search_form')
-    assert page.has_selector?('div.search_result')
+    assert page.has_no_selector?('div.search_result')
   end
 
   def assert_search_result
     assert page.has_selector?('div.search_form')
-    assert page.has_no_selector?('div.search_result')
+    assert page.has_selector?('div.search_result')
   end
 end
