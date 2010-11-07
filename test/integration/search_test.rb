@@ -39,7 +39,7 @@ class SearchTest < ActionController::IntegrationTest
                  :topic_path => ["type", "html",
                                  "query", "HTML"]
 
-    assert_visit "/search?foobar", "/search"
+    assert_visit "/search?foobar"
     assert_search_form
   end
 
@@ -83,12 +83,24 @@ class SearchTest < ActionController::IntegrationTest
                  :entries_count => 10,
                  :topic_path => ["query", "entry"]
     assert_pagination "1/2"
+
+    click_link "2"
+    assert_equal "/search/query/entry", current_path
+    assert_match /^\/search\/query\/entry?.*page=2/, current_full_path
+    assert_found :total_count => 14,
+                 :entries_count => 4,
+                 :topic_path => ["query", "entry"]
+    assert_pagination "2/2"
   end
 
   private
+  def current_full_path
+    current_url.sub(/^\w+:\/\/[^\/]+/, "")
+  end
+
   def assert_visit(path, expected_path=nil)
     visit path
-    assert_equal (expected_path || path), current_path
+    assert_equal (expected_path || path), current_full_path
   end
 
   def assert_search_form(options={})
@@ -156,9 +168,7 @@ class SearchTest < ActionController::IntegrationTest
     current = pagenum[0].to_i
 
     assert page.has_xpath?("/descendant::*[@class='pagination']/descendant::em[text()='#{current}']")
-    if current == total
-      assert page.has_xpath?("/descendant::*[@class='pagination']/descendant::a[last()][text()='#{total}']")
-    else
+    unless current == total
       assert page.has_xpath?("/descendant::*[@class='pagination']/descendant::a[last()-1][text()='#{total}']")
     end
   end
