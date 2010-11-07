@@ -21,7 +21,7 @@ class SearchRequest
     end
 
     def encode_parameter(input)
-      URI.encode(input, /[^-_.!~*'()a-zA-Z\d?@]/) # same to encodeURIComponent (in JavaScript)
+      URI.encode(input, /[^-_.!~*'()a-zA-Z\d@]/)
     end
   end
 

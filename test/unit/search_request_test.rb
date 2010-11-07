@@ -390,7 +390,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_class_ecncode_parameter
-    assert_equal "abcABC%20%2F", SearchRequest.encode_parameter("abcABC /")
+    assert_equal "abcABC%20%2F%3F", SearchRequest.encode_parameter("abcABC /?")
   end
 
   private

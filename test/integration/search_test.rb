@@ -3,13 +3,17 @@ require 'test_helper'
 require 'integration_test_helper'
 
 class SearchTest < ActionController::IntegrationTest
+  ENTRIES_PER_PAGE = 10
+
   def setup
     setup_database
     @types = []
     @categories = []
+    @entries_count = 0
     @db_source.each do |key, value|
       @types << value[:type] unless @categories.include?(value[:type])
       @categories << value[:category] unless @categories.include?(value[:category])
+      @entries_count += 1
     end
   end
 
@@ -59,16 +63,6 @@ class SearchTest < ActionController::IntegrationTest
                                       :category => @categories}
   end
 
-  def test_result_with_query_including_slash
-    assert_visit "/search/query/text%2Fhtml"
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => ["query", "text/html"],
-                 :drilldown => {:type => ["html"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
-  end
-
   def test_unknown_parameter
     assert_visit "/search/query/entry/unknown/value"
     assert_error :message => I18n.t("invalid_request_message"),
@@ -88,20 +82,6 @@ class SearchTest < ActionController::IntegrationTest
     assert_error :message => I18n.t("not_found_message"),
                  :drilldown => {:type => @types,
                                 :category => @categories}
-  end
-
-  def test_search_with_query_including_slash
-    assert_visit "/search/"
-    fill_in "search_request_query", :with => "text/html"
-    click "Search"
-
-    assert_equal "/search/query/text%2Fhtml", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => ["query", "text/html"],
-                 :drilldown => {:type => ["html"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
   end
 
   def test_no_entry_found
@@ -140,8 +120,8 @@ class SearchTest < ActionController::IntegrationTest
     click "Search"
 
     assert_equal "/search/query/entry", current_path
-    assert_found :total_count => 14,
-                 :entries_count => 10,
+    assert_found :total_count => @entries_count,
+                 :entries_count => ENTRIES_PER_PAGE,
                  :topic_path => ["query", "entry"],
                  :drilldown => {:type => @types,
                                 :category => @categories},
@@ -150,8 +130,8 @@ class SearchTest < ActionController::IntegrationTest
     click_link "2"
     assert_equal "/search/query/entry", current_path
     assert_match /^\/search\/query\/entry?.*page=2/, current_full_path
-    assert_found :total_count => 14,
-                 :entries_count => 4,
+    assert_found :total_count => @entries_count,
+                 :entries_count => @entries_count - ENTRIES_PER_PAGE,
                  :topic_path => ["query", "entry"],
                  :drilldown => {:type => @types,
                                 :category => @categories},
@@ -270,8 +250,8 @@ class SearchTest < ActionController::IntegrationTest
     test_many_entries_found
     find(:xpath, "/descendant::li[@class='search_result_drilldown_category_item']/child::a").click
     assert_equal "/search/query/entry/category/test", current_path
-    assert_found :total_count => 14,
-                 :entries_count => 10,
+    assert_found :total_count => @entries_count,
+                 :entries_count => ENTRIES_PER_PAGE,
                  :topic_path => ["query", "entry",
                                  "category", "test"],
                  :drilldown => {:type => @types},
@@ -289,6 +269,62 @@ class SearchTest < ActionController::IntegrationTest
                  :topic_path => ["type", "xml",
                                  "query", "entry"],
                  :drilldown => {:category => ["test"]},
+                 :pagination => "1/1"
+  end
+
+  def test_search_with_query_including_slash
+    assert_visit "/search/"
+    fill_in "search_request_query", :with => "text/html"
+    click "Search"
+
+    assert_equal "/search/query/text%2Fhtml", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["query", "text/html"],
+                 :drilldown => {:type => ["html"],
+                                :category => ["test"]},
+                 :pagination => "1/1"
+  end
+
+  def test_drilldown_after_search_including_slash
+    test_search_with_query_including_slash
+
+    find(:xpath, "/descendant::li[@class='search_result_drilldown_category_item']/child::a").click
+    assert_equal "/search/query/text%2Fhtml/category/test", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["query", "text/html",
+                                 "category", "test"],
+                 :drilldown => {:type => ["html"]},
+                 :pagination => "1/1"
+  end
+
+  def test_search_with_query_including_question
+    assert_visit "/search/"
+    fill_in "search_request_query", :with => "unknown type?"
+    click "Search"
+
+    assert_equal "/search/query/unknown%20type%3F", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["query", "unknown",
+                                 "query", "type?"],
+                 :drilldown => {:type => ["unknown"],
+                                :category => ["test"]},
+                 :pagination => "1/1"
+  end
+
+  def test_drilldown_after_search_including_question
+    test_search_with_query_including_question
+
+    find(:xpath, "/descendant::li[@class='search_result_drilldown_category_item']/child::a").click
+    assert_equal "/search/query/unknown%20type%3F/category/test", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["query", "unknown",
+                                 "query", "type?",
+                                 "category", "test"],
+                 :drilldown => {:type => ["unknown"]},
                  :pagination => "1/1"
   end
 

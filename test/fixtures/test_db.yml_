@@ -152,3 +152,14 @@ otp:
   update:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Impress template entry. Content type is application/vnd.oasis.opendocument.presentation-template."
 
+unknown:
+  url:      "http://www.example.com/unknown"
+  title:    ""
+  type:     "unknown"
+  charset:  "UTF-8"
+  category: "test"
+  author:   ""
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the unknown type entry. What is the type?"
+
