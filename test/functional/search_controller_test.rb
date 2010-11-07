@@ -27,6 +27,14 @@ class SearchControllerTest < ActionController::TestCase
                          :page => 2
   end
 
+  def test_request_hash_form
+    post :index,
+         :search_request => {:query => "q",
+                             :base_params => "type/t"}
+    assert_redirected_to :action => "index",
+                         :search_request => "type/t/query/q"
+  end
+
   def test_request_hash_drilldown
     post :index,
          :search_request => {:type => "t",
