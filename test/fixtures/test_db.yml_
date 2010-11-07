@@ -20,6 +20,28 @@ plain:
   update:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the plain text entry."
 
+css:
+  url:      "http://www.example.com/css"
+  title:    ""
+  type:     "css"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "css author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the CSS entry."
+
+xml:
+  url:      "http://www.example.com/xml"
+  title:    ""
+  type:     "xml"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "xml author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the XML entry."
+
 pdf:
   url:      "http://www.example.com/pdf"
   title:    "This is a PDF entry!"
@@ -75,6 +97,17 @@ odt:
   update:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Writer entry."
 
+ott:
+  url:      "http://www.example.com/ott"
+  title:    "This is an OpenOffice.org Writer template entry!"
+  type:     "vnd.oasis.opendocument.text-template"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "ott author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the OpenOffice.org Writer template entry."
+
 ods:
   url:      "http://www.example.com/ods"
   title:    "This is an OpenOffice.org Calc entry!"
@@ -86,6 +119,17 @@ ods:
   update:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Calc entry."
 
+ots:
+  url:      "http://www.example.com/ots"
+  title:    "This is an OpenOffice.org Calc template entry!"
+  type:     "vnd.oasis.opendocument.spreadsheet-template"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "ots author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the OpenOffice.org Calc template entry."
+
 odp:
   url:      "http://www.example.com/odp"
   title:    "This is an OpenOffice.org Impress entry!"
@@ -96,4 +140,15 @@ odp:
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Impress entry."
+
+otp:
+  url:      "http://www.example.com/otp"
+  title:    "This is an OpenOffice.org Impress template entry!"
+  type:     "vnd.oasis.opendocument.presentation-template"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "otp author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the OpenOffice.org Impress template entry."
 
