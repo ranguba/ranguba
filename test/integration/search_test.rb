@@ -244,6 +244,20 @@ class SearchTest < ActionController::IntegrationTest
                  :pagination => "1/2"
   end
 
+  def test_search_after_drilldown
+    test_drilldown
+
+    fill_in "search_request_query", :with => "entry"
+    click "Search"
+
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["type", "xml",
+                                 "query", "entry"],
+                 :drilldown => {:category => ["test"]},
+                 :pagination => "1/1"
+  end
+
   private
   def current_full_path
     current_url.sub(/^\w+:\/\/[^\/]+/, "")
