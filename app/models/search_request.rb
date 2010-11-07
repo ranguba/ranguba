@@ -151,21 +151,23 @@ class SearchRequest
                     :title => I18n.t("topic_path_reduce_query_item_label",
                                      :value => term),
                     :path => self.class.path(opt),
-                    :param => :query}
+                    :param => :query,
+                    :value => term}
         end
       else
         value = send(key.to_s)
         unless value.nil?
-          value = Ranguba::Customize.get(key.to_s, value)
+          label = Ranguba::Customize.get(key.to_s, value)
           type = I18n.t("column_#{key}_name")
           items << {:label => I18n.t("topic_path_item_label",
                                      :type => type,
-                                     :value => value),
+                                     :value => label),
                     :title => I18n.t("topic_path_reduce_item_label",
                                      :type => type,
-                                     :value => value),
+                                     :value => label),
                     :path => path(options.merge(:without => key)),
-                    :param => key}
+                    :param => key,
+                    :value => value}
         end
       end
     end

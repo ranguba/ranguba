@@ -343,17 +343,20 @@ class SearchRequestTest < ActiveSupport::TestCase
                              :type => I18n.t("column_type_name"),
                              :value => "t"),
             :path => "",
-            :param => :type}
+            :param => :type,
+            :value => "t"}
     query1 = {:label => "q1",
               :title => I18n.t("topic_path_reduce_query_item_label",
                                :value => "q1"),
               :path => "",
-              :param => :query}
+              :param => :query,
+              :value => "q1"}
     query2 = {:label => "q2",
               :title => I18n.t("topic_path_reduce_query_item_label",
                                :value => "q2"),
               :path => "",
-              :param => :query}
+              :param => :query,
+              :value => "q2"}
 
     type[:path] = "/base/query/q1%20q2"
     query1[:path] = "/base/type/t/query/q2"

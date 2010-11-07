@@ -2,13 +2,15 @@
   <%= render :partial => "form" %>
 
   <% unless @topic_path_items.empty? %>
-    <ul class="topic_path">
+    <ol class="topic_path">
       <% @topic_path_items.each do |item| %>
-        <li class="topic_path_item"><%= link_to item[:label],
-                                                item[:path],
-                                                :title => item[:title] %></li>
+        <li class="topic_path_item"
+            data-param="<%= item[:param] %>"
+            data-value="<%= item[:value] %>"><%= link_to item[:label],
+                                                         item[:path],
+                                                         :title => item[:title] %></li>
       <% end %>
-    </ul>
+    </ol>
   <% end %>
 
   <%= render :partial => "drilldown_groups" %>
