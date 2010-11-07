@@ -7,40 +7,40 @@ html:
   author:   "html author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the HTML entry."
+  body:     "This is the contents of the HTML entry. Content type is text/html."
 
 plain:
   url:      "http://www.example.com/plaintext"
-  title:    ""
+  title:    "This is a plain text entry!"
   type:     "plain"
   charset:  "UTF-8"
   category: "test"
   author:   ""
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the plain text entry."
+  body:     "This is the contents of the plain text entry. Content type is text/plain."
 
 css:
   url:      "http://www.example.com/css"
-  title:    ""
+  title:    "This is a CSS entry!"
   type:     "css"
   charset:  "UTF-8"
   category: "test"
   author:   "css author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the CSS entry."
+  body:     "This is the contents of the CSS entry. Content type is text/css."
 
 xml:
   url:      "http://www.example.com/xml"
-  title:    ""
+  title:    "This is an XML entry!"
   type:     "xml"
   charset:  "UTF-8"
   category: "test"
   author:   "xml author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the XML entry."
+  body:     "This is the contents of the XML entry. Content type is application/xml."
 
 pdf:
   url:      "http://www.example.com/pdf"
@@ -51,7 +51,7 @@ pdf:
   author:   "pdf author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the PDF entry."
+  body:     "This is the contents of the PDF entry. Content type is application/pdf."
 
 doc:
   url:      "http://www.example.com/doc"
@@ -62,7 +62,7 @@ doc:
   author:   "doc author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the MS Word entry."
+  body:     "This is the contents of the MS Word entry. Content type is application/msworddoc."
 
 xls:
   url:      "http://www.example.com/xls"
@@ -73,7 +73,7 @@ xls:
   author:   "xls author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the MS Excel entry."
+  body:     "This is the contents of the MS Excel entry. Content type is application/vnd.ms-excel."
 
 ppt:
   url:      "http://www.example.com/ppt"
@@ -84,7 +84,7 @@ ppt:
   author:   "ppt author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the MS PowerPoint entry."
+  body:     "This is the contents of the MS PowerPoint entry. Content type is application/vnd.ms-powerpoint."
 
 odt:
   url:      "http://www.example.com/odt"
@@ -95,7 +95,7 @@ odt:
   author:   "odt author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the OpenOffice.org Writer entry."
+  body:     "This is the contents of the OpenOffice.org Writer entry. Content type is application/vnd.oasis.opendocument.text."
 
 ott:
   url:      "http://www.example.com/ott"
@@ -106,7 +106,7 @@ ott:
   author:   "ott author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the OpenOffice.org Writer template entry."
+  body:     "This is the contents of the OpenOffice.org Writer template entry. Content type is application/vnd.oasis.opendocument.text-template."
 
 ods:
   url:      "http://www.example.com/ods"
@@ -117,7 +117,7 @@ ods:
   author:   "ods author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the OpenOffice.org Calc entry."
+  body:     "This is the contents of the OpenOffice.org Calc entry. Content type is application/vnd.oasis.opendocument.spreadsheet."
 
 ots:
   url:      "http://www.example.com/ots"
@@ -128,7 +128,7 @@ ots:
   author:   "ots author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the OpenOffice.org Calc template entry."
+  body:     "This is the contents of the OpenOffice.org Calc template entry. Content type is application/vnd.oasis.opendocument.spreadsheet-template."
 
 odp:
   url:      "http://www.example.com/odp"
@@ -139,7 +139,7 @@ odp:
   author:   "odp author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the OpenOffice.org Impress entry."
+  body:     "This is the contents of the OpenOffice.org Impress entry. Content type is application/vnd.oasis.opendocument.presentation."
 
 otp:
   url:      "http://www.example.com/otp"
@@ -150,5 +150,5 @@ otp:
   author:   "otp author"
   mtime:    2010-01-01 00:00:00 +0900
   update:   2010-01-01 00:00:00 +0900
-  body:     "This is the contents of the OpenOffice.org Impress template entry."
+  body:     "This is the contents of the OpenOffice.org Impress template entry. Content type is application/vnd.oasis.opendocument.presentation-template."
 

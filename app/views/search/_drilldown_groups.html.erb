@@ -1,10 +1,13 @@
 <% unless @drilldown_groups.empty? %>
   <ul class="drilldown_groups">
     <% @drilldown_groups.each do |name, items| %>
-      <li class="drilldown_group"><span class="drilldown_group_name"><%= name %></span><ul>
+      <li class="drilldown_group"
+          data-param="<%= items[0].param %>"><span class="drilldown_group_name"><%= name %></span><ul>
         <% items.each do |item| %>
-          <li class="drilldown_item"><%= link_to item.label_with_count,
-                                                 item.path(:base_path => @base_path) %></li>
+          <li class="drilldown_item"
+              data-param="<%= item.param %>"
+              data-value="<%= item.value %>"><%= link_to item.label_with_count,
+                                                         item.path(:base_path => @base_path) %></li>
         <% end %>
       </ul></li>
     <% end %>

@@ -5,6 +5,12 @@ require 'integration_test_helper'
 class SearchTest < ActionController::IntegrationTest
   def setup
     setup_database
+    @types = []
+    @categories = []
+    @db_source.each do |key, value|
+      @types << value[:type] unless @categories.include?(value[:type])
+      @categories << value[:category] unless @categories.include?(value[:category])
+    end
   end
 
   def teardown
@@ -13,44 +19,57 @@ class SearchTest < ActionController::IntegrationTest
 
   def test_top_page
     assert_visit "/search/"
-    assert_search_form
+    assert_search_form :drilldown => {:type => @types,
+                                      :category => @categories}
 
     assert_visit "/search"
-    assert_search_form
+    assert_search_form :drilldown => {:type => @types,
+                                      :category => @categories}
   end
 
   def test_top_page_with_query
     assert_visit "/search/query/HTML"
     assert_found :total_count => 1,
                  :entries_count => 1,
-                 :topic_path => ["query", "HTML"]
+                 :topic_path => ["query", "HTML"],
+                 :drilldown => {:type => ["html"],
+                                :category => ["test"]}
 
     assert_visit "/search?search_request[type]=html&search_request[query]=HTML",
                  "/search/type/html/query/HTML"
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => ["type", "html",
-                                 "query", "HTML"]
+                                 "query", "HTML"],
+                 :drilldown => {:category => ["test"]}
 
     assert_visit "/search?search_request[query]=HTML&search_request[base_params]=type%2Fhtml",
                  "/search/type/html/query/HTML"
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => ["type", "html",
-                                 "query", "HTML"]
+                                 "query", "HTML"],
+                 :drilldown => {:category => ["test"]}
 
     assert_visit "/search?foobar"
-    assert_search_form
+    assert_search_form :drilldown => {:type => @types,
+                                      :category => @categories}
   end
 
   def test_result_with_query_including_slash
     assert_visit "/search/query/text%2Fhtml"
-    assert_found
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["type", "html",
+                                 "query", "HTML"],
+                 :drilldown => {:type => ["html"],
+                                :category => ["test"]}
   end
 
   def test_no_entry_found
     assert_visit "/search/"
-    assert_search_form
+    assert_search_form :drilldown => {:type => @types,
+                                      :category => @categories}
     fill_in "search_request_query", :with => "notfound"
     click "Search"
 
@@ -60,7 +79,8 @@ class SearchTest < ActionController::IntegrationTest
 
   def test_one_entry_found
     assert_visit "/search/"
-    assert_search_form
+    assert_search_form :drilldown => {:type => @types,
+                                      :category => @categories}
     fill_in "search_request_query", :with => "HTML entry"
     click "Search"
 
@@ -68,20 +88,25 @@ class SearchTest < ActionController::IntegrationTest
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => ["query", "HTML",
-                                 "query", "entry"]
+                                 "query", "entry"],
+                 :drilldown => {:type => ["html"],
+                                :category => ["test"]}
     assert_no_pagination
   end
 
   def test_many_entries_found
     assert_visit "/search/"
-    assert_search_form
+    assert_search_form :drilldown => {:type => @types,
+                                      :category => @categories}
     fill_in "search_request_query", :with => "entry"
     click "Search"
 
     assert_equal "/search/query/entry", current_path
     assert_found :total_count => 14,
                  :entries_count => 10,
-                 :topic_path => ["query", "entry"]
+                 :topic_path => ["query", "entry"],
+                 :drilldown => {:type => @types,
+                                :category => @categories}
     assert_pagination "1/2"
 
     click_link "2"
@@ -89,7 +114,9 @@ class SearchTest < ActionController::IntegrationTest
     assert_match /^\/search\/query\/entry?.*page=2/, current_full_path
     assert_found :total_count => 14,
                  :entries_count => 4,
-                 :topic_path => ["query", "entry"]
+                 :topic_path => ["query", "entry"],
+                 :drilldown => {:type => @types,
+                                :category => @categories}
     assert_pagination "2/2"
   end
 
@@ -109,6 +136,11 @@ class SearchTest < ActionController::IntegrationTest
     assert page.has_no_selector?(".search_result_error_message")
     assert_no_topic_path
     assert_no_pagination
+    if options[:drilldown]
+      assert_drilldown(options[:drilldown])
+    else
+      assert_no_drilldown
+    end
   end
 
   def assert_found(options={})
@@ -120,36 +152,11 @@ class SearchTest < ActionController::IntegrationTest
     assert_total_count(options[:total_count]) unless options[:total_count].nil?
     assert_entries_count(options[:entries_count]) unless options[:entries_count].nil?
     assert_topic_path(options[:topic_path]) unless options[:topic_path].nil?
-  end
-
-  def assert_total_count(count)
-    assert page.has_content?(I18n.t("search_result_count", :count => count)),
-           "the message for 'N entry(es) found?'"
-  end
-
-  def assert_entries_count(count)
-    assert page.has_xpath?("/descendant::ol[@class='search_result_items']"+
-                           "[count(child::li[@class='search_result_item'])=#{count}]"),
-           "count of entry items"
-  end
-
-  def assert_topic_path(items)
-    assert page.has_selector?(".topic_path")
-    count = 0
-    index = 0
-    base_xpath = "/descendant::ol[@class='topic_path']/child::li[@class='topic_path_item']"
-    while index < items.size do
-      key = items[index]
-      value = items[index+1]
-      assert page.has_xpath?("#{base_xpath}[#{count+1}][@data-param='#{key}' and @data-value='#{value}']"),
-             "there should be a topic path item for #{key} = #{value} at #{count}"
-      count += 1
-      index += 2
+    if options[:drilldown]
+      assert_drilldown(options[:drilldown])
+    else
+      assert_no_drilldown
     end
-  end
-
-  def assert_no_topic_path
-    assert page.has_no_selector?(".topic_path")
   end
 
   def assert_not_found(options={})
@@ -159,6 +166,45 @@ class SearchTest < ActionController::IntegrationTest
     assert page.has_selector?(".search_result_message")
     assert page.has_content?(I18n.t("search_result_not_found_message"))
     assert_no_pagination
+    if options[:drilldown]
+      assert_drilldown(options[:drilldown])
+    else
+      assert_no_drilldown
+    end
+  end
+
+  def assert_total_count(count)
+    assert page.has_content?(I18n.t("search_result_count", :count => count)),
+           "the message for 'N entry(es) found?'\n#{page.body}"
+  end
+
+  def assert_entries_count(count)
+    assert page.has_xpath?("/descendant::ol[@class='search_result_items']"+
+                           "[count(child::li[@class='search_result_item'])=#{count}]"),
+           "count of entry items\n#{page.body}"
+  end
+
+  def assert_topic_path(items)
+    assert page.has_selector?(".topic_path")
+    count = 0
+    index = 0
+    base_xpath = "/descendant::ol[@class='topic_path']"+
+                 "/child::li[@class='topic_path_item']"
+    while index < items.size do
+      key = items[index]
+      value = items[index+1]
+      assert page.has_xpath?("#{base_xpath}[#{count+1}]"+
+                                          "[@data-param='#{key}']"+
+                                          "[@data-value='#{value}']"),
+             "there should be a topic path item for #{key} = #{value} at #{count}\n#{page.body}"
+      count += 1
+      index += 2
+    end
+  end
+
+  def assert_no_topic_path
+    assert page.has_no_selector?(".topic_path"),
+           "#{page.body}"
   end
 
   def assert_pagination(pagenum)
@@ -167,18 +213,52 @@ class SearchTest < ActionController::IntegrationTest
     total = pagenum[1].to_i
     current = pagenum[0].to_i
 
-    assert page.has_xpath?("/descendant::*[@class='pagination']/descendant::em[text()='#{current}']")
+    assert page.has_xpath?("/descendant::*[@class='pagination']"+
+                           "/descendant::em[text()='#{current}']"),
+           "#{page.body}"
     unless current == total
-      assert page.has_xpath?("/descendant::*[@class='pagination']/descendant::a[last()-1][text()='#{total}']")
+      assert page.has_xpath?("/descendant::*[@class='pagination']"+
+                             "/descendant::a[last()-1][text()='#{total}']"),
+             "#{page.body}"
     end
   end
 
   def assert_no_pagination
     assert page.has_no_selector?(".pagination"),
-           "no pagination"
+           "no pagination\n#{page.body}"
     assert page.has_no_selector?("#pagination_top"),
-           "no pagination"
+           "no pagination\n#{page.body}"
     assert page.has_no_selector?("#pagination_bottom"),
-           "no pagination"
+           "no pagination\n#{page.body}"
+  end
+
+  def assert_drilldown(groups)
+    groups_xpath = "/descendant::ul[@class='drilldown_groups']"
+    assert page.has_xpath?(groups_xpath)
+    groups_count = 0
+    groups.each do |param, group|
+      group_xpath = "/descendant::li[@class='drilldown_group']"+
+                                   "[@data-param='#{param}']"
+      assert page.has_xpath?(group_xpath),
+             "page should have drilldown group for #{param}\n#{page.body}"
+      group_count = 0
+      group.each do |value|
+        assert page.has_xpath?("/descendant::li[@class='drilldown_item']"+
+                                              "[@data-param='#{param}']"+
+                                              "[@data-value='#{value}']"),
+               "drilldown group for #{param} should have item for #{value}\n#{page.body}"
+        group_count += 1
+      end
+      assert page.has_xpath?("#{group_xpath}[count(descendant::li)=#{group_count}]"),
+             "drilldown group for #{param} should have #{group_count} item(s).\n#{page.body}"
+      groups_count += 1
+    end
+    assert page.has_xpath?("#{groups_xpath}[count(child::li)=#{groups_count}]"),
+           "page should have #{groups_count} drilldown group(s).\n#{page.body}"
+  end
+
+  def assert_no_drilldown
+    assert page.has_no_selector?(".drilldown_groups"),
+           "#{page.body}"
   end
 end
