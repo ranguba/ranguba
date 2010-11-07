@@ -150,6 +150,40 @@ class SearchTest < ActionController::IntegrationTest
                  :pagination => "1/1"
   end
 
+  def test_drilldown_twice
+    test_many_entries_found
+
+    click_link "xml (1)"
+    assert_equal "/search/query/entry/type/xml", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["query", "entry",
+                                 "type", "xml"],
+                 :drilldown => {:category => @categories},
+                 :pagination => "1/1"
+
+    click_link "test (1)"
+    assert_equal "/search/query/entry/type/xml/category/test", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["query", "entry",
+                                 "type", "xml",
+                                 "category", "test"],
+                 :pagination => "1/1"
+  end
+
+  def test_search_result_drilldown_after_search
+    test_many_entries_found
+    find(:xpath, "/descendant::li[@class='search_result_drilldown_category_item']/child::a").click
+    assert_equal "/search/query/entry/category/test", current_path
+    assert_found :total_count => 14,
+                 :entries_count => 10,
+                 :topic_path => ["query", "entry",
+                                 "category", "test"],
+                 :drilldown => {:type => @types},
+                 :pagination => "1/2"
+  end
+
   private
   def current_full_path
     current_url.sub(/^\w+:\/\/[^\/]+/, "")
@@ -217,6 +251,13 @@ class SearchTest < ActionController::IntegrationTest
     assert page.has_xpath?("/descendant::ol[@class='search_result_items']"+
                            "[count(child::li[@class='search_result_item'])=#{count}]"),
            "count of entry items\n#{page.body}"
+
+    assert page.has_xpath?("/descendant::ol[@class='search_result_items']"+
+                           "[count(descendant::li[@class='search_result_drilldown_category_item'])=#{count}]"),
+           page.body
+    assert page.has_xpath?("/descendant::ol[@class='search_result_items']"+
+                           "[count(descendant::li[@class='search_result_drilldown_type_item'])=#{count}]"),
+           page.body
   end
 
   def assert_topic_path(items)
