@@ -70,6 +70,20 @@ class SearchTest < ActionController::IntegrationTest
                  :pagination => "1/1"
   end
 
+  def test_search_with_query_including_slash
+    assert_visit "/search/"
+    fill_in "search_request_query", :with => "text/html"
+    click "Search"
+
+    assert_equal "/search/query/text%2Fhtml", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["query", "text/html"],
+                 :drilldown => {:type => ["html"],
+                                :category => ["test"]},
+                 :pagination => "1/1"
+  end
+
   def test_no_entry_found
     assert_visit "/search/"
     assert_search_form :drilldown => {:type => @types,
