@@ -4,7 +4,7 @@
   <% unless @topic_path_items.empty? %>
     <ul class="topic_path">
       <% @topic_path_items.each do |item| %>
-        <li class="topic_path_item"><%= link_to "[X] #{item[:label]}",
+        <li class="topic_path_item"><%= link_to item[:label],
                                                 item[:path],
                                                 :title => item[:title] %></li>
       <% end %>
@@ -55,7 +55,7 @@
                         :next_label => t("search_result_next_link"),
                         :id => "pagination_bottom" %>
     <% else %>
-      <p class="search_result_message><%= t("search_result_not_found_message") %></p>
+      <p class="search_result_message"><%= t("search_result_not_found_message") %></p>
     <% end %>
   </div>
 <% end %>
