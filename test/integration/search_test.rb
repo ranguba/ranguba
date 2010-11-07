@@ -33,7 +33,8 @@ class SearchTest < ActionController::IntegrationTest
                  :entries_count => 1,
                  :topic_path => ["query", "HTML"],
                  :drilldown => {:type => ["html"],
-                                :category => ["test"]}
+                                :category => ["test"]},
+                 :pagination => "1/1"
 
     assert_visit "/search?search_request[type]=html&search_request[query]=HTML",
                  "/search/type/html/query/HTML"
@@ -41,7 +42,8 @@ class SearchTest < ActionController::IntegrationTest
                  :entries_count => 1,
                  :topic_path => ["type", "html",
                                  "query", "HTML"],
-                 :drilldown => {:category => ["test"]}
+                 :drilldown => {:category => ["test"]},
+                 :pagination => "1/1"
 
     assert_visit "/search?search_request[query]=HTML&search_request[base_params]=type%2Fhtml",
                  "/search/type/html/query/HTML"
@@ -49,7 +51,8 @@ class SearchTest < ActionController::IntegrationTest
                  :entries_count => 1,
                  :topic_path => ["type", "html",
                                  "query", "HTML"],
-                 :drilldown => {:category => ["test"]}
+                 :drilldown => {:category => ["test"]},
+                 :pagination => "1/1"
 
     assert_visit "/search?foobar"
     assert_search_form :drilldown => {:type => @types,
@@ -63,7 +66,8 @@ class SearchTest < ActionController::IntegrationTest
                  :topic_path => ["type", "html",
                                  "query", "HTML"],
                  :drilldown => {:type => ["html"],
-                                :category => ["test"]}
+                                :category => ["test"]},
+                 :pagination => "1/1"
   end
 
   def test_no_entry_found
@@ -90,8 +94,8 @@ class SearchTest < ActionController::IntegrationTest
                  :topic_path => ["query", "HTML",
                                  "query", "entry"],
                  :drilldown => {:type => ["html"],
-                                :category => ["test"]}
-    assert_no_pagination
+                                :category => ["test"]},
+                 :pagination => "1/1"
   end
 
   def test_many_entries_found
@@ -106,8 +110,8 @@ class SearchTest < ActionController::IntegrationTest
                  :entries_count => 10,
                  :topic_path => ["query", "entry"],
                  :drilldown => {:type => @types,
-                                :category => @categories}
-    assert_pagination "1/2"
+                                :category => @categories},
+                 :pagination => "1/2"
 
     click_link "2"
     assert_equal "/search/query/entry", current_path
@@ -116,8 +120,34 @@ class SearchTest < ActionController::IntegrationTest
                  :entries_count => 4,
                  :topic_path => ["query", "entry"],
                  :drilldown => {:type => @types,
-                                :category => @categories}
-    assert_pagination "2/2"
+                                :category => @categories},
+                 :pagination => "2/2"
+  end
+
+  def test_drilldown
+    assert_visit "/search/"
+    assert_search_form :drilldown => {:type => @types,
+                                      :category => @categories}
+
+    click_link "xml (1)"
+    assert_equal "/search/type/xml", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["type", "xml"],
+                 :drilldown => {:category => @categories},
+                 :pagination => "1/1"
+  end
+
+  def test_drilldown_after_search
+    test_many_entries_found
+    click_link "xml (1)"
+    assert_equal "/search/query/entry/type/xml", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["query", "entry",
+                                 "type", "xml"],
+                 :drilldown => {:category => @categories},
+                 :pagination => "1/1"
   end
 
   private
@@ -156,6 +186,11 @@ class SearchTest < ActionController::IntegrationTest
       assert_drilldown(options[:drilldown])
     else
       assert_no_drilldown
+    end
+    if options[:pagination] && options[:pagination] != "1/1"
+      assert_pagination options[:pagination]
+    else
+      assert_no_pagination
     end
   end
 
