@@ -31,3 +31,69 @@ pdf:
   update:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the PDF entry."
 
+doc:
+  url:      "http://www.example.com/doc"
+  title:    "This is a MS Word entry!"
+  type:     "msworddoc"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "doc author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the MS Word entry."
+
+xls:
+  url:      "http://www.example.com/xls"
+  title:    "This is a MS Excel entry!"
+  type:     "vnd.ms-excel"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "xls author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the MS Excel entry."
+
+ppt:
+  url:      "http://www.example.com/ppt"
+  title:    "This is a MS PowerPoint entry!"
+  type:     "vnd.ms-powerpoint"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "ppt author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the MS PowerPoint entry."
+
+odt:
+  url:      "http://www.example.com/odt"
+  title:    "This is an OpenOffice.org Writer entry!"
+  type:     "vnd.oasis.opendocument.text"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "odt author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the OpenOffice.org Writer entry."
+
+ods:
+  url:      "http://www.example.com/ods"
+  title:    "This is an OpenOffice.org Calc entry!"
+  type:     "vnd.oasis.opendocument.spreadsheet"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "ods author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the OpenOffice.org Calc entry."
+
+odp:
+  url:      "http://www.example.com/odp"
+  title:    "This is an OpenOffice.org Impress entry!"
+  type:     "vnd.oasis.opendocument.presentation"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "odp author"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the OpenOffice.org Impress entry."
+
