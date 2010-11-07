@@ -23,21 +23,21 @@ class SearchTest < ActionController::IntegrationTest
     assert_visit "/search/query/HTML"
     assert_found :total_count => 1,
                  :entries_count => 1,
-                 :topic_path => {:query => "HTML"}
+                 :topic_path => ["query", "HTML"]
 
     assert_visit "/search?search_request[type]=html&search_request[query]=HTML",
                  "/search/type/html/query/HTML"
     assert_found :total_count => 1,
                  :entries_count => 1,
-                 :topic_path => {:type => "html",
-                                 :query => "HTML"}
+                 :topic_path => ["type", "html",
+                                 "query", "HTML"]
 
     assert_visit "/search?search_request[query]=HTML&search_request[base_params]=type%2Fhtml",
                  "/search/type/html/query/HTML"
     assert_found :total_count => 1,
                  :entries_count => 1,
-                 :topic_path => {:type => "html",
-                                 :query => "HTML"}
+                 :topic_path => ["type", "html",
+                                 "query", "HTML"]
 
     assert_visit "/search?foobar", "/search"
     assert_search_form
@@ -61,13 +61,14 @@ class SearchTest < ActionController::IntegrationTest
   def test_one_entry_found
     assert_visit "/search/"
     assert_search_form
-    fill_in "search_request_query", :with => "HTML"
+    fill_in "search_request_query", :with => "HTML entry"
     click "Search"
 
-    assert_equal "/search/query/HTML", current_path
+    assert_equal "/search/query/HTML%20entry", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
-                 :topic_path => {:query => "HTML"}
+                 :topic_path => ["query", "HTML",
+                                 "query", "entry"]
     assert_no_pagination
   end
 
@@ -107,14 +108,18 @@ class SearchTest < ActionController::IntegrationTest
            "count of entry items"
   end
 
-  def assert_topic_path(items=nil)
+  def assert_topic_path(items)
     assert page.has_selector?(".topic_path")
     count = 0
+    index = 0
     base_xpath = "/descendant::ol[@class='topic_path']/child::li[@class='topic_path_item']"
-    items.each do |key, value|
+    while index < items.size do
+      key = items[index]
+      value = items[index+1]
       assert page.has_xpath?("#{base_xpath}[#{count+1}][@data-param='#{key}' and @data-value='#{value}']"),
              "there should be a topic path item for #{key} = #{value} at #{count}"
       count += 1
+      index += 2
     end
   end
 
