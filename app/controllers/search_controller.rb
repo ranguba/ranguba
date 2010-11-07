@@ -10,7 +10,7 @@ class SearchController < ApplicationController
     end
 
     @search_request = SearchRequest.new
-    @search_request.parse(params[:search_request])
+    @search_request.parse(raw_search_request)
     @search_request_params = @search_request.to_hash
 
     if @search_request.valid?
@@ -42,6 +42,19 @@ class SearchController < ApplicationController
   end
 
   private
+  # I have to use this instead of params[:search_request], because "%2F"
+  # in urls are always unescaped for by Rails itself. So, if the path is
+  # "query/text%2Fhtml", params[:search_request] will be "query/text/html".
+  # To avoid this problem, I get the raw version of the part of the path
+  # from the PATH_INFO.
+  def raw_search_request
+    path = request.env["PATH_INFO"]
+    base = url_for(:controller => params[:controller],
+                   :action => params[:action],
+                   :only_path => true)
+    path.sub(base, "").sub(/\?.*$/, "")
+  end
+
   def handle_bad_request
     @bad_request = @search_request
     @search_request = SearchRequest.new
@@ -68,5 +81,4 @@ class SearchController < ApplicationController
     end
     @title = [title, Ranguba::Customize.title].join(I18n.t("title_delimiter"))
   end
-
 end

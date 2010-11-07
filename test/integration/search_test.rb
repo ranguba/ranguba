@@ -63,8 +63,7 @@ class SearchTest < ActionController::IntegrationTest
     assert_visit "/search/query/text%2Fhtml"
     assert_found :total_count => 1,
                  :entries_count => 1,
-                 :topic_path => ["type", "html",
-                                 "query", "HTML"],
+                 :topic_path => ["query", "text/html"],
                  :drilldown => {:type => ["html"],
                                 :category => ["test"]},
                  :pagination => "1/1"
