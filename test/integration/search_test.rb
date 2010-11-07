@@ -72,6 +72,19 @@ class SearchTest < ActionController::IntegrationTest
     assert_no_pagination
   end
 
+  def test_many_entries_found
+    assert_visit "/search/"
+    assert_search_form
+    fill_in "search_request_query", :with => "entry"
+    click "Search"
+
+    assert_equal "/search/query/entry", current_path
+    assert_found :total_count => 14,
+                 :entries_count => 10,
+                 :topic_path => ["query", "entry"]
+    assert_pagination "1/2"
+  end
+
   private
   def assert_visit(path, expected_path=nil)
     visit path
@@ -134,6 +147,20 @@ class SearchTest < ActionController::IntegrationTest
     assert page.has_selector?(".search_result_message")
     assert page.has_content?(I18n.t("search_result_not_found_message"))
     assert_no_pagination
+  end
+
+  def assert_pagination(pagenum)
+    assert page.has_selector?(".pagination")
+    pagenum = pagenum.split("/")
+    total = pagenum[1].to_i
+    current = pagenum[0].to_i
+
+    assert page.has_xpath?("/descendant::*[@class='pagination']/descendant::em[text()='#{current}']")
+    if current == total
+      assert page.has_xpath?("/descendant::*[@class='pagination']/descendant::a[last()][text()='#{total}']")
+    else
+      assert page.has_xpath?("/descendant::*[@class='pagination']/descendant::a[last()-1][text()='#{total}']")
+    end
   end
 
   def assert_no_pagination
