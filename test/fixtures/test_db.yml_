@@ -11,7 +11,7 @@ html:
 
 plain:
   url:      "http://www.example.com/plaintext"
-  title:    "This is a plain text entry!"
+  title:    ""
   type:     "plain"
   charset:  "UTF-8"
   category: "test"
@@ -22,7 +22,7 @@ plain:
 
 css:
   url:      "http://www.example.com/css"
-  title:    "This is a CSS entry!"
+  title:    ""
   type:     "css"
   charset:  "UTF-8"
   category: "test"
@@ -33,7 +33,7 @@ css:
 
 xml:
   url:      "http://www.example.com/xml"
-  title:    "This is an XML entry!"
+  title:    ""
   type:     "xml"
   charset:  "UTF-8"
   category: "test"

@@ -56,9 +56,9 @@ class EntryTest < ActiveSupport::TestCase
     # with query
     entry = get_first_entry(:query => "HTML")
     assert_equal entry.body[0..9]+"-", entry.summary_by_head(options)
-    assert_equal "-the[ HTML] e-",
+    assert_equal "-the[ HTML] e--text/[html].-",
                  entry.summary_by_query(options)
-    assert_equal "-the[ HTML] e-",
+    assert_equal "-the[ HTML] e--text/[html].-",
                  entry.summary(options)
   end
 
