@@ -70,6 +70,27 @@ class SearchTest < ActionController::IntegrationTest
                  :pagination => "1/1"
   end
 
+  def test_unknown_parameter
+    assert_visit "/searc/query/entry/unknown/value"
+    assert_error :message => I18n.t("invalid_request_message"),
+                 :drilldown => {:type => @types,
+                                :category => @categories}
+  end
+
+  def test_invalid_parameter
+    assert_visit "/searc/query"
+    assert_error :message => I18n.t("invalid_request_message"),
+                 :drilldown => {:type => @types,
+                                :category => @categories}
+  end
+
+  def test_invalid_pagination
+    assert_visit "/searc/query/entry?page=9999"
+    assert_error :message => I18n.t("not_found_message"),
+                 :drilldown => {:type => @types,
+                                :category => @categories}
+  end
+
   def test_search_with_query_including_slash
     assert_visit "/search/"
     fill_in "search_request_query", :with => "text/html"
@@ -322,6 +343,21 @@ class SearchTest < ActionController::IntegrationTest
     assert page.has_no_selector?(".search_result_items")
     assert page.has_selector?(".search_result_message")
     assert page.has_content?(I18n.t("search_result_not_found_message"))
+    assert_no_pagination
+    if options[:drilldown]
+      assert_drilldown(options[:drilldown])
+    else
+      assert_no_drilldown
+    end
+  end
+
+  def assert_error(options={})
+    assert page.has_selector?(".search_form")
+    assert page.has_selector?(".search_result")
+    assert page.has_no_selector?(".search_result_items")
+    assert page.has_selector?(".search_result_error_message")
+    assert page.has_content?(options[:message]) unless options[:message].nil?
+    assert_no_topic_path
     assert_no_pagination
     if options[:drilldown]
       assert_drilldown(options[:drilldown])
