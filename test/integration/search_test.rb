@@ -71,21 +71,21 @@ class SearchTest < ActionController::IntegrationTest
   end
 
   def test_unknown_parameter
-    assert_visit "/searc/query/entry/unknown/value"
+    assert_visit "/search/query/entry/unknown/value"
     assert_error :message => I18n.t("invalid_request_message"),
                  :drilldown => {:type => @types,
                                 :category => @categories}
   end
 
   def test_invalid_parameter
-    assert_visit "/searc/query"
+    assert_visit "/search/query"
     assert_error :message => I18n.t("invalid_request_message"),
                  :drilldown => {:type => @types,
                                 :category => @categories}
   end
 
   def test_invalid_pagination
-    assert_visit "/searc/query/entry?page=9999"
+    assert_visit "/search/query/entry?page=9999"
     assert_error :message => I18n.t("not_found_message"),
                  :drilldown => {:type => @types,
                                 :category => @categories}
@@ -304,9 +304,9 @@ class SearchTest < ActionController::IntegrationTest
   end
 
   def assert_search_form(options={})
-    assert page.has_selector?(".search_form")
-    assert page.has_no_selector?(".search_result")
-    assert page.has_no_selector?(".search_result_error_message")
+    assert page.has_selector?(".search_form"), page.body
+    assert page.has_no_selector?(".search_result"), page.body
+    assert page.has_no_selector?(".search_result_error_message"), page.body
     assert_no_topic_path
     assert_no_pagination
     if options[:drilldown]
@@ -317,10 +317,10 @@ class SearchTest < ActionController::IntegrationTest
   end
 
   def assert_found(options={})
-    assert page.has_selector?(".search_form")
-    assert page.has_selector?(".search_result")
-    assert page.has_selector?(".search_result_items")
-    assert page.has_no_selector?(".search_result_error_message")
+    assert page.has_selector?(".search_form"), page.body
+    assert page.has_selector?(".search_result"), page.body
+    assert page.has_selector?(".search_result_items"), page.body
+    assert page.has_no_selector?(".search_result_error_message"), page.body
 
     assert_total_count(options[:total_count]) unless options[:total_count].nil?
     assert_entries_count(options[:entries_count]) unless options[:entries_count].nil?
@@ -338,11 +338,11 @@ class SearchTest < ActionController::IntegrationTest
   end
 
   def assert_not_found(options={})
-    assert page.has_selector?(".search_form")
-    assert page.has_selector?(".search_result")
-    assert page.has_no_selector?(".search_result_items")
-    assert page.has_selector?(".search_result_message")
-    assert page.has_content?(I18n.t("search_result_not_found_message"))
+    assert page.has_selector?(".search_form"), page.body
+    assert page.has_selector?(".search_result"), page.body
+    assert page.has_no_selector?(".search_result_items"), page.body
+    assert page.has_selector?(".search_result_message"), page.body
+    assert page.has_content?(I18n.t("search_result_not_found_message")), page.body
     assert_no_pagination
     if options[:drilldown]
       assert_drilldown(options[:drilldown])
@@ -352,11 +352,11 @@ class SearchTest < ActionController::IntegrationTest
   end
 
   def assert_error(options={})
-    assert page.has_selector?(".search_form")
-    assert page.has_selector?(".search_result")
-    assert page.has_no_selector?(".search_result_items")
-    assert page.has_selector?(".search_result_error_message")
-    assert page.has_content?(options[:message]) unless options[:message].nil?
+    assert page.has_selector?(".search_form"), page.body
+    assert page.has_selector?(".search_result"), page.body
+    assert page.has_no_selector?(".search_result_items"), page.body
+    assert page.has_selector?(".search_result_error_message"), page.body
+    assert page.has_content?(options[:message]), page.body unless options[:message].nil?
     assert_no_topic_path
     assert_no_pagination
     if options[:drilldown]
@@ -385,7 +385,7 @@ class SearchTest < ActionController::IntegrationTest
   end
 
   def assert_topic_path(items)
-    assert page.has_selector?(".topic_path")
+    assert page.has_selector?(".topic_path"), page.body
     count = 0
     index = 0
     base_xpath = "/descendant::ol[@class='topic_path']"+
@@ -403,38 +403,34 @@ class SearchTest < ActionController::IntegrationTest
   end
 
   def assert_no_topic_path
-    assert page.has_no_selector?(".topic_path"),
-           "#{page.body}"
+    assert page.has_no_selector?(".topic_path"), page.body
   end
 
   def assert_pagination(pagenum)
-    assert page.has_selector?(".pagination")
+    assert page.has_selector?(".pagination"), page.body
     pagenum = pagenum.split("/")
     total = pagenum[1].to_i
     current = pagenum[0].to_i
 
     assert page.has_xpath?("/descendant::*[@class='pagination']"+
                            "/descendant::em[text()='#{current}']"),
-           "#{page.body}"
+           page.body
     unless current == total
       assert page.has_xpath?("/descendant::*[@class='pagination']"+
                              "/descendant::a[last()-1][text()='#{total}']"),
-             "#{page.body}"
+             page.body
     end
   end
 
   def assert_no_pagination
-    assert page.has_no_selector?(".pagination"),
-           "no pagination\n#{page.body}"
-    assert page.has_no_selector?("#pagination_top"),
-           "no pagination\n#{page.body}"
-    assert page.has_no_selector?("#pagination_bottom"),
-           "no pagination\n#{page.body}"
+    assert page.has_no_selector?(".pagination"), page.body
+    assert page.has_no_selector?("#pagination_top"), page.body
+    assert page.has_no_selector?("#pagination_bottom"), page.body
   end
 
   def assert_drilldown(groups)
     groups_xpath = "/descendant::ul[@class='drilldown_groups']"
-    assert page.has_xpath?(groups_xpath)
+    assert page.has_xpath?(groups_xpath), page.body
     groups_count = 0
     groups.each do |param, group|
       group_xpath = "/descendant::li[@class='drilldown_group']"+
@@ -458,7 +454,6 @@ class SearchTest < ActionController::IntegrationTest
   end
 
   def assert_no_drilldown
-    assert page.has_no_selector?(".drilldown_groups"),
-           "#{page.body}"
+    assert page.has_no_selector?(".drilldown_groups"), page.body
   end
 end
