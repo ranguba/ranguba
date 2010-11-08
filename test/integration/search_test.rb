@@ -127,7 +127,7 @@ class SearchTest < ActionController::IntegrationTest
                                 :category => @categories},
                  :pagination => "1/2"
 
-    click_link "2"
+    click_link_or_button"2"
     assert_equal "/search/query/entry", current_path
     assert_match /^\/search\/query\/entry?.*page=2/, current_full_path
     assert_found :total_count => @entries_count,
@@ -251,7 +251,7 @@ class SearchTest < ActionController::IntegrationTest
 
   def test_drilldown_after_search
     test_many_entries_found
-    click_link "xml (1)"
+    click_link_or_button"xml (1)"
     assert_equal "/search/query/entry/type/xml", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -264,7 +264,7 @@ class SearchTest < ActionController::IntegrationTest
   def test_drilldown_twice
     test_many_entries_found
 
-    click_link "html (1)"
+    click_link_or_button"html (1)"
     assert_equal "/search/query/entry/type/html", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -273,7 +273,7 @@ class SearchTest < ActionController::IntegrationTest
                  :drilldown => {:category => @categories},
                  :pagination => "1/1"
 
-    click_link "test (1)"
+    click_link_or_button"test (1)"
     assert_equal "/search/query/entry/type/html/category/test", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -285,9 +285,9 @@ class SearchTest < ActionController::IntegrationTest
 
   def test_drilldown_twice_with_multiple_queries
     test_one_entry_found
-    click_link "html (1)"
+    click_link_or_button"html (1)"
     assert_equal "/search/query/HTML%20entry/type/html", current_path
-    click_link "test (1)"
+    click_link_or_button"test (1)"
     assert_equal "/search/query/HTML%20entry/type/html/category/test", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
