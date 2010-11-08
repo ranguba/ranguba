@@ -6,9 +6,22 @@
       <% @topic_path_items.each do |item| %>
         <li class="topic_path_item"
             data-param="<%= item[:param] %>"
-            data-value="<%= item[:value] %>"><%= link_to item[:label],
-                                                         item[:path],
-                                                         :title => item[:title] %></li>
+            data-value="<%= item[:value] %>">
+            <% if @topic_path_items.last == item %>
+              <span class="topic_path_current_label"><%= item[:label] %></span>
+            <% else %>
+              <%= link_to item[:label],
+                          item[:path],
+                          :title => item[:title],
+                          :class => "topic_path_link" %>
+            <% end %>
+            <%= link_to image_tag("delete.png",
+                                  :alt => item[:reduce_title],
+                                  :size => "16x16"),
+                        item[:reduce_path],
+                        :title => item[:reduce_title],
+                        :class => "topic_path_reduce_link" %>
+        </li>
       <% end %>
     </ol>
   <% end %>

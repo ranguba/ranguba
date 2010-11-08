@@ -339,34 +339,69 @@ class SearchRequestTest < ActiveSupport::TestCase
     type = {:label => I18n.t("topic_path_item_label",
                              :type => I18n.t("column_type_name"),
                              :value => "t"),
-            :title => I18n.t("topic_path_reduce_item_label",
-                             :type => I18n.t("column_type_name"),
-                             :value => "t"),
+            :title => "",
             :path => "",
+            :reduce_title => I18n.t("topic_path_reduce_item_label",
+                                    :type => I18n.t("column_type_name"),
+                                    :value => "t"),
+            :reduce_path => "",
             :param => :type,
             :value => "t"}
     query1 = {:label => "q1",
-              :title => I18n.t("topic_path_reduce_query_item_label",
-                               :value => "q1"),
+              :title => "",
               :path => "",
+              :reduce_title => I18n.t("topic_path_reduce_query_item_label",
+                                      :value => "q1"),
+              :reduce_path => "",
               :param => :query,
               :value => "q1"}
     query2 = {:label => "q2",
-              :title => I18n.t("topic_path_reduce_query_item_label",
-                               :value => "q2"),
+              :title => "",
               :path => "",
+              :reduce_title => I18n.t("topic_path_reduce_query_item_label",
+                                      :value => "q2"),
+              :reduce_path => "",
               :param => :query,
               :value => "q2"}
 
-    type[:path] = "/base/query/q1%20q2"
-    query1[:path] = "/base/type/t/query/q2"
-    query2[:path] = "/base/type/t/query/q1"
+    topic_path_request = SearchRequest.new
+
+    topic_path_request.type = "t"
+    type[:title] = topic_path_request.to_readable_string
+    type[:path] = "/base/type/t"
+    type[:reduce_path] = "/base/query/q1%20q2"
+
+    topic_path_request.query = "q1"
+    query1[:title] = topic_path_request.to_readable_string
+    query1[:path] = "/base/type/t/query/q1"
+    query1[:reduce_path] = "/base/type/t/query/q2"
+
+    topic_path_request.query = "q1 q2"
+    query2[:title] = topic_path_request.to_readable_string
+    query2[:path] = "/base/type/t/query/q1%20q2"
+    query2[:reduce_path] = "/base/type/t/query/q1"
+
     assert_equal [type, query1, query2],
                  @request.topic_path_items(:base_path => "/base")
 
-    type[:path] = "/base/query/q1%20q2"
-    query1[:path] = "/base/query/q2/type/t"
-    query2[:path] = "/base/query/q1/type/t"
+
+    topic_path_request = SearchRequest.new
+
+    topic_path_request.query = "q1"
+    query1[:title] = topic_path_request.to_readable_string
+    query1[:path] = "/base/query/q1"
+    query1[:reduce_path] = "/base/query/q2/type/t"
+
+    topic_path_request.query = "q1 q2"
+    query2[:title] = topic_path_request.to_readable_string
+    query2[:path] = "/base/query/q1%20q2"
+    query2[:reduce_path] = "/base/query/q1/type/t"
+
+    topic_path_request.type = "t"
+    type[:title] = topic_path_request.to_readable_string
+    type[:path] = "/base/type/t/query/q1%20q2"
+    type[:reduce_path] = "/base/query/q1%20q2"
+
     assert_equal [query1, query2, type],
                  @request.topic_path_items(:base_path => "/base", :canonical => true)
   end

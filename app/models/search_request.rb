@@ -38,19 +38,19 @@ class SearchRequest
   end
 
   def query=(value)
-    @query = value
+    @query = value.strip
     @ordered_keys = @ordered_keys - [:query]
     @ordered_keys << :query
   end
 
   def category=(value)
-    @category = value
+    @category = value.strip
     @ordered_keys = @ordered_keys - [:category]
     @ordered_keys << :category
   end
 
   def type=(value)
-    @type = value
+    @type = value.strip
     @ordered_keys = @ordered_keys - [:type]
     @ordered_keys << :type
   end
@@ -140,17 +140,22 @@ class SearchRequest
 
   def topic_path_items(options={})
     items = []
+    topic_path_request = SearchRequest.new
     ordered_keys(options).each do |key|
       case key
       when :query
         next if query.blank?
         terms = query.split
         terms.each do |term|
+          topic_path_request.query ||= ""
+          topic_path_request.query += " "+term
           opt = to_hash.merge(options).merge(:query => (terms - [term]).join(" "))
           items << {:label => term,
-                    :title => I18n.t("topic_path_reduce_query_item_label",
-                                     :value => term),
-                    :path => self.class.path(opt),
+                    :title => topic_path_request.to_readable_string(options),
+                    :path => topic_path_request.path(options),
+                    :reduce_title => I18n.t("topic_path_reduce_query_item_label",
+                                            :value => term),
+                    :reduce_path => self.class.path(opt),
                     :param => :query,
                     :value => term}
         end
@@ -159,13 +164,16 @@ class SearchRequest
         unless value.nil?
           label = Ranguba::Customize.get(key.to_s, value)
           type = I18n.t("column_#{key}_name")
+          topic_path_request.send("#{key}=", value)
           items << {:label => I18n.t("topic_path_item_label",
                                      :type => type,
                                      :value => label),
-                    :title => I18n.t("topic_path_reduce_item_label",
-                                     :type => type,
-                                     :value => label),
-                    :path => path(options.merge(:without => key)),
+                    :title => topic_path_request.to_readable_string(options),
+                    :path => topic_path_request.path(options),
+                    :reduce_title => I18n.t("topic_path_reduce_item_label",
+                                            :type => type,
+                                            :value => label),
+                    :reduce_path => path(options.merge(:without => key)),
                     :param => key,
                     :value => value}
         end

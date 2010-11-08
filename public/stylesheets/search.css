@@ -60,10 +60,8 @@
   content: none;
 }
 
-.topic_path_item a {
-  background: url("../images/delete.png") no-repeat 0 0;
-  padding-left: 18px;
-  min-height: 16px;
+.topic_path_item a img {
+  border: 0 none;
 }
 
 /* search results */
