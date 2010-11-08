@@ -399,7 +399,7 @@ class SearchRequestTest < ActiveSupport::TestCase
 
     topic_path_request.type = "t"
     type[:title] = topic_path_request.to_readable_string
-    type[:path] = "/base/type/t/query/q1%20q2"
+    type[:path] = "/base/query/q1%20q2/type/t"
     type[:reduce_path] = "/base/query/q1%20q2"
 
     assert_equal [query1, query2, type],

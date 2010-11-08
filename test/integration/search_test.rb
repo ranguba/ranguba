@@ -152,7 +152,7 @@ class SearchTest < ActionController::IntegrationTest
                  :topic_path => ["query", "HTML",
                                  "query", "entry",
                                  "type", "html"],
-                 :drilldown => {:category => "test"},
+                 :drilldown => {:category => ["test"]},
                  :pagination => "1/1"
 
     # step back again
@@ -166,7 +166,7 @@ class SearchTest < ActionController::IntegrationTest
                  :topic_path => ["query", "HTML",
                                  "query", "entry"],
                  :drilldown => {:type => ["html"],
-                                :category => "test"},
+                                :category => ["test"]},
                  :pagination => "1/1"
   end
 
@@ -183,7 +183,7 @@ class SearchTest < ActionController::IntegrationTest
                  :topic_path => ["query", "HTML",
                                  "query", "entry"],
                  :drilldown => {:type => ["html"],
-                                :category => "test"},
+                                :category => ["test"]},
                  :pagination => "1/1"
   end
 
@@ -485,7 +485,7 @@ class SearchTest < ActionController::IntegrationTest
                                 "[@data-value='#{value}']"
       assert page.has_xpath?(item_xpath),
              "there should be a topic path item for #{key} = #{value} at #{count}\n#{page.body}"
-      if index == items.size-1
+      if index == items.size-2
         assert page.has_xpath?("#{item_xpath}/child::span[@class='topic_path_current_label']"),
                "there should be a topic path label for #{key} = #{value} at #{count}\n#{page.body}"
       else
