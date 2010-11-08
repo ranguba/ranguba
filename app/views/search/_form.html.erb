@@ -1,5 +1,5 @@
 <div class="search_form">
-<% form_for(@search_request,
+<%= form_for(@search_request,
             :url => {:controller => "search",
                      :action => "index"}) do |f| %>
   <p><%= f.text_field :query, :size => 25 %><%= submit_tag t("search_button_label") %></p>
