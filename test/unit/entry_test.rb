@@ -96,6 +96,37 @@ class EntryTest < ActiveSupport::TestCase
                           :to_s => "query/HTML/type/html"
   end
 
+  def test_class_search_with_multibytes_query
+    result = Entry.search(:query => "一太郎")
+    encoded = SearchRequest.encode_parameter("一太郎")
+
+    assert_equal Array, result[:entries].class
+    assert_equal 1, result[:entries].size
+    assert_equal Entry, result[:entries][0].class
+
+    assert_equal Array, result[:raw_entries].class
+    assert_equal 1, result[:raw_entries].size
+    assert_equal Groonga::Record, result[:raw_entries][0].class
+
+    groups = result[:drilldown_groups]
+    assert_equal Hash, groups.class
+    assert_equal 2, groups.size
+
+    keys = groups.keys
+    assert_equal Array, groups[keys[0]].class
+    assert_equal 1, groups[keys[0]].size
+    assert_drilldown_item groups[keys[0]][0],
+                          :param => :category,
+                          :value => "test",
+                          :to_s => "query/#{encoded}/category/test"
+    assert_equal Array, groups[keys[1]].class
+    assert_equal 1, groups[keys[1]].size
+    assert_drilldown_item groups[keys[1]][0],
+                          :param => :type,
+                          :value => "jxw",
+                          :to_s => "query/#{encoded}/type/jxw"
+  end
+
   def test_class_add
     result = Entry.search(:query => "HTML")
     assert_equal 1, result[:entries].size

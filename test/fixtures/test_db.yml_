@@ -163,3 +163,14 @@ unknown:
   update:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the unknown type entry. What is the type?"
 
+jxw:
+  url:      "http://www.example.com/jxw"
+  title:    "一太郎のドキュメント"
+  type:     "jxw"
+  charset:  "UTF-8"
+  category: "test"
+  author:   "一太郎"
+  mtime:    2010-01-01 00:00:00 +0900
+  update:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the Ichitaro entry. Content type is application/jxw."
+

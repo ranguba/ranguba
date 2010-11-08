@@ -324,6 +324,21 @@ class SearchTest < ActionController::IntegrationTest
                  :pagination => "1/1"
   end
 
+  def test_search_with_multibytes_query
+    assert_visit "/search/"
+    fill_in "search_request_query", :with => "一太郎のドキュメント"
+    click "Search"
+
+    encoded = SearchRequest.encode_parameter("一太郎のドキュメント")
+    assert_equal "/search/query/#{encoded}", current_path
+    assert_found :total_count => 1,
+                 :entries_count => 1,
+                 :topic_path => ["query", "一太郎のドキュメント"],
+                 :drilldown => {:type => ["jxw"],
+                                :category => ["test"]},
+                 :pagination => "1/1"
+  end
+
   def test_search_with_query_including_slash
     assert_visit "/search/"
     fill_in "search_request_query", :with => "text/html"
