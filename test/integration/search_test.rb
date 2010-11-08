@@ -89,7 +89,7 @@ class SearchTest < ActionController::IntegrationTest
     assert_search_form :drilldown => {:type => @types,
                                       :category => @categories}
     fill_in "search_request_query", :with => "notfound"
-    click "Search"
+    click_link_or_button "Search"
 
     assert_equal "/search/query/notfound", current_path
     assert_not_found
@@ -100,7 +100,7 @@ class SearchTest < ActionController::IntegrationTest
     assert_search_form :drilldown => {:type => @types,
                                       :category => @categories}
     fill_in "search_request_query", :with => "HTML entry"
-    click "Search"
+    click_link_or_button "Search"
 
     assert_equal "/search/query/HTML%20entry", current_path
     assert_found :total_count => 1,
@@ -117,7 +117,7 @@ class SearchTest < ActionController::IntegrationTest
     assert_search_form :drilldown => {:type => @types,
                                       :category => @categories}
     fill_in "search_request_query", :with => "entry"
-    click "Search"
+    click_link_or_button "Search"
 
     assert_equal "/search/query/entry", current_path
     assert_found :total_count => @entries_count,
@@ -240,7 +240,7 @@ class SearchTest < ActionController::IntegrationTest
     assert_search_form :drilldown => {:type => @types,
                                       :category => @categories}
 
-    click_link "xml (1)"
+    click_link_or_button "xml (1)"
     assert_equal "/search/type/xml", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -314,7 +314,7 @@ class SearchTest < ActionController::IntegrationTest
     test_drilldown
 
     fill_in "search_request_query", :with => "entry"
-    click "Search"
+    click_link_or_button "Search"
 
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -327,7 +327,7 @@ class SearchTest < ActionController::IntegrationTest
   def test_search_with_multibytes_query
     assert_visit "/search/"
     fill_in "search_request_query", :with => "一太郎のドキュメント"
-    click "Search"
+    click_link_or_button "Search"
 
     encoded = SearchRequest.encode_parameter("一太郎のドキュメント")
     assert_equal "/search/query/#{encoded}", current_path
@@ -342,7 +342,7 @@ class SearchTest < ActionController::IntegrationTest
   def test_search_with_query_including_slash
     assert_visit "/search/"
     fill_in "search_request_query", :with => "text/html"
-    click "Search"
+    click_link_or_button "Search"
 
     assert_equal "/search/query/text%2Fhtml", current_path
     assert_found :total_count => 1,
@@ -369,7 +369,7 @@ class SearchTest < ActionController::IntegrationTest
   def test_search_with_query_including_question
     assert_visit "/search/"
     fill_in "search_request_query", :with => "unknown type?"
-    click "Search"
+    click_link_or_button "Search"
 
     assert_equal "/search/query/unknown%20type%3F", current_path
     assert_found :total_count => 1,
