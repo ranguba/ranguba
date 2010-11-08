@@ -8,7 +8,7 @@ require 'ranguba/database'
 
 class Ranguba::Indexer
   attr_accessor :wget, :log_file, :url_prefix, :level, :accept,
-                :reject, :category_file, :tmpdir, :auto_delete,
+                :reject, :tmpdir, :auto_delete,
                 :ignore_erros, :debug
 
   def accept=(val)
@@ -28,8 +28,6 @@ class Ranguba::Indexer
     @level = 5
     @accept = %w[html doc xls ppt pdf]
     @reject = []
-    @category_file = nil
-    @category_table = {}
     @tmpdir = nil
     @auto_delete = false
     @ignore_erros = false
@@ -67,9 +65,6 @@ EOS
     end
     opts.define("-R", "--reject=LIST", Array) do |v|
       @reject.concat(v)
-    end
-    opts.define("-c", "--category-file=CATEGORY_FILE") do |v|
-      @category_file = v
     end
     opts.define("-d", "--tmpdir=TMPDIR") do |v|
       @tmpdir = v
@@ -118,16 +113,8 @@ EOS
       # crawl
     end
 
-    if @category_file
-      File.foreach(@category_file) do |line|
-        next if /^\s*(?#|$)/ =~ line
-        cat, title = line.strip.split(/\t+/)
-        @category_table[cat] ||= title
-      end
-    end
-
     unless process
-      if args.empty? and (args = @category_table.keys).empty?
+      if args.empty? and (args = Ranguba::Customize.category_definitions.keys).empty?
         raise OptionParser::MissingArgument, "no URL"
         return
       end
@@ -257,9 +244,9 @@ EOS
     mtime ||= File.mtime(path) if path
     {
       title: meta["title"],
-      type: mime_type_to_filetype(response["content-type"] || meta["mime-type"] || ""),
+      type: Ranguba::Customize.normalize_type(response["content-type"] || meta["mime-type"] || ""),
       charset: response["charset"] || meta["charset"] || "",
-      category: get_category(url) || "",
+      category: Ranguba::Customize.category_for_url(url) || "",
       author: get_author(meta) || "",
       mtime: mtime,
       update: response["x-update-time"],
@@ -267,19 +254,8 @@ EOS
   end
 
   private
-
-  def get_category(url)
-    cat, title = @category_table.select {|c, t| url.start_with?(c)}.max_by {|c, t| c.length}
-    title
-  end
-
   def get_author(meta)
     meta["author"]
-  end
-
-  def mime_type_to_filetype(mime_type)
-    filetype = mime_type.sub(/^[^\/]+\//, "")
-    filetype.blank? ? "unknown" : filetype
   end
 end
 

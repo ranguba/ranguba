@@ -1,0 +1,5 @@
+text/html	html
+application/xhtml+xml	html
+text/plain	plain
+application/pdf	pdf
+

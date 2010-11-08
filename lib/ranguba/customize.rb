@@ -7,6 +7,9 @@ module Ranguba
       @@categories = {}
       @@types = {}
 
+      @@category_definitions = nil
+      @@type_definitions = nil
+
       def title
         unless @@titles[I18n.locale]
           title = read("#{base}/title.#{I18n.locale.to_s}.txt").strip
@@ -38,6 +41,20 @@ module Ranguba
         send(table.to_s, key)
       end
 
+      def category_for_url(url="")
+        prefix, category = category_definitions.select do |prefix, category|
+          url.start_with?(prefix)
+        end.max_by do |prefix, category|
+          prefix.length
+        end
+        category.blank? ? "unknown" : category
+      end
+
+      def normalize_type(source="")
+        type = type_for_mime(source) || source.gsub(/^[^\/]+\/|\s*;\s*.*\z/, "").strip
+        type.blank? ? "unknown" : type
+      end
+
       private
       def base
        Ranguba::Application.config.customize_base_path
@@ -57,6 +74,24 @@ module Ranguba
           hash[parts[0]] = parts[1]
         end
         hash
+      end
+
+      def category_definitions
+        @@category_definitions ||= read_hash("#{base}/categories.txt")
+      end
+
+      def type_definitions
+        @@type_definitions ||= read_hash("#{base}/types.txt")
+      end
+
+      def type_for_mime(source)
+        source = source.sub(/\s*;\s*.*\z/, "").strip
+        mime, type = type_definitions.select do |mime, type|
+          source == mime
+        end.max_by do |mime, type|
+          mime.length
+        end
+        type
       end
     end
   end
