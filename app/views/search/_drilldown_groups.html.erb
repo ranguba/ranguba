@@ -2,7 +2,9 @@
   <ul class="drilldown_groups">
     <% @drilldown_groups.each do |name, items| %>
       <li class="drilldown_group"
-          data-param="<%= items[0].param %>"><span class="drilldown_group_name"><%= name %></span><ul>
+          data-param="<%= items[0].param %>">
+        <span class="drilldown_group_name"><%= t(@search_request.empty? ? "drilldown_group_label" : "drilldown_group_add_label",
+                                                 :label => name) %></span><ul>
         <% items.each do |item| %>
           <li class="drilldown_item"
               data-param="<%= item.param %>"

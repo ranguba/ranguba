@@ -1,6 +1,6 @@
 <div class="search_request">
   <%= render :partial => "form" %>
-
+  <%= render :partial => "drilldown_groups" %>
   <% unless @topic_path_items.empty? %>
     <ol class="topic_path">
       <% @topic_path_items.each do |item| %>
@@ -25,8 +25,6 @@
       <% end %>
     </ol>
   <% end %>
-
-  <%= render :partial => "drilldown_groups" %>
 </div>
 
 <% unless @search_request.empty? %>

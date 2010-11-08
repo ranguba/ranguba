@@ -22,11 +22,14 @@ ja:
   search_result_not_found_message: "ヒットする検索結果はありませんでした。"
 
   search_button_label: "検索"
+  search_button_add_label: "検索"
 
   topic_path_item_label: "%{type}：%{value}"
   topic_path_reduce_item_label: "この条件を外す：%{type}が「%{value}」"
   topic_path_reduce_query_item_label: "この条件を外す：「%{value}」を含む"
 
+  drilldown_group_label: "%{label}で探す"
+  drilldown_group_add_label: "%{label}で絞り込む"
   drilldown_item_label: "%{label} (%{count})"
 
   not_found_message: "ページは存在しません。"
