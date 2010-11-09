@@ -22,7 +22,6 @@ class Entry
     end
 
     def search(options={})
-      results = []
       drilldown_results = {}
 
       conditions = conditions_from_request(options)
@@ -47,14 +46,13 @@ class Entry
                                   [".title", :ascending]],
                                  :page => current,
                                  :size => (options[:per_page] || DEFAULT_PAGINATION_PER_PAGE))
-      records.each do |record|
-        next unless record[".title"].to_s.valid_encoding?
-        results << new(:raw => record,
-                       :expression => expression,
-                       :base_params => options[:base_params])
+      entries = records.collect do |record|
+        new(:raw => record,
+            :expression => expression,
+            :base_params => options[:base_params])
       end
 
-      {:entries => results,
+      {:entries => entries,
        :raw_entries => records,
        :drilldown_groups => drilldown_results}
     end
