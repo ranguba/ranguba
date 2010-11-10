@@ -134,7 +134,3 @@ module Ranguba
     end
   end
 end
-
-if $0 == __FILE__
-  p Ranguba::Database.open(ARGV[0]).entries
-end
