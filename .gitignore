@@ -5,3 +5,4 @@ db/groonga/
 log/*
 tmp/
 vendor/plugins/racknga/
+config/groonga.yml
