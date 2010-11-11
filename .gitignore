@@ -6,3 +6,4 @@ log/*
 tmp/
 vendor/plugins/racknga/
 config/groonga.yml
+.gdb_history
