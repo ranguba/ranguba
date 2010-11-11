@@ -10,10 +10,10 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'rroonga'
 gem 'glib2'
 gem 'nokogiri'
-gem 'chupatext'
+gem 'chuparuby'
 
 #gem 'racknga'
-gem 'will_paginate', '>=3.0.pre'  
+gem 'will_paginate', '>=3.0.pre'
 
 # Use unicorn as the web server
 # gem 'unicorn'
