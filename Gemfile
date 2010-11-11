@@ -1,3 +1,5 @@
+# -*- ruby -*-
+
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.1'
@@ -12,7 +14,7 @@ gem 'glib2'
 gem 'nokogiri'
 gem 'chuparuby'
 
-#gem 'racknga'
+gem 'racknga'
 gem 'will_paginate', '>=3.0.pre'
 
 # Use unicorn as the web server
