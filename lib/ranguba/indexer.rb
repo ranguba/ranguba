@@ -215,7 +215,13 @@ EOS
 
   def decompose_file(path, response = {})
     begin
-      data = Chupa::Data.decompose(path)
+      input_data = Chupa::Data.new(path)
+      data = nil
+      feeder = Chupa::Feeder.new
+      feeder.signal_connect("accepted") do |_feeder, _data|
+        data = _data
+      end
+      feeder.feed(input_data)
     rescue GLib::Error => e
       if @debug
         raise unless /unknown mime-type/ =~ e.message
