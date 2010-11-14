@@ -1,15 +1,15 @@
-load --table MimeTypes
+load --table types
 [
 ["_key"],
 ["html"],
 ["plain"]
 ]
-load --table Categories
+load --table categories
 [
 ["_key"],
 ["test"]
 ]
-load --table Encodings
+load --table encodings
 [
 ["_key"],
 ["utf-8"]
