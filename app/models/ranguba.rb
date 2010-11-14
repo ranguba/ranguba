@@ -1,0 +1,2 @@
+module Ranguba
+end

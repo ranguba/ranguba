@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'test_helper'
 
-class EntryTest < ActiveSupport::TestCase
+class Ranguba::EntryTest < ActiveSupport::TestCase
   def setup
     setup_database
   end
@@ -63,15 +63,15 @@ class EntryTest < ActiveSupport::TestCase
   end
 
   def test_class_table
-    assert_equal Groonga::Hash, Entry.table.class
+    assert_equal Groonga::Hash, Ranguba::Entry.table.class
   end
 
   def test_class_search
-    result = Entry.search(:query => "HTML")
+    result = Ranguba::Entry.search(:query => "HTML")
 
     assert_equal Array, result[:entries].class
     assert_equal 1, result[:entries].size
-    assert_equal Entry, result[:entries][0].class
+    assert_equal Ranguba::Entry, result[:entries][0].class
 
     assert_equal Array, result[:raw_entries].class
     assert_equal 1, result[:raw_entries].size
@@ -97,12 +97,12 @@ class EntryTest < ActiveSupport::TestCase
   end
 
   def test_class_search_with_multibytes_query
-    result = Entry.search(:query => "一太郎")
+    result = Ranguba::Entry.search(:query => "一太郎")
     encoded = SearchRequest.encode_parameter("一太郎")
 
     assert_equal Array, result[:entries].class
     assert_equal 1, result[:entries].size
-    assert_equal Entry, result[:entries][0].class
+    assert_equal Ranguba::Entry, result[:entries][0].class
 
     assert_equal Array, result[:raw_entries].class
     assert_equal 1, result[:raw_entries].size
@@ -128,18 +128,18 @@ class EntryTest < ActiveSupport::TestCase
   end
 
   def test_class_add
-    result = Entry.search(:query => "HTML")
+    result = Ranguba::Entry.search(:query => "HTML")
     assert_equal 1, result[:entries].size
-    Entry.add("http://www.example.com/another-html",
-              :title => "Another HTML",
-              :type => "html",
-              :charset => "UTF-8",
-              :category => "test",
-              :author => "html author",
-              :mtime => Time.now,
-              :update => Time.now,
-              :body => "This is the contents of another HTML entry.")
-    result = Entry.search(:query => "HTML")
+    Ranguba::Entry.add("http://www.example.com/another-html",
+                       :title => "Another HTML",
+                       :type => "html",
+                       :charset => "UTF-8",
+                       :category => "test",
+                       :author => "html author",
+                       :mtime => Time.now,
+                       :update => Time.now,
+                       :body => "This is the contents of another HTML entry.")
+    result = Ranguba::Entry.search(:query => "HTML")
     assert_equal 2, result[:entries].size
   end
 
@@ -151,7 +151,7 @@ class EntryTest < ActiveSupport::TestCase
   end
 
   def get_entries(options={})
-    Entry.search(options)[:entries]
+    Ranguba::Entry.search(options)[:entries]
   end
 
   def assert_drilldown_item(item, options)

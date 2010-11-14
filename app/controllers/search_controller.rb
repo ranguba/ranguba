@@ -1,5 +1,4 @@
 class SearchController < ApplicationController
-  ENTRIES_PER_PAGE = 10
   SUMMARY_SIZE = 140
 
   def index
@@ -23,7 +22,7 @@ class SearchController < ApplicationController
       search_options = {}
     end
 
-    setup_search_result(search_options.merge(:per_page => ENTRIES_PER_PAGE))
+    setup_search_result
 
     if @bad_request
       render :action => "bad_request", :status => 400
@@ -60,21 +59,19 @@ class SearchController < ApplicationController
     @search_request = SearchRequest.new
   end
 
-  def setup_search_result(options={})
-    search_result = Entry.search(options)
-    @entries = search_result[:entries]
-    @raw_entries = search_result[:raw_entries]
-    @drilldown_groups = search_result[:drilldown_groups]
+  def setup_search_result
+    @result_set = @search_request.process(params)
     @topic_path_items = @search_request.topic_path_items(:base_path => @base_path)
   end
 
   def setup_search_result_title
     return if @search_request.empty?
-    if @raw_entries.total_pages > 1
+    paginated_records = @result_set.paginated_records
+    if paginated_records.total_pages > 1
       title = I18n.t("search_result_title_paginated",
                      :conditions => @search_request.to_readable_string,
-                     :page => @raw_entries.current_page,
-                     :max_page => @raw_entries.total_pages)
+                     :page => paginated_records.current_page,
+                     :max_page => paginated_records.total_pages)
     else
       title = I18n.t("search_result_title",
                      :conditions => @search_request.to_readable_string)

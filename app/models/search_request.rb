@@ -194,6 +194,10 @@ class SearchRequest
     true
   end
 
+  def process(params)
+    RequestHandler.new(self, params).handle
+  end
+
   private
   def validate_string
     return if @string.nil?
@@ -226,6 +230,57 @@ class SearchRequest
       options.delete(key) if options[key]
     end
     options
+  end
+
+  class RequestHandler
+    def initialize(request, params)
+      @request = request
+      @params = params
+    end
+
+    def handle
+      set = Ranguba::Entry.all do |record|
+        apply_conditions(record)
+      end
+      set.extend(CachedResultSet)
+      drilldown_targets = [:category, :type].find_all do |column|
+        @request.send(column).blank?
+      end
+      set.compute_drilldowns(drilldown_targets)
+      set.compute_pagination(@params[:page], @params[:per_page])
+      set
+    end
+
+    private
+    def apply_conditions(record)
+      conditions = []
+      apply_query_condition(record, conditions)
+      apply_category_condition(record, conditions)
+      apply_type_condition(record, conditions)
+      conditions
+    end
+
+    def apply_query_condition(record, conditions)
+      query = @request.query
+      return if query.blank?
+      query.split.each do |term|
+        conditions << ((record.key.key =~ term) |
+                       (record["title"] =~ term) |
+                       (record["body"] =~ term))
+      end
+    end
+
+    def apply_category_condition(record, conditions)
+      category = @request.category
+      return if category.blank?
+      conditions << (record["category"] == category)
+    end
+
+    def apply_type_condition(record, conditions)
+      type = @request.type
+      return if type.blank?
+      conditions << (record["type"] == type)
+    end
   end
 end
 

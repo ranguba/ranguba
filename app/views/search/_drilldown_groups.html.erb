@@ -1,6 +1,6 @@
-<% unless @drilldown_groups.empty? %>
+<% if @result_set and !@result_set.drilldowns.empty? %>
   <ul class="drilldown_groups">
-    <% @drilldown_groups.each do |name, items| %>
+    <% @result_set.drilldowns.each do |name, items| %>
       <li class="drilldown_group"
           data-param="<%= items[0].param %>">
         <span class="drilldown_group_name"><%= t(@search_request.empty? ? "drilldown_group_label" : "drilldown_group_add_label",

@@ -5,14 +5,14 @@ class DrilldownItem < SearchRequest
 
   def initialize(options={})
     super
-    self.param = options[:param] unless options[:param].nil?
-    self.value = options[:value] unless options[:value].nil?
+    self.param = options[:param]
+    self.value = options[:value]
     self.count = options[:count] || 0
   end
 
-  def value=(val)
-    send("#{param.to_s}=", val) unless param.nil?
-    @value = val
+  def value=(value)
+    send("#{param.to_s}=", value) unless param.nil?
+    @value = value
   end
 
   def label
