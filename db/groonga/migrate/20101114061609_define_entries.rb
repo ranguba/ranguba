@@ -7,6 +7,7 @@ class DefineEntries < ActiveGroonga::Migration
       table.reference("author", "authors")
       table.text("body")
       table.reference("mime_type", "mime_types")
+      table.reference("type", "types")
       table.reference("encoding", "encodings")
       table.reference("category", "categories")
       table.uint64("content_length")
