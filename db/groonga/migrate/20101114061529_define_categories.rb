@@ -1,6 +1,6 @@
 class DefineCategories < ActiveGroonga::Migration
   def up
-    create_table("Categories",
+    create_table("categories",
                  :type => :patricia_trie,
                  :key_type => "ShortText") do |table|
       table.text("label")
@@ -8,6 +8,6 @@ class DefineCategories < ActiveGroonga::Migration
   end
 
   def down
-    remove_table("Categories")
+    remove_table("categories")
   end
 end

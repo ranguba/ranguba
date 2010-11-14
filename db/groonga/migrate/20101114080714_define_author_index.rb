@@ -1,13 +1,13 @@
 class DefineAuthorIndex < ActiveGroonga::Migration
   def up
-    change_table("Authors") do |table|
-      table.index("Entries.author")
+    change_table("authors") do |table|
+      table.index("entries.author")
     end
   end
 
   def down
-    change_table("Authors") do |table|
-      table.remove_index("Entries.author")
+    change_table("authors") do |table|
+      table.remove_index("entries.author")
     end
   end
 end

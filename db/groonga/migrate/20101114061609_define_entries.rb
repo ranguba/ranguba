@@ -1,17 +1,17 @@
 class DefineEntries < ActiveGroonga::Migration
   def up
-    create_table("Entries",
+    create_table("entries",
                  :type => :patricia_trie,
                  :key_type => "ShortText") do |table|
       table.short_text("title")
-      table.reference("author", "Authors")
+      table.reference("author", "authors")
       table.text("body")
-      table.reference("mime_type", "MimeTypes")
-      table.reference("encoding", "Encodings")
-      table.reference("category", "Categories")
+      table.reference("mime_type", "mime_types")
+      table.reference("encoding", "encodings")
+      table.reference("category", "categories")
       table.uint64("content_length")
       table.short_text("basename")
-      table.reference("extension", "Extensions")
+      table.reference("extension", "extensions")
       table.time("created_at")
       table.time("modified_at")
       table.time("updated_at")
@@ -20,6 +20,6 @@ class DefineEntries < ActiveGroonga::Migration
   end
 
   def down
-    remove_table("Entries")
+    remove_table("entries")
   end
 end

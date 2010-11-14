@@ -1,18 +1,18 @@
 class DefineFullTextSearchIndex < ActiveGroonga::Migration
   def up
-    create_table("Bigram",
+    create_table("bigram",
                  :type => :patricia_trie,
                  :key_type => "ShortText",
                  :default_tokenizer => "TokenBigram",
                  :key_normalize => true) do |table|
-      table.index("Entries.title")
-      table.index("Entries.body")
-      table.index("Entries.basename")
-      table.index("Authors._key")
+      table.index("entries.title")
+      table.index("entries.body")
+      table.index("entries.basename")
+      table.index("authors._key")
     end
   end
 
   def down
-    remove_table("Bigram")
+    remove_table("bigram")
   end
 end
