@@ -107,6 +107,7 @@ class SearchRequest
       value = send(key)
       unless value.blank?
         path_components << key
+        value = value.key if value.respond_to?(:key)
         path_components << self.class.encode_parameter(value.to_s)
       end
     end
