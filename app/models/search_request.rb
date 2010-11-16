@@ -239,7 +239,7 @@ class SearchRequest
     end
 
     def handle
-      set = Ranguba::Entry.all do |record|
+      set = Ranguba::Entry.select do |record|
         apply_conditions(record)
       end
       set.extend(CachedResultSet)
