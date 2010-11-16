@@ -127,7 +127,7 @@ EOS
         wget.concat(args)
         wget << {chdir: base, err: [:child, :out]}
         begin
-          IO.popen(wget, "r", encoding: "us-ascii") {|input|
+          IO.popen(wget, "r", encoding: "utf-8") {|input|
             process_from_log(base, input)
           }
         ensure
@@ -163,6 +163,7 @@ EOS
     result = true
     url = response = file = path = nil
     input.each("") do |log|
+      next unless log.valid_encoding?
       case log
       when /^--([-\d]+.*?)\s*--\s+(.+)/
         update = $1
