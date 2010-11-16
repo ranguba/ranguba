@@ -65,4 +65,6 @@ group :development, :test do
   gem 'test-unit-notify'
   gem 'capybara'
   gem 'launchy'
+  gem 'hoe'
+  gem 'rake-compiler'
 end
