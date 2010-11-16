@@ -196,7 +196,7 @@ EOS
       return false if metadata.nil?
       attributes = make_attributes(url, response, metadata, path)
       attributes.update(body: body)
-      Entry.add(url, attributes)
+      ::Ranguba::Entry.new(attributes)
     rescue => e
       unless @ignore_erros
         STDERR.puts "#{e.class}: #{e.message}"
@@ -251,11 +251,11 @@ EOS
     {
       title: meta["title"],
       type: Ranguba::Customize.normalize_type(response["content-type"] || meta["mime-type"] || ""),
-      charset: response["charset"] || meta["charset"] || "",
+      encoding: response["charset"] || meta["charset"] || "",
       category: Ranguba::Customize.category_for_url(url) || "",
       author: get_author(meta) || "",
-      mtime: mtime,
-      update: response["x-update-time"],
+      modified_at: mtime,
+      updated_at: response["x-update-time"],
     }
   end
 
