@@ -86,7 +86,7 @@ class Ranguba::Entry < ActiveGroonga::Base
     items = []
     SearchRequest::KEYS.each do |key|
       next if key == :query || send(key).blank?
-    items << DrilldownItem.new(:key => key,
+    items << DrilldownItem.new(:param => key,
                                :value => send(key),
                                :base_params => base_params)
     end
