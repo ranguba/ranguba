@@ -197,7 +197,9 @@ EOS
       return false if metadata.nil?
       attributes = make_attributes(url, response, metadata, path)
       attributes.update(body: body)
-      ::Ranguba::Entry.new(attributes)
+      entry = ::Ranguba::Entry.new(attributes)
+      entry.key = url
+      entry.save
     rescue => e
       unless @ignore_erros
         STDERR.puts "#{e.class}: #{e.message}"
