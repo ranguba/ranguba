@@ -44,13 +44,13 @@ class SearchRequest
   end
 
   def category=(value)
-    @category = value.strip
+    @category = value
     @ordered_keys = @ordered_keys - [:category]
     @ordered_keys << :category
   end
 
   def type=(value)
-    @type = value.strip
+    @type = value
     @ordered_keys = @ordered_keys - [:type]
     @ordered_keys << :type
   end

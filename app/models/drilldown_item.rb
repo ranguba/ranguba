@@ -16,7 +16,7 @@ class DrilldownItem < SearchRequest
   end
 
   def label
-    Ranguba::Customize.get(param.to_s, value)
+    Ranguba::Customize.get(param.to_s, value).key
   end
 
   def label_with_count
