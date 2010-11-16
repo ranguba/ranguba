@@ -6,6 +6,10 @@ class Ranguba::Entry < ActiveGroonga::Base
   table_name("entries")
   reference_class("encoding", Ranguba::Encoding)
   reference_class("mime_type", Ranguba::MimeType)
+  reference_class("type", Ranguba::Type)
+  reference_class("author", Ranguba::Author)
+  reference_class("category", Ranguba::Category)
+  reference_class("extension", Ranguba::Extension)
 
   def title
     _title = super
