@@ -39,8 +39,8 @@
         <% @result_set.paginated_records.each do |entry| %>
           <li class="search_result_item">
             <div class="search_result_item_header">
-              <span class="search_result_title"><%= link_to entry.title, entry.url %></span>
-              <span class="search_result_location"><%= link_to entry.url, entry.url %></span>
+              <span class="search_result_title"><%= link_to entry.title, entry.key %></span>
+              <span class="search_result_location"><%= link_to entry.key, entry.key %></span>
             </div>
             <div class="search_result_summary"><%=
                    raw(entry.summary(@result_set.expression,
@@ -51,8 +51,8 @@
             %></div>
             <ul class="search_result_drilldown_items">
               <% entry.drilldown_items.each do |item| %>
-                <li class="search_result_drilldown_<%= item.key.to_s %>_item">
-                  <% case item.key %>
+                <li class="search_result_drilldown_<%= item.param.to_s %>_item">
+                  <% case item.param %>
                   <% when :type %>
                     <%= filetype_icon(item.value, item.label, item.path(:base_path => @base_path)) %>
                   <% else %>

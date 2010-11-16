@@ -5,7 +5,7 @@ module CachedResultSet
     records = group(key).sort([["_nsubrecs", :descending]])
     records.collect do |record|
       DrilldownItem.new(:param => key,
-                        :value => record.key,
+                        :value => record.key.key,
                         :count => record.n_sub_records)
     end
   end
@@ -24,19 +24,9 @@ module CachedResultSet
     page = nil if page.blank?
     page = (page || 1).to_i
     per_page = per_page || RECORDS_PER_PAGE
-    paginated_records = @records.paginate([["_score", :descending],
-                                           ["title", :ascending]],
-                                          :page => page,
-                                          :size => per_page)
-    singleton_class = (class << paginated_records; self; end)
-    instantiate_record = lambda do |record|
-      instantiate(record)
-    end
-    singleton_class.send(:define_method, :each) do |&block|
-      super() do |record|
-        block.call(instantiate_record.call(record.key))
-      end
-    end
-    @paginated_records = paginated_records
+    @paginated_records = paginate([["_score", :descending],
+                                   ["title", :ascending]],
+                                  :page => page,
+                                  :size => per_page)
   end
 end
