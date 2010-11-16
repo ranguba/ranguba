@@ -240,6 +240,14 @@ EOS
     end
   end
 
+  def purge_old_records(base_time)
+    # FIXME
+    old_entries = ::Ranguba::Entry.all.select do |record|
+      record.updated_at < base_time
+    end
+    old_entries.each(&:delete)
+  end
+
   def make_attributes(url, response, meta, path)
     if mtime = response["last-modified"] || meta["last-modified"]
       begin
