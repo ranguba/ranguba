@@ -10,6 +10,7 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
 
   def teardown
     teardown_database
+    @searcher = nil
   end
 
   def test_search_by_query__plain
@@ -92,6 +93,16 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
                           :body        => "This is the contents of another HTML entry.")
     @searcher.query = "HTML"
     assert_equal 2, @searcher.search.size
+  end
+
+  def test_search_by_query__not_found
+    @searcher.query = "notfound"
+    assert_equal 0, @searcher.search.size
+  end
+
+  def test_search_by_type_and_category
+    searcher = Ranguba::Searcher.new(type: "pdf", category: "test")
+    assert_equal 1, searcher.search.size
   end
 
 end

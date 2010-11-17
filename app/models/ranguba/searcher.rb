@@ -2,6 +2,12 @@ class Ranguba::Searcher
 
   attr_accessor :query, :type, :category, :page
 
+  def initialize(options = {})
+    self.query = options[:query] if options[:query]
+    self.type = options[:type] if options[:type]
+    self.category = options[:category] if options[:category]
+  end
+
   def search
     conditions = []
     ::Ranguba::Entry.select{|record|
