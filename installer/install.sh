@@ -78,6 +78,9 @@ packages=(
     zlib-devel
 
     fonts-japanese
+
+    curl-devel
+    httpd-devel
 )
 
 function abort() {
@@ -311,6 +314,11 @@ download http://rubygems.org/downloads/thor-0.14.3.gem
 download http://rubygems.org/downloads/treetop-1.4.8.gem
 download http://rubygems.org/downloads/tzinfo-0.3.23.gem
 inst http://rubygems.org/downloads/rails-3.0.1.gem
+download http://rubygems.org/downloads/fastthread-1.0.7.gem
+download http://rubygems.org/downloads/daemon_controller-0.2.5.gem
+download http://rubygems.org/downloads/spruz-0.2.2.gem
+download http://rubygems.org/downloads/file-tail-1.0.5.gem
+inst http://rubygems.org/downloads/passenger-3.0.0.gem
 
 if test "$showlist" = yes; then
     echo "Packages to be installed:"
