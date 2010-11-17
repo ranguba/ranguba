@@ -22,35 +22,19 @@ class ActiveSupport::TestCase
   end
 
   def setup_database
-    FileUtils.cd(::Rails.root.to_s) do
-      run_shell_command("bash", "script/setup_test_db.sh")
-    end
-    @db = Ranguba::Database.new
-    @db.open(Ranguba::Application.config.index_db_path)
-
-    entries = Groonga["Entries"]
     source = YAML.load_file("#{::Rails.root.to_s}/test/fixtures/test_db.yml_")
     @db_source = {}
     source.each do |id, entry|
-      attributes = {}
-      entry.each do |key, value|
-        next if key == "url"
-        attributes[key.to_sym] = value
+      attributes = entry.symbolize_keys
+      [:modified_at, :updated_at].each do |key|
+        attributes[key] = Time.parse(attributes[key])
       end
-      [:mtime, :update].each do |key|
-        attributes[key] = Time.new(attributes[key])
-      end
-      entries.add(entry["url"], attributes)
+      Ranguba::Entry.create(attributes)
       @db_source[id.to_sym] = attributes.merge(:url => entry["url"])
     end
   end
 
   def teardown_database
-    @db.close
-    @db = nil
     @db_source = nil
-    FileUtils.cd(::Rails.root.to_s) do
-      run_shell_command("bash", "script/teardown_test_db.sh")
-    end
   end
 end
