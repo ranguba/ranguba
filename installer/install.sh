@@ -294,7 +294,7 @@ download http://rubygems.org/downloads/activeresource-3.0.1.gem
 download http://rubygems.org/downloads/activesupport-3.0.1.gem
 download http://rubygems.org/downloads/arel-1.0.1.gem
 download http://rubygems.org/downloads/builder-2.1.2.gem
-download http://rubygems.org/downloads/bundler-1.0.3.gem
+download http://rubygems.org/downloads/bundler-1.0.5.gem
 download http://rubygems.org/downloads/erubis-2.6.6.gem
 download http://rubygems.org/downloads/i18n-0.4.1.gem
 download http://rubygems.org/downloads/mail-2.2.7.gem
