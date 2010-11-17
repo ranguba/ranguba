@@ -1,4 +1,4 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 require 'test_helper'
 
 class Ranguba::EntryTest < ActiveSupport::TestCase
@@ -8,24 +8,6 @@ class Ranguba::EntryTest < ActiveSupport::TestCase
 
   def teardown
     teardown_database
-  end
-
-  def test_attributes
-    entry = get_first_entry(:query => "plain")
-    source = @db_source[:plain]
-    assert_equal source[:url], entry.title
-    assert_equal source[:url], entry.url
-    assert_equal source[:category], entry.category
-    assert_equal source[:type], entry.type
-    assert_equal source[:body], entry.body
-
-    entry = get_first_entry(:query => "html")
-    source = @db_source[:html]
-    assert_equal source[:title], entry.title
-    assert_equal source[:url], entry.url
-    assert_equal source[:category], entry.category
-    assert_equal source[:type], entry.type
-    assert_equal source[:body], entry.body
   end
 
   def test_entry_drilldown_items
@@ -151,7 +133,7 @@ class Ranguba::EntryTest < ActiveSupport::TestCase
   end
 
   def get_entries(options={})
-    Ranguba::Entry.search(options)[:entries]
+    # Ranguba::Entry.search(options)[:entries]
   end
 
   def assert_drilldown_item(item, options)
