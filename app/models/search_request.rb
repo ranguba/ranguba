@@ -240,9 +240,10 @@ class SearchRequest
     end
 
     def handle
-      set = Ranguba::Entry.select do |record|
-        apply_conditions(record)
-      end
+      searcher = Ranguba::Searcher.new(:query => @request.query,
+                                       :type => @request.type,
+                                       :category => @request.category)
+      set = searcher.search
       set.extend(CachedResultSet)
       drilldown_targets = [:category, :type].find_all do |column|
         @request.send(column).blank?
@@ -252,36 +253,6 @@ class SearchRequest
       set
     end
 
-    private
-    def apply_conditions(record)
-      conditions = []
-      apply_query_condition(record, conditions)
-      apply_category_condition(record, conditions)
-      apply_type_condition(record, conditions)
-      conditions
-    end
-
-    def apply_query_condition(record, conditions)
-      query = @request.query
-      return if query.blank?
-      query.split.each do |term|
-        conditions << ((record.key.key =~ term) |
-                       (record["title"] =~ term) |
-                       (record["body"] =~ term))
-      end
-    end
-
-    def apply_category_condition(record, conditions)
-      category = @request.category
-      return if category.blank?
-      conditions << (record["category"] == category)
-    end
-
-    def apply_type_condition(record, conditions)
-      type = @request.type
-      return if type.blank?
-      conditions << (record["type"] == type)
-    end
   end
 end
 
