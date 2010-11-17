@@ -19,6 +19,9 @@ until test $# = 0; do
 	noinst=yes
 	showlist=yes
 	;;
+      (--check-only)
+    noinst=yes
+    ;;
       (--)
 	shift
 	break
