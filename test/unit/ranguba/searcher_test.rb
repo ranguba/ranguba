@@ -101,7 +101,7 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
   end
 
   def test_search_by_type_and_category
-    searcher = Ranguba::Searcher.new(type: "pdf", category: "test")
+    searcher = Ranguba::Searcher.new(:type => "pdf", :category => "test")
     assert_equal 1, searcher.search.size
   end
 
