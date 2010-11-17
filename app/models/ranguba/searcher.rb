@@ -13,6 +13,7 @@ class Ranguba::Searcher
         end
       end
       conditions << (record["type"] == type) if type
+      conditions << (record["category"] == category) if category
       conditions
     }
   end

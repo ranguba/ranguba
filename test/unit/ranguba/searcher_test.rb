@@ -57,6 +57,17 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
     assert_equal source[:body], entry.body
   end
 
+  def test_search_by_category
+    @searcher.category = "misc"
+    entry = @searcher.search.first
+    source = @db_source[:pdf2]
+    assert_equal source[:title], entry.title
+    assert_equal source[:key], entry.url
+    assert_equal source[:category], entry.category
+    assert_equal source[:type], entry.type
+    assert_equal source[:body], entry.body
+  end
+
   def test_search_class
     @searcher.query = "html"
     result = @searcher.search

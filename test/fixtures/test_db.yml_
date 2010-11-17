@@ -190,3 +190,14 @@ jxw:
   body:     "This is the contents of the Ichitaro entry. Content type is application/jxw."
   content_length: 66
 
+pdf2:
+  key:      "http://www.example.com/pdf2"
+  title:    "This is a PDF entry!"
+  type:     "pdf"
+  encoding:  "UTF-8"
+  category: "misc"
+  author:   "pdf author"
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
+  body:     "This is the contents of the PDF entry. Content type is application/pdf."
+  content_length: 66
