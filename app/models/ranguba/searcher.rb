@@ -12,7 +12,7 @@ class Ranguba::Searcher
                          (record["body"] =~ term))
         end
       end
-      conditions << (record["type"] =~ type) if type
+      conditions << (record["type"] == type) if type
       conditions
     }
   end
