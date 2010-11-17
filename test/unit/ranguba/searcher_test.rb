@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'test_helper'
 
 class Ranguba::SearcherTest < ActiveSupport::TestCase
@@ -11,7 +12,7 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
     teardown_database
   end
 
-  def test_search_by_query
+  def test_search_by_query__plain
     @searcher.query = "plain"
     entry = @searcher.search.first
     source = @db_source[:plain]
@@ -20,10 +21,24 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
     assert_equal source[:category], entry.category
     assert_equal source[:type], entry.type
     assert_equal source[:body], entry.body
+  end
 
+  def test_search_by_query__html
     @searcher.query = "html"
     entry = @searcher.search.first
     source = @db_source[:html]
+    assert_equal source[:title], entry.title
+    assert_equal source[:key], entry.url
+    assert_equal source[:category], entry.category
+    assert_equal source[:type], entry.type
+    assert_equal source[:body], entry.body
+  end
+
+  def test_search_by_query__multibyte
+    @searcher.query = "一太郎"
+    entry = @searcher.search.first
+    encoded = SearchRequest.encode_parameter("一太郎")
+    source = @db_source[:jxw]
     assert_equal source[:title], entry.title
     assert_equal source[:key], entry.url
     assert_equal source[:category], entry.category
