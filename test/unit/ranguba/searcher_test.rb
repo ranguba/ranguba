@@ -10,7 +10,7 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
     teardown_database
   end
 
-  def test_attributes
+  def test_search_by_query
     searcher = Ranguba::Searcher.new
     searcher.query = "plain"
     entry = searcher.search.first
@@ -23,6 +23,18 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
 
     searcher = Ranguba::Searcher.new
     searcher.query = "html"
+    entry = searcher.search.first
+    source = @db_source[:html]
+    assert_equal source[:title], entry.title
+    assert_equal source[:key], entry.url
+    assert_equal source[:category], entry.category
+    assert_equal source[:type], entry.type
+    assert_equal source[:body], entry.body
+  end
+
+  def test_search_by_type
+    searcher = Ranguba::Searcher.new
+    searcher.type = "html"
     entry = searcher.search.first
     source = @db_source[:html]
     assert_equal source[:title], entry.title
