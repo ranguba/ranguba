@@ -35,6 +35,7 @@ class ActiveSupport::TestCase
   end
 
   def teardown_database
+    Ranguba::Entry.select.each(&:delete)
     @db_source = nil
   end
 end
