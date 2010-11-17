@@ -42,4 +42,13 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
     assert_equal source[:body], entry.body
   end
 
+  def test_search_class
+    @searcher.query = "html"
+    result = @searcher.search
+
+    assert_instance_of Array, result.entries
+    assert_instance_of Ranguba::Entry, result.first
+    assert_equal 1, result.size
+  end
+
 end
