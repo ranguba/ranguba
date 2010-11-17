@@ -187,6 +187,25 @@ function do_install1() {
     rmdir build >/dev/null 2>&1 || :
 }
 
+function install_passenger() {
+    $PREFIX/bin/passenger-install-apache2-module -a 1>&$log 2>&1 || abort
+    if [ ! -f passenger.conf ]; then
+        $PREFIX/bin/passenger-install-apache2-module --snippet > passenger.conf
+    fi
+    if [ ! -f ranguba.conf ]; then
+        cat > ranguba.conf <<EOF
+<VirtualHost *:80>
+   ServerName www.example.com
+   DocumentRoot ${PREFIX}/srv/www/ranguba/public
+   <Directory ${PREFIX}/srv/www/ranguba/public>
+      AllowOverride all
+      Options -MultiViews
+   </Directory>
+</VirtualHost>
+EOF
+    fi
+}
+      
 function download_all() {
     if test ${#missing[@]} -gt 0; then
 	wget -N -P "${SOURCE}" "${missing[@]}" || abort
@@ -205,6 +224,7 @@ function install_all() {
 	done
 	test ${#args[@]} -gt 0 && do_install1 "${args[@]}"
     done
+    install_passenger
 }
 
 case $ARCH in
