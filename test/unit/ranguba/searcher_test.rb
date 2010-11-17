@@ -51,4 +51,21 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
     assert_equal 1, result.size
   end
 
+  def test_add_entry_and_search
+    searcher = Ranguba::Searcher.new
+    searcher.query = "HTML"
+    assert_equal 1, searcher.search.size
+    Ranguba::Entry.create(:key         => "http://www.example.com/another-html",
+                          :title       => "Another HTML",
+                          :type        => "html",
+                          :encoding    => "UTF-8",
+                          :category    => "test",
+                          :author      => "html author",
+                          :modified_at => Time.now,
+                          :updated_at  => Time.now,
+                          :body        => "This is the contents of another HTML entry.")
+    @searcher.query = "HTML"
+    assert_equal 2, @searcher.search.size
+  end
+
 end
