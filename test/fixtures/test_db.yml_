@@ -1,176 +1,192 @@
 html:
-  url:      "http://www.example.com/html"
+  key:      "http://www.example.com/html"
   title:    "This is an HTML entry!"
   type:     "html"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "html author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the HTML entry. Content type is text/html."
+  content_length: 66
 
 plain:
-  url:      "http://www.example.com/plaintext"
+  key:      "http://www.example.com/plaintext"
   title:    ""
   type:     "plain"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   ""
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the plain text entry. Content type is text/plain."
+  content_length: 66
 
 css:
-  url:      "http://www.example.com/css"
+  key:      "http://www.example.com/css"
   title:    ""
   type:     "css"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "css author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the CSS entry. Content type is text/css."
+  content_length: 66
 
 xml:
-  url:      "http://www.example.com/xml"
+  key:      "http://www.example.com/xml"
   title:    ""
   type:     "xml"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "xml author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the XML entry. Content type is application/xml."
+  content_length: 66
 
 pdf:
-  url:      "http://www.example.com/pdf"
+  key:      "http://www.example.com/pdf"
   title:    "This is a PDF entry!"
   type:     "pdf"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "pdf author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the PDF entry. Content type is application/pdf."
+  content_length: 66
 
 doc:
-  url:      "http://www.example.com/doc"
+  key:      "http://www.example.com/doc"
   title:    "This is a MS Word entry!"
   type:     "msworddoc"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "doc author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the MS Word entry. Content type is application/msworddoc."
+  content_length: 66
 
 xls:
-  url:      "http://www.example.com/xls"
+  key:      "http://www.example.com/xls"
   title:    "This is a MS Excel entry!"
   type:     "vnd.ms-excel"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "xls author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the MS Excel entry. Content type is application/vnd.ms-excel."
+  content_length: 66
 
 ppt:
-  url:      "http://www.example.com/ppt"
+  key:      "http://www.example.com/ppt"
   title:    "This is a MS PowerPoint entry!"
   type:     "vnd.ms-powerpoint"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "ppt author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the MS PowerPoint entry. Content type is application/vnd.ms-powerpoint."
+  content_length: 66
 
 odt:
-  url:      "http://www.example.com/odt"
+  key:      "http://www.example.com/odt"
   title:    "This is an OpenOffice.org Writer entry!"
   type:     "vnd.oasis.opendocument.text"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "odt author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Writer entry. Content type is application/vnd.oasis.opendocument.text."
+  content_length: 66
 
 ott:
-  url:      "http://www.example.com/ott"
+  key:      "http://www.example.com/ott"
   title:    "This is an OpenOffice.org Writer template entry!"
   type:     "vnd.oasis.opendocument.text-template"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "ott author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Writer template entry. Content type is application/vnd.oasis.opendocument.text-template."
+  content_length: 66
 
 ods:
-  url:      "http://www.example.com/ods"
+  key:      "http://www.example.com/ods"
   title:    "This is an OpenOffice.org Calc entry!"
   type:     "vnd.oasis.opendocument.spreadsheet"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "ods author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Calc entry. Content type is application/vnd.oasis.opendocument.spreadsheet."
+  content_length: 66
 
 ots:
-  url:      "http://www.example.com/ots"
+  key:      "http://www.example.com/ots"
   title:    "This is an OpenOffice.org Calc template entry!"
   type:     "vnd.oasis.opendocument.spreadsheet-template"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "ots author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Calc template entry. Content type is application/vnd.oasis.opendocument.spreadsheet-template."
+  content_length: 66
 
 odp:
-  url:      "http://www.example.com/odp"
+  key:      "http://www.example.com/odp"
   title:    "This is an OpenOffice.org Impress entry!"
   type:     "vnd.oasis.opendocument.presentation"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "odp author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Impress entry. Content type is application/vnd.oasis.opendocument.presentation."
+  content_length: 66
 
 otp:
-  url:      "http://www.example.com/otp"
+  key:      "http://www.example.com/otp"
   title:    "This is an OpenOffice.org Impress template entry!"
   type:     "vnd.oasis.opendocument.presentation-template"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "otp author"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the OpenOffice.org Impress template entry. Content type is application/vnd.oasis.opendocument.presentation-template."
+  content_length: 66
 
 unknown:
-  url:      "http://www.example.com/unknown"
+  key:      "http://www.example.com/unknown"
   title:    ""
   type:     "unknown"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   ""
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the unknown type entry. What is the type?"
+  content_length: 66
 
 jxw:
-  url:      "http://www.example.com/jxw"
+  key:      "http://www.example.com/jxw"
   title:    "一太郎のドキュメント"
   type:     "jxw"
-  charset:  "UTF-8"
+  encoding:  "UTF-8"
   category: "test"
   author:   "一太郎"
-  mtime:    2010-01-01 00:00:00 +0900
-  update:   2010-01-01 00:00:00 +0900
+  modified_at:    2010-01-01 00:00:00 +0900
+  updated_at:   2010-01-01 00:00:00 +0900
   body:     "This is the contents of the Ichitaro entry. Content type is application/jxw."
+  content_length: 66
 
