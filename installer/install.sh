@@ -228,7 +228,7 @@ sudo -H -u $RANGUBA_USERNAME \
     APR_CONFIG_PATH="$APR_CONFIG_PATH" \
     SOURCE="$SOURCE" \
     SEPARATOR="'$SEPARATOR'" \
-    bash ./install_from_source_packages.sh
+    bash ./install_sources_and_gems.sh
 
 export PATH="$PREFIX/bin:$PATH"
 install_ranguba_config
