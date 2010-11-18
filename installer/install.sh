@@ -20,8 +20,15 @@ until test $# = 0; do
 	showlist=yes
 	;;
       (--check-only)
-    noinst=yes
-    ;;
+	noinst=yes
+	;;
+      (--user)
+	shift
+	USERNAME="$1"
+	;;
+      (--prefix)
+	shift
+	PREFIX="$1"
       (--)
 	shift
 	break
@@ -37,11 +44,12 @@ until test $# = 0; do
     shift
 done
 
-if test -z "$1"; then
+if test -z "$USERNAME"; then
+    USERNAME="ranguba"
+fi
+
+if test -z "$PREFIX"; then
     PREFIX="$HOME/ranguba"
-else
-    PREFIX="$1"
-    shift
 fi
 
 SEPARATOR="
@@ -204,7 +212,7 @@ function install_passenger() {
 EOF
     fi
 }
-      
+
 function download_all() {
     if test ${#missing[@]} -gt 0; then
 	wget -N -P "${SOURCE}" "${missing[@]}" || abort
