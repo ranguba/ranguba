@@ -1,0 +1,70 @@
+inst http://www.ring.gr.jp/archives/GNU/autoconf/autoconf-2.68.tar.bz2
+inst http://www.ring.gr.jp/archives/GNU/gettext/gettext-0.18.1.1.tar.gz
+inst http://www.ring.gr.jp/archives/X/gnome/sources/glib/2.24/glib-2.24.2.tar.bz2
+inst http://www.ring.gr.jp/archives/X/gnome/sources/libgsf/1.14/libgsf-1.14.19.tar.bz2
+inst ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz
+inst ftp://xmlsoft.org/libxml2/libxslt-1.1.26.tar.gz
+inst http://www.ring.gr.jp/archives/X/gnome/sources/atk/1.29/atk-1.29.4.tar.bz2
+inst http://fontconfig.org/release/fontconfig-2.8.0.tar.gz
+inst http://downloads.sourceforge.net/project/freetype/freetype2/2.4.3/freetype-2.4.3.tar.bz2
+
+inst http://cairographics.org/releases/pixman-0.18.4.tar.gz
+inst http://cairographics.org/releases/cairo-1.8.10.tar.gz
+inst http://www.ring.gr.jp/archives/X/gnome/sources/pango/1.28/pango-1.28.3.tar.bz2
+
+inst http://www.ring.gr.jp/archives/X/gnome/sources/gtk+/2.20/gtk+-2.20.1.tar.bz2
+inst http://www.ring.gr.jp/archives/X/gnome/sources/libglade/2.6/libglade-2.6.4.tar.bz2
+inst http://poppler.freedesktop.org/poppler-0.14.4.tar.gz
+inst http://poppler.freedesktop.org/poppler-data-0.4.3.tar.gz
+
+inst http://downloads.sourceforge.net/project/wvware/wv/1.2.4/wv-1.2.4.tar.gz
+inst http://www.ring.gr.jp/archives/X/gnome/sources/goffice/0.8/goffice-0.8.11.tar.bz2
+inst http://www.ring.gr.jp/archives/X/gnome/sources/gnumeric/1.10/gnumeric-1.10.11.tar.gz
+inst http://www.ring.gr.jp/archives/X/gnome/sources/gnumeric/1.10/gnumeric-1.10.11.tar.gz
+inst http://sourceforge.net/projects/asciidoc/files/asciidoc/8.6.2/asciidoc-8.6.2.tar.gz
+inst http://dag.wieers.com/home-made/unoconv/unoconv-0.4.tar.bz2
+
+inst http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p0.tar.bz2 \
+     --disable-install-doc
+inst http://rubygems.org/downloads/pkg-config-1.0.7.gem
+inst http://downloads.sourceforge.net/project/ruby-gnome2/ruby-gnome2/ruby-gnome2-0.90.4/ruby-gtk2-0.90.4.tar.gz
+
+inst http://rubygems.org/downloads/nokogiri-1.4.3.1.gem
+
+# inst cutter-1.1.5.tar.gz
+inst http://groonga.org/files/groonga/groonga-1.0.2.tar.gz
+inst http://rubygems.org/downloads/rroonga-1.0.1.gem
+inst http://rubygems.org/downloads/racknga-0.9.0.gem
+inst http://rubyforge.org/frs/download.php/73173/chupatext-0.4.0.tar.gz
+# inst http://rubygems.org/downloads/chuparuby-0.5.0.gem
+inst http://rubygems.org/downloads/chupatext-0.4.0.gem
+# inst ranguba-0.1.0.tar.gz
+
+download http://rubygems.org/downloads/abstract-1.0.0.gem
+download http://rubygems.org/downloads/actionmailer-3.0.1.gem
+download http://rubygems.org/downloads/actionpack-3.0.1.gem
+download http://rubygems.org/downloads/activemodel-3.0.1.gem
+download http://rubygems.org/downloads/activerecord-3.0.1.gem
+download http://rubygems.org/downloads/activeresource-3.0.1.gem
+download http://rubygems.org/downloads/activesupport-3.0.1.gem
+download http://rubygems.org/downloads/arel-1.0.1.gem
+download http://rubygems.org/downloads/builder-2.1.2.gem
+download http://rubygems.org/downloads/bundler-1.0.5.gem
+download http://rubygems.org/downloads/erubis-2.6.6.gem
+download http://rubygems.org/downloads/i18n-0.4.1.gem
+download http://rubygems.org/downloads/mail-2.2.7.gem
+download http://rubygems.org/downloads/mime-types-1.16.gem
+download http://rubygems.org/downloads/polyglot-0.3.1.gem
+download http://rubygems.org/downloads/rack-1.2.1.gem
+download http://rubygems.org/downloads/rack-mount-0.6.13.gem
+download http://rubygems.org/downloads/rack-test-0.5.6.gem
+download http://rubygems.org/downloads/railties-3.0.1.gem
+download http://rubygems.org/downloads/thor-0.14.3.gem
+download http://rubygems.org/downloads/treetop-1.4.8.gem
+download http://rubygems.org/downloads/tzinfo-0.3.23.gem
+inst http://rubygems.org/downloads/rails-3.0.1.gem
+download http://rubygems.org/downloads/fastthread-1.0.7.gem
+download http://rubygems.org/downloads/daemon_controller-0.2.5.gem
+download http://rubygems.org/downloads/spruz-0.2.2.gem
+download http://rubygems.org/downloads/file-tail-1.0.5.gem
+inst http://rubygems.org/downloads/passenger-3.0.0.gem
