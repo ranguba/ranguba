@@ -293,6 +293,7 @@ inst http://www.ring.gr.jp/archives/X/gnome/sources/gnumeric/1.10/gnumeric-1.10.
 inst http://www.ring.gr.jp/archives/X/gnome/sources/gnumeric/1.10/gnumeric-1.10.11.tar.gz
 inst http://sourceforge.net/projects/asciidoc/files/asciidoc/8.6.2/asciidoc-8.6.2.tar.gz
 inst http://dag.wieers.com/home-made/unoconv/unoconv-0.4.tar.bz2
+inst http://ftp.kddilabs.jp/infosystems/apache//httpd/httpd-2.2.17.tar.bz2
 
 inst http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p0.tar.bz2 \
      --disable-install-doc
