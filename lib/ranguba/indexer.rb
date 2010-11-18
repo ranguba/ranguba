@@ -4,7 +4,6 @@ require 'tmpdir'
 require 'fileutils'
 require 'time'
 require 'chupatext'
-require 'ranguba/database'
 
 class Ranguba::Indexer
   attr_accessor :wget, :log_file, :url_prefix, :level, :accept,
