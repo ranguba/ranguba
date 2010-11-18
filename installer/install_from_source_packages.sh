@@ -114,8 +114,24 @@ function download_all() {
     fi
 }
 
+function install_passenger() {
+    if test -n "$APXS2_PATH" -a -n "$APR_CONFIG_PATH"; then
+	ruby -S passenger-install-apache2-module -a \
+	    --apxs2-path "$APXS2_PATH" \
+	    --apr-config-path "$APR_CONFIG_PATH" 1>&$log 2>&1 || abort
+    elif test -n "$APXS2_PATH" -a -z "$APR_CONFIG_PATH"; then
+	ruby -S passenger-install-apache2-module -a \
+	    --apxs2-path "$APXS2_PATH" 1>&$log 2>&1 || abort
+    elif test -z "$APXS2_PATH" -a -n "$APR_CONFIG_PATH"; then
+	ruby -S passenger-install-apache2-module -a \
+	    --apr-config-path "$APR_CONFIG_PATH" 1>&$log 2>&1 || abort
+    else
+	ruby -S passenger-install-apache2-module -a 1>&$log 2>&1 || abort
+    fi
+}
+
 function install_ranguba() {
-    echo
+    install_passenger
 }
 
 function install_all() {

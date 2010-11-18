@@ -150,23 +150,10 @@ function check_rpm_packages() {
     fi
 }
 
-function install_passenger() {
-    if test -n "$APXS2_PATH" -a -n "$APR_CONFIG_PATH"; then
-	ruby -S passenger-install-apache2-module -a \
-	    --apxs2-path "$APXS2_PATH" \
-	    --apr-config-path "$APR_CONFIG_PATH" 1>&$log 2>&1 || abort
-    elif test -n "$APXS2_PATH" -a -z "$APR_CONFIG_PATH"; then
-	ruby -S passenger-install-apache2-module -a \
-	    --apxs2-path "$APXS2_PATH" 1>&$log 2>&1 || abort
-    elif test -z "$APXS2_PATH" -a -n "$APR_CONFIG_PATH"; then
-	ruby -S passenger-install-apache2-module -a \
-	    --apr-config-path "$APR_CONFIG_PATH" 1>&$log 2>&1 || abort
-    else
-	ruby -S passenger-install-apache2-module -a 1>&$log 2>&1 || abort
-    fi
+function install_ranguba_config() {
     if [ ! -f ranguba.conf ]; then
         ruby -S passenger-install-apache2-module --snippet > ranguba.conf
-	cat > passenger.conf <<EOF
+	cat >> ranguba.conf <<EOF
 RailsBaseURI /ranguba
 <Directory ${PREFIX}/srv/www/ranguba>
   Options -MultiViews
@@ -191,8 +178,9 @@ EOF
 	    else
 		abort <<EOF
 Please run below commands.
-$ cp ranguba.conf <your httpd.conf directory>
-$ echo include <path/to/ranguba.conf> >> <your httpd.conf>
+
+  $ cp ranguba.conf <your httpd.conf directory>
+  $ echo include <path/to/ranguba.conf> >> <your httpd.conf>
 EOF
 	    fi
 	fi
@@ -243,7 +231,7 @@ sudo -H -u $RANGUBA_USERNAME \
     bash ./install_from_source_packages.sh
 
 export PATH="$PREFIX/bin:$PATH"
-install_passenger
+install_ranguba_config
 
 test $fd && echo "Finished: $(LC_ALL=C date)" 1>&$log
 exec 3>&-
