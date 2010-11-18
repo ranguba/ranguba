@@ -24,7 +24,7 @@ until test $# = 0; do
 	;;
       (--user)
 	shift
-	USERNAME="$1"
+	RANGUBA_USERNAME="$1"
 	;;
       (--prefix)
 	shift
@@ -44,8 +44,8 @@ until test $# = 0; do
     shift
 done
 
-if test -z "$USERNAME"; then
-    USERNAME="ranguba"
+if test -z "$RANGUBA_USERNAME"; then
+    RANGUBA_USERNAME="ranguba"
 fi
 
 if test -z "$PREFIX"; then
@@ -101,6 +101,33 @@ function abort() {
 	status=1
     fi
     exit $status
+}
+
+function checkroot() {
+    if test `id -u` -ne 0; then
+	abort "This installer must be run with administrator privileges. Aborting"
+    fi
+}
+
+function prepare_user() {
+    if test -z $(grep ${RANGUBA_USERNAME} /etc/passwd); then
+	/usr/sbin/useradd $RANGUBA_USERNAME
+    fi
+}
+
+function check_packages() {
+    local missing=()
+    for pkg in "${packages[@]}"; do
+	if ! msg=$(rpm -q "$pkg" 2>&1); then
+	    missing=("${missing[@]}" "$pkg")
+	    echo "$msg" 1>&$log
+	fi
+    done
+    if test ${#missing[@]} -gt 0; then
+	for pkg in "${missing[@]}"; do
+	    yum install -y $pkg 1>&$log 2>&1
+	done
+    fi
 }
 
 function download() {
@@ -251,22 +278,16 @@ else
 fi
 test $log && echo "Start: $(LC_ALL=C date)" 1>&$log
 
+checkroot
+prepare_user
+
 if ! test -d "${SOURCE}"; then
     mkdir -p sources
     SOURCE=sources
 fi
 
 if test "$nocheck" != yes; then
-    missing=()
-    for pkg in "${packages[@]}"; do
-	if ! msg=$(rpm -q "$pkg" 2>&1); then
-	    missing=("${missing[@]}" "$pkg")
-	    echo "$msg"
-	fi
-    done
-    if test ${#missing[@]} -gt 0; then
-	abort "Please install missing packages first: 'yum install -y ${missing[@]}'"
-    fi
+    check_packages
 fi
 
 export PATH="$PREFIX/bin:$PATH"
