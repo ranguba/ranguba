@@ -106,27 +106,6 @@ function do_install1() {
     rmdir build >/dev/null 2>&1 || :
 }
 
-function install_passenger() {
-    # 設定ファイルは適切な位置にコピーする
-    ruby -S passenger-install-apache2-module -a || abort
-    if [ ! -f passenger.conf ]; then
-        ruby -S passenger-install-apache2-module --snippet > passenger.conf
-    fi
-    if [ ! -f ranguba.conf ]; then
-	# virtualhost はやめる
-	cat > ranguba.conf <<EOF
-<VirtualHost *:80>
-   ServerName www.example.com
-   DocumentRoot ${PREFIX}/srv/www/ranguba/public
-   <Directory ${PREFIX}/srv/www/ranguba/public>
-      AllowOverride all
-      Options -MultiViews
-   </Directory>
-</VirtualHost>
-EOF
-    fi
-}
-
 function download_all() {
     if test ${#missing[@]} -gt 0; then
 	if test ! -z "${missing}"; then
@@ -135,22 +114,28 @@ function download_all() {
     fi
 }
 
+function install_ranguba() {
+    echo
+}
+
 function install_all() {
     local args arg
-    until test ${#installs[@]} = 0; do
-	args=()
-	until test ${#installs[@]} = 0 || {
+    if test "$install_ranguba_only" = "no"; then
+	until test ${#installs[@]} = 0; do
+	    args=()
+	    until test ${#installs[@]} = 0 || {
 		arg="${installs}" installs=("${installs[@]:1}")
 		test "$arg" = "$SEPARATOR"
 	    } do
 	    args=("${args[@]}" "${arg}")
+	    done
+	    test ${#args[@]} -gt 0 && do_install1 "${args[@]}"
 	done
-	test ${#args[@]} -gt 0 && do_install1 "${args[@]}"
-    done
-    install_passenger
+    fi
+    install_ranguba
 }
 
-source ./sourcelist
+test -f ./sourcelist && source ./sourcelist
 
 export PATH="$PREFIX/bin:$PATH"
 export LD_RUN_PATH="$PREFIX/lib:${LD_RUN_PATH-/usr/$lib}"

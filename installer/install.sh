@@ -8,6 +8,7 @@ SOURCE="$BASE_DIR/sources"
 nocheck=no
 noinst=no
 showlist=no
+install_ranguba_only=no
 until test $# = 0; do
     case "$1" in
       (--download-only)
@@ -22,6 +23,9 @@ until test $# = 0; do
       (--check-only)
 	noinst=yes
 	;;
+      (--install-ranguba-only)
+	install_ranguba_only=yes
+	;;
       (--user)
 	shift
 	RANGUBA_USERNAME="$1"
@@ -30,7 +34,19 @@ until test $# = 0; do
 	shift
 	PREFIX="$1"
 	;;
-      (--)
+      (--httpd-prefix)
+	shift
+	HTTPD_PREFIX="$1"
+	;;
+      (--apxs2-path)
+	shift
+	APXS2_PATH="$1"
+	;;
+      (--apr-config-path)
+	shift
+	APR_CONFIG_PATH="$1"
+	;;
+	(--)
 	shift
 	break
 	;;
@@ -48,9 +64,11 @@ done
 if test -z "$RANGUBA_USERNAME"; then
     RANGUBA_USERNAME="ranguba"
 fi
-
 if test -z "$PREFIX"; then
     PREFIX="$HOME/ranguba"
+fi
+if test -z "$HTTPD_PREFIX"; then
+    HTTPD_PREFIX="/usr/local"
 fi
 
 SEPARATOR="
@@ -91,6 +109,19 @@ packages=(
     curl-devel
 )
 
+function abort() {
+    local status=$?
+    if test $# = 0; then
+	echo Failed
+    else
+	echo "$*"
+    fi
+    if test $status = 0; then
+	status=1
+    fi
+    exit $status
+}
+
 function checkroot() {
     if test `id -u` -ne 0; then
 	echo "This installer must be run with administrator privileges. Aborting"
@@ -116,6 +147,55 @@ function check_rpm_packages() {
 	for pkg in "${missing[@]}"; do
 	    yum install -y $pkg 1>&$log 2>&1
 	done
+    fi
+}
+
+function install_passenger() {
+    if test -n "$APXS2_PATH" -a -n "$APR_CONFIG_PATH"; then
+	ruby -S passenger-install-apache2-module -a \
+	    --apxs2-path "$APXS2_PATH" \
+	    --apr-config-path "$APR_CONFIG_PATH" 1>&$log 2>&1 || abort
+    elif test -n "$APXS2_PATH" -a -z "$APR_CONFIG_PATH"; then
+	ruby -S passenger-install-apache2-module -a \
+	    --apxs2-path "$APXS2_PATH" 1>&$log 2>&1 || abort
+    elif test -z "$APXS2_PATH" -a -n "$APR_CONFIG_PATH"; then
+	ruby -S passenger-install-apache2-module -a \
+	    --apr-config-path "$APR_CONFIG_PATH" 1>&$log 2>&1 || abort
+    else
+	ruby -S passenger-install-apache2-module -a 1>&$log 2>&1 || abort
+    fi
+    if [ ! -f ranguba.conf ]; then
+        ruby -S passenger-install-apache2-module --snippet > ranguba.conf
+	cat > passenger.conf <<EOF
+RailsBaseURI /ranguba
+<Directory ${PREFIX}/srv/www/ranguba>
+  Options -MultiViews
+</Directory>
+EOF
+    fi
+
+    if test -n "$APXS2_PATH"; then
+	sysconfdir=$(${APXS2_PATH} -q SYSCONFDIR)
+	cp ranguba.conf "$sysconfdir/extra/"
+	echo include conf/extra/ranguba.conf >> "$sysconfdir/httpd.conf"
+    else
+	APXS2_PATH=$(ruby -rphusion_passenger -e 'print PhusionPassenger::PlatformInfo.apxs2')
+	if test -n $APXS2_PATH; then
+	    sysconfdir=$(${APXS2_PATH} -q SYSCONFDIR)
+	    cp ranguba.conf "$sysconfdir/extra/"
+	    echo include conf/extra/ranguba.conf >> "$sysconfdir/httpd.conf"
+	else
+	    if test $HTTPD_PREFIX; then
+		cp ranguba.conf $HTTPD_PREFIX/conf/extra/
+		echo include conf/extra/ranguba.conf >> $HTTPD_PREFIX/conf/httpd.conf
+	    else
+		abort <<EOF
+Please run below commands.
+$ cp ranguba.conf <your httpd.conf directory>
+$ echo include <path/to/ranguba.conf> >> <your httpd.conf>
+EOF
+	    fi
+	fi
     fi
 }
 
@@ -153,10 +233,17 @@ sudo -H -u $RANGUBA_USERNAME \
     nocheck="$nocheck" \
     noinst="$noinst" \
     showlist="$showlist" \
+    install_ranguba_only="$install_ranguba_only" \
     PREFIX="$PREFIX" \
+    HTTPD_PREFIX="$HTTPD_PREFIX" \
+    APXS2_PATH="$APXS2_PATH" \
+    APR_CONFIG_PATH="$APR_CONFIG_PATH" \
     SOURCE="$SOURCE" \
     SEPARATOR="'$SEPARATOR'" \
     bash ./install_from_source_packages.sh
+
+export PATH="$PREFIX/bin:$PATH"
+install_passenger
 
 test $fd && echo "Finished: $(LC_ALL=C date)" 1>&$log
 exec 3>&-
