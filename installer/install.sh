@@ -80,7 +80,6 @@ packages=(
     fonts-japanese
 
     curl-devel
-    httpd-devel
 )
 
 function abort() {
