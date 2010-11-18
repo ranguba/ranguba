@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby1.9.1
+# -*- ruby -*-
 
-require File.expand_path('../../config/environment', __FILE__)
-$LOAD_PATH.unshift(File.expand_path('../../lib/', __FILE__))
+base_dir = File.expand_path(File.join(File.basename(__FILE__), ".."))
+require File.join(base_dir, "config", "environment")
+$LOAD_PATH.unshift(File.join(base_dir, "lib"))
 
 require 'ranguba/indexer'
 
 indexer = Ranguba::Indexer.new
 process = indexer.prepare(ARGV)
 process.call unless process.nil?
-
