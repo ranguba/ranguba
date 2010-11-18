@@ -99,7 +99,7 @@ function checkroot() {
 }
 
 function prepare_user() {
-    if test -z $(grep ${RANGUBA_USERNAME} /etc/passwd); then
+    if test -z $(getent passwd | grep ${RANGUBA_USERNAME}); then
 	/usr/sbin/useradd $RANGUBA_USERNAME
     fi
 }
