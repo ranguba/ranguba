@@ -11,30 +11,23 @@ install.shファイルがあるディレクトリを$SETUP_DIRと表記します
   依存するソフトウェアのソースが保存されているディレクトリ。
   なければ自動でダウンロードします(全部で約100MB)。
 
-: $SETUP_DIR/passenger.conf
-  Apache2 向けの passenger の設定が書かれたファイル。
-  なければ生成されます。
-
 : $SETUP_DIR/ranguba.conf
-  Ranguba 用の VirtualHost の設定が書かれたファイル。
-  なければ生成されます。
+  Ranguba 用の passenger の設定が書かれたファイル。
+  なければ生成されます。Apache2 の設定ファイルをインストーラが
+  検出できた場合は、自動的にインストールされます。
 
 (1) 作業用のディレクトリを用意して、そこにcdします。
 
       $ mkdir -p ~/tmp/ranguba-install
       $ cd ~/tmp/ranguba-install
 
-(2) install.shファイルを実行します。
+(2) install.shファイルを root として実行します。
 
-      $ $SETUP_DIR/install.sh
+      $ sudo $SETUP_DIR/install.sh
 
 (3) カテゴリファイルを編集してください。
     上記の例でいえば、((|/opt/ranguba/etc/ranguba/category.tsv|))
     に空のファイルが用意されています。
-
-(4) Apache2 の設定ファイル (passenger.conf, ranguba.conf) を適切な
-    位置にコピーしてください。例えば ((|/etc/httpd/conf.d/|)) にコピー
-    してください。
 
 == インストール物一覧
 
