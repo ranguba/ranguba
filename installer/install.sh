@@ -50,6 +50,10 @@ until test $# = 0; do
 	shift
 	DOCUMENT_ROOT="$1"
 	;;
+      (--base-uri)
+	shift
+	BASE_URI="$1"
+	;;
       (--)
 	shift
 	break
@@ -245,6 +249,7 @@ sudo -H -u $RANGUBA_USERNAME \
     APR_CONFIG_PATH="$APR_CONFIG_PATH" \
     SOURCE="$SOURCE" \
     SEPARATOR="'$SEPARATOR'" \
+    BASE_URI="$BASE_URI" \
     bash ./install_sources_and_gems.sh
 
 export PATH="$PREFIX/bin:$PATH"
