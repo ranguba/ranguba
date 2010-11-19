@@ -141,7 +141,7 @@ function checkroot() {
 }
 
 function prepare_user() {
-    if getent passwd | grep ${RANGUBA_USERNAME} > /dev/null; then
+    if ! getent passwd | grep -q ${RANGUBA_USERNAME}; then
 	/usr/sbin/useradd $RANGUBA_USERNAME
     fi
 }
@@ -199,10 +199,10 @@ RailsBaseURI /ranguba
 EOF
     fi
     cp ranguba.conf "${HTTPD_CONF_DIR}/extra/ranguba.conf"
-    if test -z $(grep "ranguba.conf" "${HTTPD_CONF_DIR}/httpd.conf"); then
+    if ! grep -q "ranguba.conf" "${HTTPD_CONF_DIR}/httpd.conf"; then
 	echo include conf/extra/ranguba.conf >> "${HTTPD_CONF_DIR}/httpd.conf"
     fi
-    if test ! -L "$DOCUMENT_ROOT/ranguba"
+    if test ! -L "$DOCUMENT_ROOT/ranguba"; then
 	ln -s "$PREFIX/srv/www/ranguba/public" "$DOCUMENT_ROOT/ranguba"
     fi
     test -x $APACHECTL_PATH && $APACHECTL_PATH restart
