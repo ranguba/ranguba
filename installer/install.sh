@@ -137,7 +137,7 @@ function checkroot() {
 }
 
 function prepare_user() {
-    if test -z $(getent passwd | grep ${RANGUBA_USERNAME}); then
+    if getent passwd | grep ${RANGUBA_USERNAME} > /dev/null; then
 	/usr/sbin/useradd $RANGUBA_USERNAME
     fi
 }
