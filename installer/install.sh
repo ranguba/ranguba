@@ -73,7 +73,7 @@ if test -z "$RANGUBA_USERNAME"; then
     RANGUBA_USERNAME="ranguba"
 fi
 if test -z "$PREFIX"; then
-    PREFIX="$HOME/ranguba"
+    PREFIX="/home/${RANGUBA_USERNAME}"
 fi
 if test -z "$HTTPD_PREFIX"; then
     HTTPD_PREFIX="/usr/local"
@@ -179,6 +179,7 @@ function set_httpd_vars() {
 Please run below commands.
 
   $ ruby -S passenger-install-apache2-module --snippet > ranguba.conf
+  $ edit ranguba.conf
   $ cp ranguba.conf <your httpd.conf directory>
   $ echo include <path/to/ranguba.conf> >> <your httpd.conf>
 EOF
@@ -253,7 +254,9 @@ sudo -H -u $RANGUBA_USERNAME \
     bash ./install_sources_and_gems.sh
 
 export PATH="$PREFIX/bin:$PATH"
-install_ranguba_conf
+if test "$noinst" != yes; then
+    install_ranguba_conf
+fi
 
 test $fd && echo "Finished: $(LC_ALL=C date)" 1>&$log
 exec 3>&-
