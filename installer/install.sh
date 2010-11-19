@@ -150,31 +150,16 @@ function check_rpm_packages() {
     fi
 }
 
-function install_ranguba_config() {
-    if [ ! -f ranguba.conf ]; then
-        ruby -S passenger-install-apache2-module --snippet > ranguba.conf
-	cat >> ranguba.conf <<EOF
-RailsBaseURI /ranguba
-<Directory ${PREFIX}/srv/www/ranguba>
-  Options -MultiViews
-</Directory>
-EOF
-    fi
-
+function set_httpd_conf_dir() {
     if test -n "$APXS2_PATH"; then
-	sysconfdir=$(${APXS2_PATH} -q SYSCONFDIR)
-	cp ranguba.conf "$sysconfdir/extra/"
-	echo include conf/extra/ranguba.conf >> "$sysconfdir/httpd.conf"
+	HTTPD_CONF_DIR=$(${APXS2_PATH} -q SYSCONFDIR)
     else
 	APXS2_PATH=$(ruby -rphusion_passenger -e 'print PhusionPassenger::PlatformInfo.apxs2')
 	if test -n $APXS2_PATH; then
-	    sysconfdir=$(${APXS2_PATH} -q SYSCONFDIR)
-	    cp ranguba.conf "$sysconfdir/extra/"
-	    echo include conf/extra/ranguba.conf >> "$sysconfdir/httpd.conf"
+	    HTTPD_CONF_DIR=$(${APXS2_PATH} -q SYSCONFDIR)
 	else
 	    if test $HTTPD_PREFIX; then
-		cp ranguba.conf $HTTPD_PREFIX/conf/extra/
-		echo include conf/extra/ranguba.conf >> $HTTPD_PREFIX/conf/httpd.conf
+		HTTPD_CONF_DIR=$HTTPD_PREFIX/conf/
 	    else
 		abort <<EOF
 Please run below commands.
@@ -184,6 +169,24 @@ Please run below commands.
 EOF
 	    fi
 	fi
+    fi
+    echo $HTTPD_CONF_DIR
+}
+
+function install_ranguba_conf() {
+    set_httpd_conf_dir
+    if [ ! -f ranguba.conf ]; then
+        ruby -S passenger-install-apache2-module --snippet > ranguba.conf
+	cat >> ranguba.conf <<EOF
+RailsBaseURI /ranguba
+<Directory ${PREFIX}/srv/www/ranguba>
+  Options -MultiViews
+</Directory>
+EOF
+    fi
+    cp ranguba.conf "${HTTPD_CONF_DIR}/extra/ranguba.conf"
+    if test -z grep "ranguba.conf" "${HTTPD_CONF_DIR}/httpd.conf"; then
+	echo include conf/extra/ranguba.conf >> "${HTTPD_CONF_DIR}/httpd.conf"
     fi
 }
 
@@ -231,7 +234,7 @@ sudo -H -u $RANGUBA_USERNAME \
     bash ./install_sources_and_gems.sh
 
 export PATH="$PREFIX/bin:$PATH"
-install_ranguba_config
+install_ranguba_conf
 
 test $fd && echo "Finished: $(LC_ALL=C date)" 1>&$log
 exec 3>&-
