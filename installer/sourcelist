@@ -32,13 +32,12 @@ inst http://downloads.sourceforge.net/project/ruby-gnome2/ruby-gnome2/ruby-gnome
 inst http://rubygems.org/downloads/nokogiri-1.4.3.1.gem
 
 # inst cutter-1.1.5.tar.gz
-inst http://groonga.org/files/groonga/groonga-1.0.3.tar.gz
-inst http://rubygems.org/downloads/rroonga-1.0.2.gem
+inst http://groonga.org/files/groonga/groonga-1.0.3.tar.gz # TODO
+inst http://rubygems.org/downloads/rroonga-1.0.2.gem # TODO
 inst http://rubygems.org/downloads/racknga-0.9.0.gem
 inst http://rubyforge.org/frs/download.php/73173/chupatext-0.5.0.tar.gz # TODO
 # inst http://rubygems.org/downloads/chupatext-0.5.0.gem
 inst http://rubygems.org/downloads/chuparuby-0.5.0.gem
-# inst http://rubygems.org/downloads/sqlite3-ruby-1.3.2.gem # remove
 
 download http://rubygems.org/downloads/abstract-1.0.0.gem
 download http://rubygems.org/downloads/actionmailer-3.0.1.gem
@@ -65,7 +64,7 @@ download http://rubygems.org/downloads/treetop-1.4.8.gem
 download http://rubygems.org/downloads/tzinfo-0.3.23.gem
 inst http://rubygems.org/downloads/rails-3.0.1.gem
 
-inst http://rubygems.org/downloads/activegroonga-1.0.0.gem
+inst http://rubygems.org/downloads/activegroonga-1.0.0.gem # TODO
 download http://rubygems.org/downloads/will_paginate-3.0.pre2.gem
 
 download http://rubygems.org/downloads/fastthread-1.0.7.gem
