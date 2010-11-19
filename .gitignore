@@ -6,8 +6,10 @@ db/groonga/development/
 db/groonga/test/
 db/groonga/production/
 db/groonga/schema.rb
+installer/ranguba_installer*
 log/*
 tmp/
 vendor/plugins/racknga/
+vendor/cache/
 config/groonga.yml
 .gdb_history
