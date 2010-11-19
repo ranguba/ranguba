@@ -37,6 +37,7 @@ inst http://rubygems.org/downloads/rroonga-1.0.2.gem # TODO
 inst http://rubygems.org/downloads/racknga-0.9.0.gem
 inst http://rubyforge.org/frs/download.php/73173/chupatext-0.5.0.tar.gz # TODO
 # inst http://rubygems.org/downloads/chupatext-0.5.0.gem
+inst http://rubygems.org/downloads/glib2-0.90.5.gem
 inst http://rubygems.org/downloads/chuparuby-0.5.0.gem
 
 download http://rubygems.org/downloads/abstract-1.0.0.gem
