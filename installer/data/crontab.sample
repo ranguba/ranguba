@@ -1,0 +1,3 @@
+# m h  dom mon dow   command
+  0 1  *   *   *     /home/ranguba/bin/ruby /home/ranguba/srv/www/ranguba/bin/ranguba-indexer http://www.clear-code.com/
+ 

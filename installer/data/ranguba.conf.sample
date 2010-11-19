@@ -1,0 +1,7 @@
+LoadModule passenger_module /home/ranguba/lib/ruby/gems/1.9.1/gems/passenger-3.0.0/ext/apache2/mod_passenger.so
+PassengerRoot /home/ranguba/lib/ruby/gems/1.9.1/gems/passenger-3.0.0
+PassengerRuby /home/ranguba/bin/ruby
+RailsBaseURI /ranguba
+<Directory /home/ranguba/srv/www/ranguba>
+  Options -MultiViews
+</Directory>
