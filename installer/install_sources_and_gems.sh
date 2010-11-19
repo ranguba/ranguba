@@ -115,6 +115,7 @@ function download_all() {
 }
 
 function install_passenger() {
+    echo "Installing Phusion Passenger..."
     if test -n "$APXS2_PATH" -a -n "$APR_CONFIG_PATH"; then
 	ruby -S passenger-install-apache2-module -a \
 	    --apxs2-path "$APXS2_PATH" \
@@ -128,10 +129,22 @@ function install_passenger() {
     else
 	ruby -S passenger-install-apache2-module -a 1>&$log 2>&1 || abort
     fi
+    echo done
 }
 
 function install_ranguba() {
     install_passenger
+    echo "set up ranguba..."
+    mkdir -p "$PREFIX/srv/www/"
+    test ! -f "$PREFIX/srv/www/ranguba/Gemfile" && tar xfz "$SOURCE/ranguba.tar.gz" -C "$PREFIX/srv/www/"
+    mkdir -p "$PREFIX/srv/www/ranguba/vendor/cache"
+    cp -a ${SOURCE}/*.gem $PREFIX/srv/www/ranguba/vendor/cache
+    cd "$PREFIX/srv/www/ranguba"
+    cp config/groonga.yml.example config/groonga.yml
+    RAILS_ENV="production" ruby -S bundle --no-color install \
+	--local --without development test 1>&$log 2>&1 || abort "Failed in install_ranguba"
+    RAILS_ENV="production" ruby -S rake groonga:migrate 1>&$log 2>&1 || abort "Failed in install_ranguba"
+    echo done
 }
 
 function install_all() {
@@ -149,6 +162,12 @@ function install_all() {
 	done
     fi
     install_ranguba
+    install_crontab
+}
+
+function install_crontab() {
+    local COMMAND="${PREFIX}/bin/ruby ${PREFIX}/srv/www/ranguba/bin/ranguba-indexer ${BASE_URI}"
+    echo "0 1 * * * $COMMAND" | crontab -
 }
 
 test -f ./sourcelist && source ./sourcelist
