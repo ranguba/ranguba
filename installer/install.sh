@@ -46,7 +46,11 @@ until test $# = 0; do
 	shift
 	APR_CONFIG_PATH="$1"
 	;;
-	(--)
+      (--document-root)
+	shift
+	DOCUMENT_ROOT="$1"
+	;;
+      (--)
 	shift
 	break
 	;;
@@ -69,6 +73,9 @@ if test -z "$PREFIX"; then
 fi
 if test -z "$HTTPD_PREFIX"; then
     HTTPD_PREFIX="/usr/local"
+fi
+if test -z "$DOCUMENT_ROOT"; then
+    DOCUMENT_ROOT="$HTTPD_PREFIX/htdocs"
 fi
 
 SEPARATOR="
@@ -150,31 +157,34 @@ function check_rpm_packages() {
     fi
 }
 
-function set_httpd_conf_dir() {
+function set_httpd_vars() {
     if test -n "$APXS2_PATH"; then
 	HTTPD_CONF_DIR=$(${APXS2_PATH} -q SYSCONFDIR)
+	APACHECTL_PATH=$(${APXS2_PATH} -q SBINDIR)/apachectl
     else
 	APXS2_PATH=$(ruby -rphusion_passenger -e 'print PhusionPassenger::PlatformInfo.apxs2')
 	if test -n $APXS2_PATH; then
 	    HTTPD_CONF_DIR=$(${APXS2_PATH} -q SYSCONFDIR)
+	    APACHECTL_PATH=$(${APXS2_PATH} -q SBINDIR)/apachectl
 	else
 	    if test $HTTPD_PREFIX; then
 		HTTPD_CONF_DIR=$HTTPD_PREFIX/conf/
+		APACHECTL_PATH=$HTTPD_PREFIX/bin/apachectl
 	    else
-		abort <<EOF
+		echo <<EOF
 Please run below commands.
 
+  $ ruby -S passenger-install-apache2-module --snippet > ranguba.conf
   $ cp ranguba.conf <your httpd.conf directory>
   $ echo include <path/to/ranguba.conf> >> <your httpd.conf>
 EOF
 	    fi
 	fi
     fi
-    echo $HTTPD_CONF_DIR
 }
 
 function install_ranguba_conf() {
-    set_httpd_conf_dir
+    set_httpd_vars
     if [ ! -f ranguba.conf ]; then
         ruby -S passenger-install-apache2-module --snippet > ranguba.conf
 	cat >> ranguba.conf <<EOF
@@ -188,6 +198,8 @@ EOF
     if test -z grep "ranguba.conf" "${HTTPD_CONF_DIR}/httpd.conf"; then
 	echo include conf/extra/ranguba.conf >> "${HTTPD_CONF_DIR}/httpd.conf"
     fi
+    ln -s "$PREFIX/srv/www/ranguba/public" "$DOCUMENT_ROOT/ranguba"
+    $APACHECTL_PATH restart
 }
 
 case $ARCH in
