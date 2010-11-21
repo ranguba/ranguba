@@ -19,10 +19,6 @@ class SearchRequest
       search_request_options = options[:path] || new(options).to_s(options)
       [base, search_request_options].join(DELIMITER)
     end
-
-    def encode_parameter(input)
-      URI.encode(input, /[^-_.!~*'()a-zA-Z\d@]/)
-    end
   end
 
   def initialize(options={})
@@ -92,7 +88,7 @@ class SearchRequest
     while i < parts.size
       key = parts[i]
       value = parts[i+1]
-      send("#{key}=", URI.decode(value)) if KEYS.include?(key.to_sym) && !value.blank?
+      send("#{key}=", CGI.unescape(value)) if KEYS.include?(key.to_sym) && !value.blank?
       i += 2
     end
 
@@ -108,7 +104,7 @@ class SearchRequest
       unless value.blank?
         path_components << key
         value = value.key if value.respond_to?(:key)
-        path_components << self.class.encode_parameter(value.to_s)
+        path_components << CGI.escape(value.to_s)
       end
     end
     path_components.join("/")
@@ -148,36 +144,13 @@ class SearchRequest
         next if query.blank?
         terms = query.split
         terms.each do |term|
-          topic_path_request.query ||= ""
-          topic_path_request.query += " "+term
-          opt = to_hash.merge(options).merge(:query => (terms - [term]).join(" "))
-          items << {:label => term,
-                    :title => topic_path_request.to_readable_string(options),
-                    :path => topic_path_request.path(options),
-                    :reduce_title => I18n.t("topic_path_reduce_query_item_label",
-                                            :value => term),
-                    :reduce_path => self.class.path(opt),
-                    :param => :query,
-                    :value => term}
+          item = TopicPathItem.new(key, query, items)
+          item.value_label = term
+          items << item if item.valid?
         end
       else
-        value = send(key.to_s)
-        unless value.nil?
-          label = Ranguba::Customize.get(key.to_s, value)
-          type = I18n.t("column_#{key}_name")
-          topic_path_request.send("#{key}=", value)
-          items << {:label => I18n.t("topic_path_item_label",
-                                     :type => type,
-                                     :value => label),
-                    :title => topic_path_request.to_readable_string(options),
-                    :path => topic_path_request.path(options),
-                    :reduce_title => I18n.t("topic_path_reduce_item_label",
-                                            :type => type,
-                                            :value => label),
-                    :reduce_path => path(options.merge(:without => key)),
-                    :param => key,
-                    :value => value}
-        end
+        item = TopicPathItem.new(key, send(key.to_s), items)
+        items << item if item.valid?
       end
     end
     items

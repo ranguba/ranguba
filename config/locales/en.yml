@@ -12,6 +12,7 @@ en:
 
   column_category_name: "Category"
   column_type_name: "File Type"
+  column_query_name: "Keyword"
 
   search_result_title: "Search results of %{conditions}"
   search_result_title_paginated: "Search results of %{conditions} (page %{page}/%{max_page})"
