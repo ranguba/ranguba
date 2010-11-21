@@ -2,6 +2,11 @@ class SearchController < ApplicationController
   SUMMARY_SIZE = 140
 
   def index
+    if /\/\z/ !~ request.env["REQUEST_URI"]
+      redirect_to("#{request.env['REQUEST_URI']}/")
+      return
+    end
+
     @base_path = url_for(:action => "index")
     if params[:search_request].is_a?(Hash)
       redirect_to params.merge(:search_request => SearchRequest.new(params[:search_request]).to_s)
