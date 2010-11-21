@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -9,14 +10,17 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="system-search.svg"
-   sodipodi:docbase="/home/tigert/cvs/freedesktop.org/tango-icon-theme/scalable/actions"
-   inkscape:version="0.46"
+   sodipodi:docname="query.svg"
+   inkscape:version="0.47 r22583"
    sodipodi:version="0.32"
    id="svg11300"
    height="48px"
    width="48px"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.1"
+   inkscape:export-filename="/home/kou/work/ruby/ranguba/public/images/keys/query-small.png"
+   inkscape:export-xdpi="30"
+   inkscape:export-ydpi="30">
   <defs
      id="defs3">
     <inkscape:perspective
@@ -190,22 +194,23 @@
      inkscape:window-y="94"
      inkscape:window-x="239"
      inkscape:window-height="754"
-     inkscape:window-width="691"
+     inkscape:window-width="819"
      inkscape:showpageshadow="false"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      showgrid="false"
      inkscape:current-layer="layer1"
-     inkscape:cy="23.07052"
-     inkscape:cx="9.502648"
-     inkscape:zoom="11.313708"
+     inkscape:cy="71.869675"
+     inkscape:cx="-90.699782"
+     inkscape:zoom="1.4142135"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="0.25490196"
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     fill="#729fcf" />
+     fill="#729fcf"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata4">
     <rdf:RDF>
@@ -222,6 +227,7 @@
         <dc:source>http://jimmac.musichall.cz</dc:source>
         <cc:license
            rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:title></dc:title>
       </cc:Work>
       <cc:License
          rdf:about="http://creativecommons.org/licenses/publicdomain/">

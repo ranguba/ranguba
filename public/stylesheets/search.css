@@ -64,11 +64,16 @@
   border: 0 none;
 }
 
+.topic_path_item_type_label,
 .topic_path_item_category_label,
 .topic_path_item_query_label {
   padding-left: 18px;
   background-position: left bottom;
   background-repeat: no-repeat;
+}
+
+.topic_path_item_type_label {
+  background-image: url(../images/keys/type-small.png);
 }
 
 .topic_path_item_category_label {
@@ -140,15 +145,33 @@
   padding: 0;
 }
 
+.search_result_drilldown_entries li:after {
+  color: gray;
+  content: "|";
+  margin-left: 0.5em;
+}
+
+.search_result_drilldown_entries li:last-child:after {
+  content: none;
+}
+
 .search_result_drilldown_entries img {
   border: 0 none;
 }
 
+li.search_result_drilldown_type_entry,
 li.search_result_drilldown_category_entry {
   padding-left: 18px;
-  background-image: url(../images/keys/category-small.png);
   background-position: left bottom;
   background-repeat: no-repeat;
+}
+
+li.search_result_drilldown_type_entry {
+  background-image: url(../images/keys/type-small.png);
+}
+
+li.search_result_drilldown_category_entry {
+  background-image: url(../images/keys/category-small.png);
 }
 
 /* pagination */
