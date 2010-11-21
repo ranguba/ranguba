@@ -33,8 +33,8 @@ class Ranguba::Entry < ActiveGroonga::Base
     _type
   end
 
-  def drilldown_items
-    @drilldown_items ||= compute_drilldown_items
+  def drilldown_entries
+    @drilldown_entries ||= compute_drilldown_entries
   end
 
   def summary(expression, options={})
@@ -82,14 +82,14 @@ class Ranguba::Entry < ActiveGroonga::Base
   end
 
   private
-  def compute_drilldown_items
-    items = []
+  def compute_drilldown_entries
+    entries = []
     SearchRequest::KEYS.each do |key|
       next if key == :query || send(key).blank?
-    items << DrilldownItem.new(:param => key,
-                               :value => send(key))
+    entries << DrilldownEntry.new(:param => key,
+                                  :value => send(key))
     end
-    items
+    entries
   end
 
   def normalize_summary_options(options={})

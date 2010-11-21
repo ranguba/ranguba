@@ -4,9 +4,9 @@ module CachedResultSet
   def drilldown(key)
     records = group(key).sort([["_nsubrecs", :descending]])
     records.collect do |record|
-      DrilldownItem.new(:param => key,
-                        :value => record.key.key,
-                        :count => record.n_sub_records)
+      DrilldownEntry.new(:param => key,
+                         :value => record.key.key,
+                         :count => record.n_sub_records)
     end
   end
 
@@ -14,8 +14,8 @@ module CachedResultSet
   def compute_drilldowns(columns)
     @drilldowns = {}
     columns.each do |column|
-      items = drilldown(column.to_s)
-      @drilldowns[column.to_s] = items unless items.empty?
+      entries = drilldown(column.to_s)
+      @drilldowns[column.to_s] = entries unless entries.empty?
     end
   end
 

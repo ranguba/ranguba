@@ -1,7 +1,7 @@
-  <ol class="search_result_items">
+  <ol class="search_result_entries">
     <% @result_set.paginated_records.each do |entry| %>
-      <li class="search_result_item">
-        <div class="search_result_item_header">
+      <li class="search_result_entry">
+        <div class="search_result_entry_header">
           <span class="search_result_title"><%= link_to entry.title, entry.key %></span>
           <span class="search_result_location"><%= link_to entry.key, entry.key %></span>
         </div>
@@ -12,14 +12,14 @@
                                  :separator => t("search_result_summary_ellipses"),
                                  :html_escape => true))
         %></div>
-        <ul class="search_result_drilldown_items">
-          <% entry.drilldown_items.each do |item| %>
-            <li class="search_result_drilldown_<%= item.param.to_s %>_item">
-              <% case item.param %>
+        <ul class="search_result_drilldown_entries">
+          <% entry.drilldown_entries.each do |entry| %>
+            <li class="search_result_drilldown_<%= entry.param.to_s %>_entry">
+              <% case entry.param %>
               <% when :type %>
-                <%= filetype_icon(item.value, item.label, item.path(:base_path => @base_path)) %>
+                <%= filetype_icon(entry.value, entry.label, entry.path(:base_path => @base_path)) %>
               <% else %>
-                <%= link_to item.label, item.path(:base_path => @base_path) %>
+                <%= link_to entry.label, entry.path(:base_path => @base_path) %>
               <% end %>
             </li>
           <% end %>

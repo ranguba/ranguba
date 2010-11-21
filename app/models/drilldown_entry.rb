@@ -1,4 +1,4 @@
-class DrilldownItem < SearchRequest
+class DrilldownEntry < SearchRequest
   attr_accessor :param
   attr_accessor :value
   attr_accessor :count
@@ -20,7 +20,7 @@ class DrilldownItem < SearchRequest
   end
 
   def label_with_count
-    I18n.t("drilldown_item_label", :label => label, :count => count)
+    I18n.t("drilldown_entry_label", :label => label, :count => count)
   end
 end
 

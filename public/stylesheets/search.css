@@ -31,7 +31,7 @@
   padding: 0.5em 1em;
 }
 
-.drilldown_item {
+.drilldown_entry {
   display: inline;
   list-style: none;
 }
@@ -75,13 +75,13 @@
 .search_result_error_message {
 }
 
-.search_result_items {
+.search_result_entries {
   border: 0 none;
   margin: 1em 0 2em;
   padding: 0;
 }
 
-.search_result_item {
+.search_result_entry {
   margin: 0 0 0.5em 0;
 }
 
@@ -112,20 +112,20 @@
   font-weight: bold;
 }
 
-.search_result_drilldown_items {
+.search_result_drilldown_entries {
   list-style: none;
   margin: 0 0 0 2em;
   padding: 0;
 }
 
-.search_result_drilldown_items li {
+.search_result_drilldown_entries li {
   display: inline;
   list-style: none;
   margin: 0 0.5em 0 0;
   padding: 0;
 }
 
-.search_result_drilldown_items img {
+.search_result_drilldown_entries img {
   border: 0 none;
 }
 
