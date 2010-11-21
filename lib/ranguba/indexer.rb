@@ -242,8 +242,7 @@ EOS
   end
 
   def purge_old_records(base_time)
-    # FIXME
-    old_entries = ::Ranguba::Entry.all.select do |record|
+    old_entries = ::Ranguba::Entry.select do |record|
       record.updated_at < base_time
     end
     old_entries.each(&:delete)
