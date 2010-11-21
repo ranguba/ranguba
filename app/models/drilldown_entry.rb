@@ -1,22 +1,22 @@
 class DrilldownEntry < SearchRequest
-  attr_accessor :param
+  attr_accessor :key
   attr_accessor :value
   attr_accessor :count
 
   def initialize(options={})
     super
-    self.param = options[:param]
+    self.key = options[:key]
     self.value = options[:value]
     self.count = options[:count] || 0
   end
 
   def value=(value)
-    send("#{param.to_s}=", value) unless param.nil?
+    send("#{key}=", value) unless key.nil?
     @value = value
   end
 
   def label
-    Ranguba::Customize.get(param.to_s, value)
+    Ranguba::Customize.get(key.to_s, value)
   end
 
   def label_with_count

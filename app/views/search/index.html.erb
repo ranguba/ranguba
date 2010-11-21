@@ -8,7 +8,7 @@
 
 <% unless @search_request.empty? %>
 <div class="search_result">
-  <% if @result_set.size > 0 %>
+  <% if @result_set.n_records > 0 %>
     <p class="search_result_count">
       <%= t("search_result_count", :count => @result_set.n_records) %>
     </p>

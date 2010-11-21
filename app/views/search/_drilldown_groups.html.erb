@@ -2,12 +2,12 @@
   <ul class="drilldown_groups">
     <% @result_set.drilldowns.each do |name, entries| %>
       <li class="drilldown_group"
-          data-param="<%= entries[0].param %>">
+          data-key="<%= entries[0].key %>">
         <span class="drilldown_group_name"><%= t(@search_request.empty? ? "drilldown_group_label" : "drilldown_group_add_label",
                                                  :label => name) %></span><ul>
         <% entries.each do |entry| %>
           <li class="drilldown_entry"
-              data-param="<%= entry.param %>"
+              data-key="<%= entry.key %>"
               data-value="<%= entry.value %>"><%= link_to entry.label_with_count,
                                                           entry.path(:base_path => @base_path) %></li>
         <% end %>

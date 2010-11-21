@@ -225,7 +225,6 @@ class SearchRequest
       set.compute_pagination(@params[:page], @params[:per_page])
       set
     end
-
   end
 end
 
