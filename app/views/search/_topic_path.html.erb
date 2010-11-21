@@ -3,20 +3,19 @@
         <li class="topic_path_item"
             data-key="<%= item.key %>"
             data-value="<%= item.value %>">
-            <% if @topic_path_items.last == item %>
-              <span class="topic_path_current_label"><%= item.label %></span>
-            <% else %>
-              <%= link_to item.label,
-                          item.path,
-                          :title => item.title,
-                          :class => "topic_path_link" %>
-            <% end %>
-            <%= link_to image_tag("delete.png",
-                                  :alt => item.reduce_title,
-                                  :size => "16x16"),
-                        item.reduce_path,
-                        :title => item.reduce_title,
-                        :class => "topic_path_reduce_link" %>
+          <span class="topic_path_item_<%= item.key %>_label">
+            <%= link_to_unless(@topic_path_items.last == item,
+                               item.value_label,
+                               item.path,
+                               :title => item.title,
+                               :class => "topic_path_link") %>
+          </span>
+          <%= link_to image_tag("delete.png",
+                                :alt => item.reduce_title,
+                                :size => "16x16"),
+                      item.reduce_path,
+                      :title => item.reduce_title,
+                      :class => "topic_path_reduce_link" %>
         </li>
       <% end %>
     </ol>
