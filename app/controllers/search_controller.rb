@@ -52,11 +52,8 @@ class SearchController < ApplicationController
   # To avoid this problem, I get the raw version of the part of the path
   # from the PATH_INFO.
   def raw_search_request
-    path = request.env["PATH_INFO"]
-    base = url_for(:controller => params[:controller],
-                   :action => params[:action],
-                   :only_path => true)
-    path.sub(base, "").sub(/\?.*$/, "")
+    base = url_for(:only_path => true)
+    request.path_info.gsub(/\A#{Regexp.escape(base)}|\?.*\z/, "")
   end
 
   def handle_bad_request
