@@ -15,12 +15,7 @@
         <ul class="search_result_drilldown_entries">
           <% entry.drilldown_entries.each do |entry| %>
             <li class="search_result_drilldown_<%= entry.key %>_entry">
-              <% case entry.key %>
-              <% when :type %>
-                <%= filetype_icon(entry.value, entry.label, entry.path(:base_path => @base_path)) %>
-              <% else %>
-                <%= link_to entry.label, entry.path(:base_path => @base_path) %>
-              <% end %>
+              <%= drilldown_link(entry) %>
             </li>
           <% end %>
         </ul>

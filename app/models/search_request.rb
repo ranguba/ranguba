@@ -77,6 +77,10 @@ class SearchRequest
     to_hash(options)
   end
 
+  def have_key?(key)
+    not send(key).blank?
+  end
+
   def parse(query_string="")
     clear
 
