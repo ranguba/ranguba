@@ -164,10 +164,6 @@ class SearchRequest
     false
   end
 
-  def respond_to?(name, priv=false)
-    true
-  end
-
   def process(params)
     RequestHandler.new(self, params).handle
   end
