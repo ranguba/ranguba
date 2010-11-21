@@ -144,7 +144,7 @@ class SearchRequest
         next if query.blank?
         terms = query.split
         terms.each do |term|
-          item = TopicPathItem.new(key, query, items)
+          item = TopicPathItem.new(key, term, items)
           item.value_label = term
           items << item if item.valid?
         end
