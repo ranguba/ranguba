@@ -46,8 +46,12 @@ class TopicPathItem
     reduced_path = parent_path
     _query_items = query_items
     reduce_query_items(backward_items).each do |item|
-      if query_item? and item.query_item?
-        value = (_query_items - [self]).collect(&:value_label).join(" ")
+      if item.query_item?
+        if query_item?
+          value = (_query_items - [self]).collect(&:value_label).join(" ")
+        else
+          value = _query_items.collect(&:value_label).join(" ")
+        end
       else
         value = item.value
       end
