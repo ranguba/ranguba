@@ -28,5 +28,19 @@
 </div>
 
 <% unless @search_request.empty? %>
-  <%= render(:partial => "search_result") %>
+<div class="search_result">
+  <% if @result_set.size > 0 %>
+    <p class="search_result_count"><%= t("search_result_count", :count => @result_set.paginated_records.total_entries ) %></p>
+    <%= will_paginate @result_set.paginated_records,
+		      :previous_label => t("search_result_previous_link"),
+		      :next_label => t("search_result_next_link"),
+		      :id => "pagination_top" %>
+    <%= render(:partial => "entries") %>
+    <%= will_paginate @result_set.paginated_records,
+		      :previous_label => t("search_result_previous_link"),
+		      :next_label => t("search_result_next_link"),
+		      :id => "pagination_bottom" %>
+  <% else %>
+    <p class="search_result_message"><%= t("search_result_not_found_message") %></p>
+  <% end %>
 <% end %>
