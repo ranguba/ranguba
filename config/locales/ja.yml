@@ -30,7 +30,7 @@ ja:
 
   drilldown_group_label: "%{label}で探す"
   drilldown_group_add_label: "%{label}で絞り込む"
-  drilldown_item_label: "%{label} (%{count})"
+  drilldown_entry_label: "%{label} (%{count})"
 
   not_found_message: "ページは存在しません。"
   invalid_request_message: "不正な要求です。"

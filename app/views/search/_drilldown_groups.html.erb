@@ -1,15 +1,15 @@
 <% if @result_set and !@result_set.drilldowns.empty? %>
   <ul class="drilldown_groups">
-    <% @result_set.drilldowns.each do |name, items| %>
+    <% @result_set.drilldowns.each do |name, entries| %>
       <li class="drilldown_group"
-          data-param="<%= items[0].param %>">
+          data-param="<%= entries[0].param %>">
         <span class="drilldown_group_name"><%= t(@search_request.empty? ? "drilldown_group_label" : "drilldown_group_add_label",
                                                  :label => name) %></span><ul>
-        <% items.each do |item| %>
-          <li class="drilldown_item"
-              data-param="<%= item.param %>"
-              data-value="<%= item.value %>"><%= link_to item.label_with_count,
-                                                         item.path(:base_path => @base_path) %></li>
+        <% entries.each do |entry| %>
+          <li class="drilldown_entry"
+              data-param="<%= entry.param %>"
+              data-value="<%= entry.value %>"><%= link_to entry.label_with_count,
+                                                          entry.path(:base_path => @base_path) %></li>
         <% end %>
       </ul></li>
     <% end %>

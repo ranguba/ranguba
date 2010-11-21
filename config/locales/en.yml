@@ -30,7 +30,7 @@ en:
 
   drilldown_group_label: "Find by %{label}"
   drilldown_group_add_label: "Filter by %{label}"
-  drilldown_item_label: "%{label} (%{count})"
+  drilldown_entry_label: "%{label} (%{count})"
 
   not_found_message: "Page not found."
   invalid_request_message: "Invalid request."
