@@ -9,7 +9,9 @@
 <% unless @search_request.empty? %>
 <div class="search_result">
   <% if @result_set.size > 0 %>
-    <p class="search_result_count"><%= t("search_result_count", :count => @result_set.paginated_records.total_entries ) %></p>
+    <p class="search_result_count">
+      <%= t("search_result_count", :count => @result_set.n_records) %>
+    </p>
     <%= will_paginate @result_set.paginated_records,
 		      :previous_label => t("search_result_previous_link"),
 		      :next_label => t("search_result_next_link"),
