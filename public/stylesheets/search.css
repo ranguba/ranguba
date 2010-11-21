@@ -129,6 +129,13 @@
   border: 0 none;
 }
 
+li.search_result_drilldown_category_entry {
+  padding-left: 18px;
+  background-image: url(../images/keys/category-small.png);
+  background-position: left bottom;
+  background-repeat: no-repeat;
+}
+
 /* pagination */
 
 .pagination {

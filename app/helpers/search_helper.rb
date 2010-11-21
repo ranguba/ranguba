@@ -5,7 +5,8 @@ module SearchHelper
       file_type_drilldown_link(entry)
     else
       link_to_unless(@search_request.have_key?(entry.key),
-                     entry.label, entry.path)
+                     entry.label,
+                     entry.path)
     end
   end
 
@@ -13,6 +14,7 @@ module SearchHelper
     link_to_unless(@search_request.have_key?(entry.key),
                    image_tag("file_types/#{entry.value}.png",
                              :alt => entry.label,
+                             :title => entry.label,
                              :size => "24x24"),
                    entry.path)
   end
