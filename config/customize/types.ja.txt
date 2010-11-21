@@ -2,4 +2,5 @@ unknown	その他
 html	HTML
 plain	プレーンテキスト
 pdf	PDF
-
+xml	XML
+excel	Excel
