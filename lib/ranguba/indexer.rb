@@ -195,10 +195,8 @@ EOS
       metadata, body = decompose_file(path, response)
       return false if metadata.nil?
       attributes = make_attributes(url, response, metadata, path)
-      attributes.update(body: body)
-      entry = ::Ranguba::Entry.new(attributes)
-      entry.key = url
-      entry.save
+      attributes.update(key: url, body: body)
+      ::Ranguba::Entry.create!(attributes)
     rescue => e
       unless @ignore_erros
         STDERR.puts "#{e.class}: #{e.message}"
@@ -249,28 +247,24 @@ EOS
   end
 
   def make_attributes(url, response, meta, path)
-    if mtime = response["last-modified"] || meta["last-modified"]
+    modification_time = response["last-modified"] || meta.modification_time
+    if modification_time
       begin
-        mtime = Time.parse(mtime)
+        modification_time = Time.parse(modification_time)
       rescue
-        mtime = nil
+        modification_time = nil
       end
     end
     mtime ||= File.mtime(path) if path
     {
-      title: meta["title"],
-      type: Ranguba::Customize.normalize_type(response["content-type"] || meta["mime-type"] || ""),
-      encoding: response["charset"] || meta["charset"] || "",
+      title: meta.title,
+      type: Ranguba::Customize.normalize_type(meta.original_mime_type || ""),
+      encoding: response["charset"] || meta.original_encoding || "",
       category: Ranguba::Customize.category_for_url(url) || "",
-      author: get_author(meta) || "",
-      modified_at: mtime,
+      author: meta.author || "",
+      modified_at: modification_time,
       updated_at: response["x-update-time"],
     }
-  end
-
-  private
-  def get_author(meta)
-    meta["author"]
   end
 end
 
