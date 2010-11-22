@@ -73,7 +73,7 @@ if test -z "$RANGUBA_USERNAME"; then
     RANGUBA_USERNAME="ranguba"
 fi
 if test -z "$PREFIX"; then
-    PREFIX="/home/${RANGUBA_USERNAME}"
+    PREFIX=$(sudo -H -u ${RANGUBA_USERNAME} sh -c 'echo $HOME')
 fi
 if test -z "$HTTPD_PREFIX"; then
     HTTPD_PREFIX="/usr/local"
@@ -188,20 +188,10 @@ EOF
     fi
 }
 
-function install_ranguba_conf() {
+function append_ranguba_conf_to_httpd_conf() {
     set_httpd_vars
-    if [ ! -f ranguba.conf ]; then
-        ruby -S passenger-install-apache2-module --snippet > ranguba.conf
-	cat >> ranguba.conf <<EOF
-RailsBaseURI /ranguba
-<Directory ${PREFIX}/srv/www/ranguba>
-  Options -MultiViews
-</Directory>
-EOF
-    fi
-    cp ranguba.conf "${HTTPD_CONF_DIR}/extra/ranguba.conf"
     if ! grep -q "ranguba.conf" "${HTTPD_CONF_DIR}/httpd.conf"; then
-	echo include conf/extra/ranguba.conf >> "${HTTPD_CONF_DIR}/httpd.conf"
+	echo "include ${PREFIX}/srv/www/ranguba/ranguba.conf" >> "${HTTPD_CONF_DIR}/httpd.conf"
     fi
     if test ! -L "$DOCUMENT_ROOT/ranguba"; then
 	ln -s "$PREFIX/srv/www/ranguba/public" "$DOCUMENT_ROOT/ranguba"
@@ -253,9 +243,8 @@ sudo -H -u $RANGUBA_USERNAME \
     BASE_URI="$BASE_URI" \
     bash ./install_sources_and_gems.sh
 
-export PATH="$PREFIX/bin:$PATH"
-if test "$noinst" != yes; then
-    install_ranguba_conf
+if test "$noinst" = yes; then
+    append_ranguba_conf_to_httpd_conf
 fi
 
 test $fd && echo "Finished: $(LC_ALL=C date)" 1>&$log

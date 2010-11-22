@@ -115,7 +115,7 @@ function download_all() {
 }
 
 function install_passenger() {
-    echo "Installing Phusion Passenger..."
+    echo -n "Installing Phusion Passenger..."
     if test -n "$APXS2_PATH" -a -n "$APR_CONFIG_PATH"; then
 	ruby -S passenger-install-apache2-module -a \
 	    --apxs2-path "$APXS2_PATH" \
@@ -144,7 +144,21 @@ function install_ranguba() {
     RAILS_ENV="production" ruby -S bundle --no-color install \
 	--local --without development test 1>&$log 2>&1 || abort "Failed in install_ranguba"
     RAILS_ENV="production" ruby -S rake groonga:migrate 1>&$log 2>&1 || abort "Failed in install_ranguba"
+    generate_ranguba_conf
     echo done
+}
+
+function generate_ranguba_conf() {
+    if [ ! -f ranguba.conf ]; then
+        ruby -S passenger-install-apache2-module --snippet > ranguba.conf
+	cat >> ranguba.conf <<EOF
+RailsBaseURI /ranguba
+<Directory ${PREFIX}/srv/www/ranguba>
+  Options -MultiViews
+</Directory>
+EOF
+    fi
+    cp ranguba.conf "$PREFIX/srv/www/ranguba/ranguba.conf"
 }
 
 function install_all() {
