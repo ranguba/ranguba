@@ -147,7 +147,8 @@ install.sh ファイルがあるディレクトリを $SETUP_DIR と表記しま
 
 === Rubygemsによるインストール
 
-以下のRubygemsがインストールされます。
+以下の Rubygems がインストールされます。
+(バージョンは随時変更されます。)
 
 * chuparuby-0.5.0
 * nokogiri-1.4.3.1
