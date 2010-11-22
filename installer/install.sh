@@ -73,7 +73,7 @@ if test -z "$RANGUBA_USERNAME"; then
     RANGUBA_USERNAME="ranguba"
 fi
 if test -z "$PREFIX"; then
-    PREFIX=$(sudo -H -u ${RANGUBA_USERNAME} sh -c 'echo $HOME')
+    PREFIX=$(echo ~${RANGUBA_USERNAME})
 fi
 if test -z "$HTTPD_PREFIX"; then
     HTTPD_PREFIX="/usr/local"
