@@ -36,4 +36,11 @@ cp ./data/* "$INSTALLER_DIR/data/"
     git archive --format=tar --prefix=ranguba/ HEAD | gzip > ./ranguba.tar.gz
     mv ./ranguba.tar.gz "$SOURCE/"
 )
+for f in $(ls -1 $SOURCE/);do
+    if test ! -s ${f};then
+        echo "${f} is empty."
+        exit 1
+    fi
+done
+
 tar cfz ranguba_installer.tar.gz ranguba_installer
