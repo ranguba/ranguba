@@ -3,3 +3,5 @@ application/xhtml+xml	html
 text/plain	plain
 application/pdf	pdf
 application/vnd.ms-excel	excel
+application/ms-powerpoint	powerpoint
+application/msword	word
