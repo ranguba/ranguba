@@ -29,7 +29,7 @@ install.sh ファイルがあるディレクトリを $SETUP_DIR と表記しま
 
 (3) カテゴリファイルを編集してください。
     上記の例でいえば、
-    ((|/home/ranguba/srv/www/ranguba/config/customize/categories.txt|))
+    ((|/home/ranguba/ranguba/config/customize/categories.txt|))
     にサンプルファイルが用意されています。
 
 === インストーラに指定可能なオプション

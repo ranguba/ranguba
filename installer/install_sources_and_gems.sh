@@ -135,11 +135,11 @@ function install_passenger() {
 function install_ranguba() {
     install_passenger
     echo -n "set up ranguba..."
-    mkdir -p "$PREFIX/srv/www/"
-    test ! -f "$PREFIX/srv/www/ranguba/Gemfile" && tar xfz "$SOURCE/ranguba.tar.gz" -C "$PREFIX/srv/www/"
-    mkdir -p "$PREFIX/srv/www/ranguba/vendor/cache"
-    cp -a ${SOURCE}/*.gem $PREFIX/srv/www/ranguba/vendor/cache
-    cd "$PREFIX/srv/www/ranguba"
+    mkdir -p "$PREFIX/"
+    test ! -f "$PREFIX/ranguba/Gemfile" && tar xfz "$SOURCE/ranguba.tar.gz" -C "$PREFIX/"
+    mkdir -p "$PREFIX/ranguba/vendor/cache"
+    cp -a ${SOURCE}/*.gem $PREFIX/ranguba/vendor/cache
+    cd "$PREFIX/ranguba"
     cp config/groonga.yml.example config/groonga.yml
     RAILS_ENV="production" ruby -S bundle --no-color install \
 	--local --without development test 1>&$log 2>&1 || abort "Failed in install_ranguba"
@@ -153,13 +153,13 @@ function generate_ranguba_conf() {
         ruby -S passenger-install-apache2-module --snippet > ranguba.conf
 	cat >> ranguba.conf <<EOF
 RailsBaseURI /ranguba
-<Directory ${PREFIX}/srv/www/ranguba>
+<Directory ${PREFIX}/ranguba>
   Options -MultiViews
 </Directory>
 EOF
     fi
-    if test ! -f "$PREFIX/srv/www/ranguba/ranguba.conf";then
-	cp -f ranguba.conf "$PREFIX/srv/www/ranguba/ranguba.conf"
+    if test ! -f "$PREFIX/ranguba/ranguba.conf";then
+	cp -f ranguba.conf "$PREFIX/ranguba/ranguba.conf"
     fi
 }
 
@@ -182,7 +182,7 @@ function install_all() {
 }
 
 function install_crontab() {
-    local COMMAND="${PREFIX}/bin/ruby ${PREFIX}/srv/www/ranguba/bin/ranguba-indexer ${BASE_URI}"
+    local COMMAND="${PREFIX}/bin/ruby ${PREFIX}/ranguba/bin/ranguba-indexer ${BASE_URI}"
     echo "0 1 * * * $COMMAND" | crontab -
 }
 

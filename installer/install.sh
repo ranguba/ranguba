@@ -191,10 +191,10 @@ EOF
 function append_ranguba_conf_to_httpd_conf() {
     set_httpd_vars
     if ! grep -q "ranguba.conf" "${HTTPD_CONF_DIR}/httpd.conf"; then
-	echo "include ${PREFIX}/srv/www/ranguba/ranguba.conf" >> "${HTTPD_CONF_DIR}/httpd.conf"
+	echo "include ${PREFIX}/ranguba/ranguba.conf" >> "${HTTPD_CONF_DIR}/httpd.conf"
     fi
     if test ! -L "$DOCUMENT_ROOT/ranguba"; then
-	ln -s "$PREFIX/srv/www/ranguba/public" "$DOCUMENT_ROOT/ranguba"
+	ln -s "$PREFIX/ranguba/public" "$DOCUMENT_ROOT/ranguba"
     fi
     test -x $APACHECTL_PATH && $APACHECTL_PATH restart
 }
