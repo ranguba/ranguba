@@ -149,7 +149,7 @@ function install_ranguba() {
 }
 
 function generate_ranguba_conf() {
-    if [ ! -f ranguba.conf ]; then
+    if test ! -f ranguba.conf; then
         ruby -S passenger-install-apache2-module --snippet > ranguba.conf
 	cat >> ranguba.conf <<EOF
 RailsBaseURI /ranguba
@@ -158,7 +158,9 @@ RailsBaseURI /ranguba
 </Directory>
 EOF
     fi
-    cp -f ranguba.conf "$PREFIX/srv/www/ranguba/ranguba.conf"
+    if test ! -f "$PREFIX/srv/www/ranguba/ranguba.conf";then
+	cp -f ranguba.conf "$PREFIX/srv/www/ranguba/ranguba.conf"
+    fi
 }
 
 function install_all() {
