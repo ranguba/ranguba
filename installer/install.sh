@@ -243,7 +243,7 @@ sudo -H -u $RANGUBA_USERNAME \
     BASE_URI="$BASE_URI" \
     bash ./install_sources_and_gems.sh
 
-if test "$noinst" = yes; then
+if test "$noinst" = no; then
     append_ranguba_conf_to_httpd_conf
 fi
 

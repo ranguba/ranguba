@@ -134,7 +134,7 @@ function install_passenger() {
 
 function install_ranguba() {
     install_passenger
-    echo "set up ranguba..."
+    echo -n "set up ranguba..."
     mkdir -p "$PREFIX/srv/www/"
     test ! -f "$PREFIX/srv/www/ranguba/Gemfile" && tar xfz "$SOURCE/ranguba.tar.gz" -C "$PREFIX/srv/www/"
     mkdir -p "$PREFIX/srv/www/ranguba/vendor/cache"
@@ -158,7 +158,7 @@ RailsBaseURI /ranguba
 </Directory>
 EOF
     fi
-    cp ranguba.conf "$PREFIX/srv/www/ranguba/ranguba.conf"
+    cp -f ranguba.conf "$PREFIX/srv/www/ranguba/ranguba.conf"
 }
 
 function install_all() {
