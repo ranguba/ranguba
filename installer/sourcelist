@@ -33,41 +33,9 @@ inst http://rubygems.org/downloads/nokogiri-1.4.3.1.gem
 
 # inst cutter-1.1.5.tar.gz
 inst http://groonga.org/files/groonga/groonga-1.0.3.tar.gz # TODO
-inst http://rubygems.org/downloads/rroonga-1.0.2.gem # TODO
-inst http://rubygems.org/downloads/racknga-0.9.0.gem
 inst http://rubyforge.org/frs/download.php/73173/chupatext-0.5.0.tar.gz # TODO
-# inst http://rubygems.org/downloads/chupatext-0.5.0.gem
-inst http://rubygems.org/downloads/glib2-0.90.5.gem
-inst http://rubygems.org/downloads/chuparuby-0.5.0.gem
 
-download http://rubygems.org/downloads/abstract-1.0.0.gem
-download http://rubygems.org/downloads/actionmailer-3.0.1.gem
-download http://rubygems.org/downloads/actionpack-3.0.1.gem
-download http://rubygems.org/downloads/activemodel-3.0.1.gem
-download http://rubygems.org/downloads/activerecord-3.0.1.gem
-download http://rubygems.org/downloads/activeresource-3.0.1.gem
-download http://rubygems.org/downloads/activesupport-3.0.1.gem
-download http://rubygems.org/downloads/arel-1.0.1.gem
-download http://rubygems.org/downloads/builder-2.1.2.gem
 inst http://rubygems.org/downloads/bundler-1.0.7.gem
-download http://rubygems.org/downloads/erubis-2.6.6.gem
-download http://rubygems.org/downloads/i18n-0.4.2.gem
-download http://rubygems.org/downloads/mail-2.2.9.gem
-download http://rubygems.org/downloads/mime-types-1.16.gem
-download http://rubygems.org/downloads/polyglot-0.3.1.gem
-download http://rubygems.org/downloads/rack-1.2.1.gem
-download http://rubygems.org/downloads/rack-mount-0.6.13.gem
-download http://rubygems.org/downloads/rack-test-0.5.6.gem
-download http://rubygems.org/downloads/railties-3.0.1.gem
-download http://rubygems.org/downloads/rake-0.8.7.gem
-download http://rubygems.org/downloads/thor-0.14.3.gem
-download http://rubygems.org/downloads/treetop-1.4.8.gem
-download http://rubygems.org/downloads/tzinfo-0.3.23.gem
-inst http://rubygems.org/downloads/rails-3.0.1.gem
-
-inst http://rubygems.org/downloads/activegroonga-1.0.0.gem # TODO
-download http://rubygems.org/downloads/will_paginate-3.0.pre2.gem
-
 download http://rubygems.org/downloads/fastthread-1.0.7.gem
 download http://rubygems.org/downloads/daemon_controller-0.2.5.gem
 download http://rubygems.org/downloads/spruz-0.2.2.gem
