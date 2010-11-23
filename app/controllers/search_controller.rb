@@ -63,7 +63,7 @@ class SearchController < ApplicationController
 
   def setup_search_result
     @result_set = @search_request.process(params)
-    @topic_path_items = @search_request.topic_path_items(:base_path => @base_path)
+    @topic_path_items = @search_request.topic_path_items
   end
 
   def setup_search_result_title
