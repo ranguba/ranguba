@@ -14,27 +14,30 @@ class SearchRequestTest < ActiveSupport::TestCase
   def test_new_with_params
     @request = SearchRequest.new({})
     assert_valid
-    
-    @request = SearchRequest.new(:query => "q")
+
+    @request = SearchRequest.new('', :query => "q")
     assert_valid(:to_s => "query/q",
                  :query => "q",
                  :empty => false)
 
-    @request = SearchRequest.new(:query => "q",
+    @request = SearchRequest.new('',
+                                 :query => "q",
                                  :category => "c")
     assert_valid(:to_s => "query/q/category/c",
                  :query => "q",
                  :category => "c",
                  :empty => false)
 
-    @request = SearchRequest.new(:query => "q",
+    @request = SearchRequest.new('',
+                                 :query => "q",
                                  :type => "t")
     assert_valid(:to_s => "query/q/type/t",
                  :query => "q",
                  :type => "t",
                  :empty => false)
 
-    @request = SearchRequest.new(:query => "q",
+    @request = SearchRequest.new('',
+                                 :query => "q",
                                  :category => "c",
                                  :type => "t")
     assert_valid(:to_s => "query/q/category/c/type/t",
@@ -43,7 +46,8 @@ class SearchRequestTest < ActiveSupport::TestCase
                  :type => "t",
                  :empty => false)
 
-    @request = SearchRequest.new(:category => "c",
+    @request = SearchRequest.new('',
+                                 :category => "c",
                                  :query => "q")
     assert_valid(:to_s => "category/c/query/q",
                  :canonical => "query/q/category/c",
@@ -53,24 +57,21 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_new_with_base_params
-    @request = SearchRequest.new(:query => "new",
-                                 :base_params => "type/t")
+    @request = SearchRequest.new("type/t", :query => "new")
     assert_valid(:to_s => "type/t/query/new",
                  :canonical => "query/new/type/t",
                  :query => "new",
                  :type => "t",
                  :empty => false)
 
-    @request = SearchRequest.new(:query => "new",
-                                 :base_params => "type/t/query/base")
+    @request = SearchRequest.new("type/t/query/base", :query => "new")
     assert_valid(:to_s => "type/t/query/new",
                  :canonical => "query/new/type/t",
                  :query => "new",
                  :type => "t",
                  :empty => false)
 
-    @request = SearchRequest.new(:type => "new",
-                                 :base_params => "type/t/query/base")
+    @request = SearchRequest.new("type/t/query/base", :type => "new")
     assert_valid(:to_s => "query/base/type/new",
                  :canonical => "query/base/type/new",
                  :query => "base",
@@ -108,44 +109,44 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert_equal [:query, :category, :type], @request.ordered_keys
     assert_equal canonical, @request.ordered_keys(:canonical => true)
 
-    @request.parse("type/t/category/c/query/q")
+    @request = SearchRequest.new("/search/type/t/category/c/query/q")
     assert_equal [:type, :category, :query], @request.ordered_keys
     assert_equal canonical, @request.ordered_keys(:canonical => true)
 
-    @request = SearchRequest.new(:type => "n", :category => "c")
+    @request = SearchRequest.new("", :type => "n", :category => "c")
     assert_equal [:query, :type, :category], @request.ordered_keys
     assert_equal canonical, @request.ordered_keys(:canonical => true)
   end
 
   def test_parse_valid_input
-    @request.parse("query/q")
+    @request = SearchRequest.new("query/q")
     assert_valid(:to_s => "query/q",
                  :query => "q",
                  :empty => false)
-    
-    @request.parse("/query/q")
+
+    @request = SearchRequest.new("/query/q")
     assert_valid(:to_s => "query/q",
                  :query => "q",
                  :empty => false)
-    
-    @request.parse("query/q/")
+
+    @request = SearchRequest.new("query/q/")
     assert_valid(:to_s => "query/q",
                  :query => "q",
                  :empty => false)
-    
-    @request.parse("/query/q/category/c")
+
+    @request = SearchRequest.new("/query/q/category/c")
     assert_valid(:to_s => "query/q/category/c",
                  :query => "q",
                  :category => "c",
                  :empty => false)
-    
-    @request.parse("/query/q/type/t")
+
+    @request = SearchRequest.new("/query/q/type/t")
     assert_valid(:to_s => "query/q/type/t",
                  :query => "q",
                  :type => "t",
                  :empty => false)
-    
-    @request.parse("/query/q/category/c/type/t")
+
+    @request = SearchRequest.new("/query/q/category/c/type/t")
     assert_valid(:to_s => "query/q/category/c/type/t",
                  :query => "q",
                  :category => "c",
@@ -161,8 +162,8 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert_valid
   end
 
-  def test_parse_mixed_order    
-    @request.parse("category/c/query/q/type/t")
+  def test_parse_mixed_order
+    @request = SearchRequest.new("category/c/query/q/type/t")
     assert_valid(:to_s => "category/c/query/q/type/t",
                  :canonical => "query/q/category/c/type/t",
                  :query => "q",
@@ -170,7 +171,7 @@ class SearchRequestTest < ActiveSupport::TestCase
                  :type => "t",
                  :empty => false)
 
-    @request.parse("type/t/category/c/query/q")
+    @request = SearchRequest.new("type/t/category/c/query/q")
     assert_valid(:to_s => "type/t/category/c/query/q",
                  :canonical => "query/q/category/c/type/t",
                  :query => "q",
@@ -180,41 +181,22 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_parse_unknown_param
-    @request.parse("unknown/value")
+    @request = SearchRequest.new("unknown/value")
     assert_invalid(:to_s => "")
 
-    @request.parse("query/q/unknown/value")
+    @request = SearchRequest.new("query/q/unknown/value")
     assert_invalid(:to_s => "query/q",
                    :query => "q",
                    :empty => false)
 
-    @request.parse("unknown/value/query/q")
+    @request = SearchRequest.new("unknown/value/query/q")
     assert_invalid(:to_s => "query/q",
                    :query => "q",
                    :empty => false)
-  end
-
-  def test_parse_correctly_reset_after_parsing
-    @request.parse("")
-    assert_valid
-
-    @request.parse("unknown/value")
-    assert_invalid(:to_s => "")
-
-    @request.parse("")
-    assert_valid
-
-    @request = SearchRequest.new(:query => "query")
-    @request.parse("")
-    assert_valid
-
-    @request = SearchRequest.new(:base_params => "query/base")
-    @request.parse("")
-    assert_valid
   end
 
   def test_to_s
-    @request = SearchRequest.new(:type => "t", :query => "q")
+    @request = SearchRequest.new("", :type => "t", :query => "q")
 
     assert_equal "type/t/query/q",
                  @request.to_s
@@ -237,37 +219,8 @@ class SearchRequestTest < ActiveSupport::TestCase
                                :canonical => true)
   end
 
-  def test_path
-    @request = SearchRequest.new(:type => "t", :query => "q")
-
-    assert_equal "/search/type/t/query/q",
-                 @request.path(:base_path => "/search/")
-    assert_equal "/search/query/q/type/t",
-                 @request.path(:base_path => "/search/",
-                               :canonical => true)
-
-    assert_equal "/search/query/q",
-                 @request.path(:base_path => "/search/",
-                               :without => :type)
-    assert_equal "/search/query/q",
-                 @request.path(:base_path => "/search/",
-                               :without => :type,
-                               :canonical => true)
-
-    # path must ignore search parameters
-    assert_equal "/search/type/t/query/q",
-                 @request.path(:base_path => "/search/",
-                               :type => "new_t",
-                               :query => "new_q")
-    assert_equal "/search/query/q/type/t",
-                 @request.path(:base_path => "/search/",
-                               :type => "new_t",
-                               :query => "new_q",
-                               :canonical => true)
-  end
-
   def test_to_hash
-    @request = SearchRequest.new(:type => "t", :query => "q")
+    @request = SearchRequest.new('', :type => "t", :query => "q")
 
     assert_equal({:type => "t", :query => "q"},
                  @request.to_hash)
@@ -293,7 +246,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   def test_multibytes_io
     encoded = URI.encode("日本語")
     query_string = "query/#{encoded}"
-    @request.parse(query_string)
+    @request = SearchRequest.new(query_string)
     assert_valid(:to_s => query_string,
                  :query => "日本語",
                  :empty => false)
@@ -307,7 +260,7 @@ class SearchRequestTest < ActiveSupport::TestCase
 
   def test_slash_io
     query_string = "type/text%2Fhtml"
-    @request.parse(query_string)
+    @request = SearchRequest.new(query_string)
     assert_valid(:to_s => query_string,
                  :type => "text/html",
                  :empty => false)
@@ -364,68 +317,14 @@ class SearchRequestTest < ActiveSupport::TestCase
               :param => :query,
               :value => "q2"}
 
-    topic_path_request = SearchRequest.new
-
-    topic_path_request.type = "t"
-    type[:title] = topic_path_request.to_readable_string
-    type[:path] = "/base/type/t"
-    type[:reduce_path] = "/base/query/q1%20q2"
-
-    topic_path_request.query = "q1"
-    query1[:title] = topic_path_request.to_readable_string
-    query1[:path] = "/base/type/t/query/q1"
-    query1[:reduce_path] = "/base/type/t/query/q2"
-
-    topic_path_request.query = "q1 q2"
-    query2[:title] = topic_path_request.to_readable_string
-    query2[:path] = "/base/type/t/query/q1%20q2"
-    query2[:reduce_path] = "/base/type/t/query/q1"
-
-    assert_equal [type, query1, query2],
-                 @request.topic_path_items(:base_path => "/base")
-
-
-    topic_path_request = SearchRequest.new
-
-    topic_path_request.query = "q1"
-    query1[:title] = topic_path_request.to_readable_string
-    query1[:path] = "/base/query/q1"
-    query1[:reduce_path] = "/base/query/q2/type/t"
-
-    topic_path_request.query = "q1 q2"
-    query2[:title] = topic_path_request.to_readable_string
-    query2[:path] = "/base/query/q1%20q2"
-    query2[:reduce_path] = "/base/query/q1/type/t"
-
-    topic_path_request.type = "t"
-    type[:title] = topic_path_request.to_readable_string
-    type[:path] = "/base/query/q1%20q2/type/t"
-    type[:reduce_path] = "/base/query/q1%20q2"
+    query1 = TopicPathItem.new(:query, 'q1', [])
+    query1.value_label = 'q1'
+    query2 = TopicPathItem.new(:query, 'q2', [query1])
+    query2.value_label = 'q2'
+    type   = TopicPathItem.new(:type, 't', [query1, query2])
 
     assert_equal [query1, query2, type],
-                 @request.topic_path_items(:base_path => "/base", :canonical => true)
-  end
-
-  def test_class_path
-    path = SearchRequest.path(:base_path => "/search/",
-                              :query => "q",
-                              :type => "t")
-    assert_equal "/search/query/q/type/t", path
-
-    path = SearchRequest.path(:base_path => "/search/",
-                              :type => "t",
-                              :query => "q")
-    assert_equal "/search/type/t/query/q", path
-
-    path = SearchRequest.path(:base_path => "/search/",
-                              :type => "t",
-                              :query => "q",
-                              :canonical => true)
-    assert_equal "/search/query/q/type/t", path
-  end
-
-  def test_class_ecncode_parameter
-    assert_equal "abcABC%20%2F%3F", SearchRequest.encode_parameter("abcABC /?")
+                 @request.topic_path_items(:canonical => true)
   end
 
   private

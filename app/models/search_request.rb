@@ -18,7 +18,7 @@ class SearchRequest
     clear
     hash = parse(@path_info)
     update(hash)
-    self.query = @params[:query] if @params[:query]
+    update(@params)
   end
 
   def update(options={})
@@ -78,7 +78,7 @@ class SearchRequest
   def parse(string)
     hash = { }
     return hash if string.blank?
-    @string = string.gsub(%r!.*/?search/?!, '')
+    @string = string.gsub(%r!\A/|(?:.*/?search/?)?!, '')
     @string.split(DELIMITER).each_slice(2) do |key, value|
       hash[key] = CGI.unescape(value) if KEYS.include?(key.to_sym) && !value.blank?
     end
@@ -89,20 +89,14 @@ class SearchRequest
     path_components = []
     ordered_keys(options).each do |key|
       next if key == options[:without]
-      key = key.to_s
       value = send(key)
       unless value.blank?
-        path_components << key
+        path_components << key.to_s
         value = value.key if value.respond_to?(:key)
         path_components << CGI.escape(value.to_s)
       end
     end
     path_components.join("/")
-  end
-
-  def path(options={})
-    options = sanitize_options(options)
-    self.class.path(to_hash.merge(options))
   end
 
   def to_readable_string(options={})
@@ -127,7 +121,6 @@ class SearchRequest
 
   def topic_path_items(options={})
     items = []
-    topic_path_request = SearchRequest.new(@path_info, @params)
     ordered_keys(options).each do |key|
       case key
       when :query
@@ -161,11 +154,7 @@ class SearchRequest
   private
   def validate_string
     return if @string.nil?
-    parts = @string.split("/")
-    i = 0
-    while i < parts.size
-      key = parts[i]
-      value = parts[i+1]
+    @string.split(DELIMITER).each_slice(2) do |key, value|
       case
       when KEYS.include?(key.to_sym)
         if value.blank?
@@ -181,7 +170,6 @@ class SearchRequest
                                       :key => key,
                                       :value => value))
       end
-      i += 2
     end
   end
 
