@@ -2,26 +2,16 @@ class SearchController < ApplicationController
   SUMMARY_SIZE = 140
 
   def index
-    if /\/\z/ !~ request.env["REQUEST_URI"]
-      redirect_to("#{request.env['REQUEST_URI']}/")
+
+    @search_request = SearchRequest.new(request)
+    if request.post?
+      new_params = { :search_request => params[:search_request] }
+      redirect_to new_params.merge(:search_request => @search_request.to_s)
       return
     end
-
-    @base_path = url_for(:action => "index")
-    if params[:search_request].is_a?(Hash)
-      redirect_to params.merge(:search_request => SearchRequest.new(params[:search_request]).to_s)
-      return
-    end
-
-    @search_request = SearchRequest.new
-    @search_request.parse(raw_search_request)
-    @search_request_params = @search_request.to_hash
 
     if @search_request.valid?
       search_options = @search_request.attributes.merge(:page => params[:page])
-      @search_request.base_params = @search_request.to_s
-      @canonical = @search_request.path(:base_path => @base_path,
-                                        :canonical => true)
     else
       handle_bad_request
       search_options = {}

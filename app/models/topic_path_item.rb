@@ -80,6 +80,7 @@ class TopicPathItem
 
   private
   def current_path
+    return './' if backward_items.blank?
     previous_item = forward_items.last
     n_backward_items = 0
     backward_items.each do |item|

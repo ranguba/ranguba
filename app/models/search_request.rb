@@ -6,25 +6,18 @@ class SearchRequest
   attr_accessor :query
   attr_accessor :category
   attr_accessor :type
-  attr_accessor :base_params
 
   KEYS = [:query, :category, :type]
   DELIMITER = "/"
 
   validate :validate_string
 
-  class << self
-    def path(options={})
-      base = options[:base_path].sub(/\/$/, "")
-      search_request_options = options[:path] || new(options).to_s(options)
-      [base, search_request_options].join(DELIMITER)
-    end
-  end
-
-  def initialize(options={})
+  def initialize(request = nil)
+    @request = request
     clear
-    parse(options[:base_params]) unless options[:base_params].blank?
-    update(options)
+    hash = parse(request.path_info)
+    update(hash)
+    self.query = request.params[:query] if request.params[:query]
   end
 
   def update(options={})
@@ -81,22 +74,13 @@ class SearchRequest
     not send(key).blank?
   end
 
-  def parse(query_string="")
-    clear
-
-    query_string = (query_string || "").gsub(/^\/+|\/+$/, "")
-    return if query_string.blank?
-
-    parts = query_string.split(DELIMITER)
-    i = 0
-    while i < parts.size
-      key = parts[i]
-      value = parts[i+1]
-      send("#{key}=", CGI.unescape(value)) if KEYS.include?(key.to_sym) && !value.blank?
-      i += 2
+  def parse(string)
+    string = string.gsub(%r!/?search/?!, '')
+    hash = { }
+    string.split(DELIMITER).each_slice(2) do |key, value|
+      hash[key] = CGI.unescape(value) if KEYS.include?(key.to_sym) && !value.blank?
     end
-
-    @string = query_string
+    hash
   end
 
   def to_s(options={})
@@ -141,7 +125,7 @@ class SearchRequest
 
   def topic_path_items(options={})
     items = []
-    topic_path_request = SearchRequest.new
+    topic_path_request = SearchRequest.new(@request)
     ordered_keys(options).each do |key|
       case key
       when :query
