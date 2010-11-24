@@ -182,8 +182,10 @@ function install_all() {
 }
 
 function install_crontab() {
-    local COMMAND="${PREFIX}/bin/ruby ${PREFIX}/ranguba/bin/ranguba-indexer ${BASE_URI}"
+    echo -n "Install crontab ..."
+    local COMMAND="${PREFIX}/ranguba/bin/run_indexer"
     echo "0 1 * * * $COMMAND" | crontab -
+    echo "done"
 }
 
 test -f ./sourcelist && source ./sourcelist
