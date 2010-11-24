@@ -12,12 +12,13 @@ class SearchRequest
 
   validate :validate_string
 
-  def initialize(request = nil)
-    @request = request
+  def initialize(path_info = nil, params = { })
+    @path_info = path_info
+    @params = params
     clear
-    hash = parse(request.path_info)
+    hash = parse(@path_info)
     update(hash)
-    self.query = request.params[:query] if request.params[:query]
+    self.query = @params[:query] if @params[:query]
   end
 
   def update(options={})
@@ -75,9 +76,10 @@ class SearchRequest
   end
 
   def parse(string)
-    string = string.gsub(%r!/?search/?!, '')
     hash = { }
-    string.split(DELIMITER).each_slice(2) do |key, value|
+    return hash if string.blank?
+    @string = string.gsub(%r!.*/?search/?!, '')
+    @string.split(DELIMITER).each_slice(2) do |key, value|
       hash[key] = CGI.unescape(value) if KEYS.include?(key.to_sym) && !value.blank?
     end
     hash
@@ -125,7 +127,7 @@ class SearchRequest
 
   def topic_path_items(options={})
     items = []
-    topic_path_request = SearchRequest.new(@request)
+    topic_path_request = SearchRequest.new(@path_info, @params)
     ordered_keys(options).each do |key|
       case key
       when :query
