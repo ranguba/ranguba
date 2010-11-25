@@ -10,7 +10,7 @@ class DrilldownEntry
   end
 
   def label
-    Ranguba::Customize.get(key.to_s, value)
+    I18n.t(value, :scope => key)
   end
 
   def label_with_count

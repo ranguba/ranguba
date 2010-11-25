@@ -67,7 +67,7 @@ class TopicPathItem
   end
 
   def value_label
-    @value_label ||= Ranguba::Customize.get(@key, @value) || @value
+    @value_label ||= I18n.t(@value, :scope => @key) || @value
   end
 
   def forward_items

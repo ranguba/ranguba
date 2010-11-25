@@ -109,7 +109,7 @@ class SearchRequest
         key = key.to_s
         value = send(key)
         unless value.blank?
-          value = Ranguba::Customize.get(key, value)
+          value = I18n.t(value, :scope => key)
           conditions << I18n.t("topic_path_item_label",
                                :type => I18n.t("column_#{key}_name"),
                                :value => value)
