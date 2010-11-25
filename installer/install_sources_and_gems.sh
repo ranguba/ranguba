@@ -145,6 +145,9 @@ function install_ranguba() {
 	--local --without development test 1>&$log 2>&1 || abort "Failed in install_ranguba"
     RAILS_ENV="production" ruby -S rake groonga:migrate 1>&$log 2>&1 || abort "Failed in install_ranguba"
     generate_ranguba_conf
+    if test ! -L $PREFIX/etc/ranguba; then
+	ln -s $PREFIX/ranguba/config/customize $PREFIX/etc/ranguba
+    fi
     echo done
 }
 
