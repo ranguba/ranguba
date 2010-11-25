@@ -33,8 +33,8 @@ class Ranguba::Indexer
     @debug = false
     @oldest = nil
 
-    @url_category_hash = Ranguba::CategoryLoader.new.load
-    @mime_type_hash = Ranguba::TypeLoader.new.load
+    @url_category_pair = Ranguba::CategoryLoader.new.load
+    @mime_type_pair = Ranguba::TypeLoader.new.load
 
     parser = OptionParser.new
     banner = parser.banner
@@ -111,7 +111,7 @@ EOS
       }
     else
       # crawl
-      if args.empty? and (args = @url_category_hash.keys).empty?
+      if args.empty? and (args = @url_category_pair.map(&:first)).empty?
         raise OptionParser::MissingArgument, "no URL"
         return
       end
@@ -270,7 +270,7 @@ EOS
   end
 
   def category_for_url(url="")
-    prefix, category = @url_category_hash.select do |prefix, category|
+    prefix, category = @url_category_pair.select do |prefix, category|
       url.start_with?(prefix)
     end.max_by do |prefix, category|
       prefix.length
@@ -285,7 +285,7 @@ EOS
 
   def type_for_mime(source)
     source = source.sub(/\s*;\s*.*\z/, "").strip
-    mime, type = @mime_type_hash.select{|mime, type|
+    mime, type = @mime_type_pair.select{|mime, type|
       source == mime
     }.max_by{|mime, type|
       mime.length
