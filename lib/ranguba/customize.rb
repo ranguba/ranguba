@@ -77,16 +77,12 @@ module Ranguba
       end
 
       def read_template(path)
-        if File.exists?(path)
-          File.read(path)
-        else
+        contents = read(path)
+        if contents.blank?
           path = path.gsub(/\.#{I18n.locale.to_s}/, "")
-          if File.exists?(path)
-            File.read(path)
-          else
-            ""
-          end
+          contents = read(path)
         end
+        contents
       end
 
       def category_definitions
