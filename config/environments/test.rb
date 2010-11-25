@@ -33,6 +33,6 @@ Ranguba::Application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
-  config.index_db_path = "#{::Rails.root.to_s}/tmp/database/db"
-  config.customize_base_path = "#{::Rails.root.to_s}/test/fixtures/customize"
+  config.index_db_path = ::Rails.root + "tmp/database/db"
+  config.customize_base_path = ::Rails.root + "test/fixtures/customize"
 end
