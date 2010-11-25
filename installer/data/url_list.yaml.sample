@@ -1,0 +1,5 @@
+--- 
+- :url: http://private.example.com/
+  :user: hoge
+  :password: fuga
+- :url: http://www.example.com/
