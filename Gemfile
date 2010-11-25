@@ -11,25 +11,11 @@ gem 'glib2'
 gem 'nokogiri'
 gem 'chuparuby'
 
+gem 'rroonga'
+gem 'racknga'
 if ENV["RAILS_ENV"] == "production"
-  gem 'rroonga'
-  gem 'racknga'
   gem 'activegroonga'
 else
-  rroonga_path = Pathname.new(__FILE__).dirname.parent + "rroonga"
-  unless rroonga_path.exist?
-    system("git", "clone",
-           "git://github.com/ranguba/rroonga.git",
-           rroonga_path.to_s)
-  end
-  Dir.chdir(rroonga_path) do
-    ruby = File.join(RbConfig::CONFIG["bindir"],
-                     RbConfig::CONFIG["RUBY_INSTALL_NAME"])
-    rake = $0
-    system(ruby, rake, "-s", "generate_gemspec")
-  end
-  gem 'rroonga', :path => rroonga_path
-  gem 'racknga'
   active_groonga_path = Pathname.new(__FILE__).dirname.parent + "activegroonga"
   unless active_groonga_path.exist?
     system("git", "clone",
@@ -39,8 +25,7 @@ else
   Dir.chdir(active_groonga_path) do
     ruby = File.join(RbConfig::CONFIG["bindir"],
                      RbConfig::CONFIG["RUBY_INSTALL_NAME"])
-    rake = $0
-    system(ruby, rake, "-s", "generate_gemspec")
+    system(ruby, "-S", "rake", "-s", "generate_gemspec")
   end
   gem 'activegroonga', :path => active_groonga_path
 end
