@@ -82,6 +82,8 @@ SEPARATOR="
 "
 
 packages=(
+    sudo
+
     bison
     diffutils
     file
