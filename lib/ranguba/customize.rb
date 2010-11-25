@@ -12,7 +12,7 @@ module Ranguba
 
       def title
         unless @@titles[I18n.locale]
-          title = read("#{base}/templates/title.#{I18n.locale.to_s}.txt").strip
+          title = read_template("#{base}/templates/title.#{I18n.locale.to_s}.txt").strip
           title = I18n.t("global_title") if title.blank?
           @@titles[I18n.locale] = title
         end
@@ -20,11 +20,11 @@ module Ranguba
       end
 
       def content_header
-        @@content_headers[I18n.locale] ||= read("#{base}/templates/header.#{I18n.locale.to_s}.txt")
+        @@content_headers[I18n.locale] ||= read_template("#{base}/templates/header.#{I18n.locale.to_s}.txt")
       end
 
       def content_footer
-        @@content_footers[I18n.locale] ||= read("#{base}/templates/footer.#{I18n.locale.to_s}.txt")
+        @@content_footers[I18n.locale] ||= read_template("#{base}/templates/footer.#{I18n.locale.to_s}.txt")
       end
 
       def category(key)
@@ -74,6 +74,19 @@ module Ranguba
           hash[parts[0]] = parts[1]
         end
         hash
+      end
+
+      def read_template(path)
+        if File.exists?(path)
+          File.read(path)
+        else
+          path = path.gsub(/\.#{I18n.locale.to_s}/, "")
+          if File.exists?(path)
+            File.read(path)
+          else
+            ""
+          end
+        end
       end
 
       def category_definitions
