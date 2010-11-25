@@ -154,7 +154,9 @@ function check_rpm_packages() {
     done
     if test ${#missing[@]} -gt 0; then
 	for pkg in "${missing[@]}"; do
-	    yum install -y $pkg 1>&$log 2>&1
+	    echo -n "Installing ${pkg} ..."
+	    yum install -y $pkg 1>&$log 2>&1 || abort
+	    echo done
 	done
     fi
 }
