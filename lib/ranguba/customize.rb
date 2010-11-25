@@ -12,7 +12,7 @@ module Ranguba
 
       def title
         unless @@titles[I18n.locale]
-          title = read("#{base}/title.#{I18n.locale.to_s}.txt").strip
+          title = read("#{base}/templates/title.#{I18n.locale.to_s}.txt").strip
           title = I18n.t("global_title") if title.blank?
           @@titles[I18n.locale] = title
         end
@@ -20,20 +20,20 @@ module Ranguba
       end
 
       def content_header
-        @@content_headers[I18n.locale] ||= read("#{base}/content_header.#{I18n.locale.to_s}.txt")
+        @@content_headers[I18n.locale] ||= read("#{base}/templates/header.#{I18n.locale.to_s}.txt")
       end
 
       def content_footer
-        @@content_footers[I18n.locale] ||= read("#{base}/content_footer.#{I18n.locale.to_s}.txt")
+        @@content_footers[I18n.locale] ||= read("#{base}/templates/footer.#{I18n.locale.to_s}.txt")
       end
 
       def category(key)
-        @@categories[I18n.locale] ||= read_hash("#{base}/categories.#{I18n.locale.to_s}.txt")
+        @@categories[I18n.locale] ||= read_hash("#{base}/messages/categories.#{I18n.locale.to_s}.txt")
         @@categories[I18n.locale][key] || key
       end
 
       def type(key)
-        @@types[I18n.locale] ||= read_hash("#{base}/types.#{I18n.locale.to_s}.txt")
+        @@types[I18n.locale] ||= read_hash("#{base}/messages/types.#{I18n.locale.to_s}.txt")
         @@types[I18n.locale][key] || key
       end
 
@@ -77,11 +77,11 @@ module Ranguba
       end
 
       def category_definitions
-        @@category_definitions ||= read_hash("#{base}/categories.txt")
+        @@category_definitions ||= read_hash("#{base}/master/categories.txt")
       end
 
       def type_definitions
-        @@type_definitions ||= read_hash("#{base}/types.txt")
+        @@type_definitions ||= read_hash("#{base}/master/types.txt")
       end
 
       def type_for_mime(source)
