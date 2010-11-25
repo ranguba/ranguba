@@ -33,18 +33,20 @@ function do_install1() {
 
     echo "Install: [$(date +%Y/%m/%d-%H:%M:%S)] $1" 1>&$log
 
+    build_dir="$HOME/build"
+
     case "$1" in
       (*.tar.bz2)
 	echo -n "Extracting $1..."
-	mkdir -p build
-	tar xpjf "${SOURCE}/$1" -C build 1>&$log 2>&1 || abort
+	mkdir -p "$build_dir"
+	tar xpjf "${SOURCE}/$1" -C "$build_dir" 1>&$log 2>&1 || abort
 	echo done
 	base=${1%.tar.bz2}
 	;;
       (*.tar.gz)
 	echo -n "Extracting $1..."
-	mkdir -p build
-	tar xpzf "${SOURCE}/$1" -C build 1>&$log 2>&1 || abort
+	mkdir -p "$build_dir"
+	tar xpzf "${SOURCE}/$1" -C "$build_dir" 1>&$log 2>&1 || abort
 	echo done
 	base=${1%.tar.gz}
 	;;
@@ -60,7 +62,7 @@ function do_install1() {
 	case "$1" in
 	  (--patch=*)
 	    echo -n "Applying patch ${1#*=} to $base..."
-	    patch -d "build/$base" -p1 < "${SOURCE}/${1#*=}" 1>&$log 2>&1 || abort
+	    patch -d "$build_dir/$base" -p1 < "${SOURCE}/${1#*=}" 1>&$log 2>&1 || abort
 	    patched=yes
 	    echo done
 	    ;;
@@ -70,40 +72,40 @@ function do_install1() {
 	esac
     done
 
-    (cd "build/$base"
+    (cd "$build_dir/$base"
     if test \( -f configure.in -a ! configure -nt configure.in \) \
 	 -o \( -f configure.ac -a ! configure -nt configure.ac \); then
 	exec autoconf
     fi) 1>&$log 2>&1
 
-    if test -f "build/$base/configure"; then
+    if test -f "$build_dir/$base/configure"; then
 	echo -n "Configuring $base..."
 	(
-	    cd "build/$base"
+	    cd "$build_dir/$base"
 	    exec ./configure --enable-shared --prefix="$PREFIX" "$@"
 	) 1>&$log 2>&1 || abort
 	echo done
     fi
 
     echo -n "Building $base..."
-    if test -f "build/$base/Makefile"; then
+    if test -f "$build_dir/$base/Makefile"; then
 	test "$patched" = yes && make -C "build/$base" prereq 1>&$log 2>&1 || true
-	make -C "build/$base" 1>&$log 2>&1 || abort
-    elif test -f "build/$base/Rakefile"; then
-	ruby -C "build/$base" -S rake 1>&$log 2>&1 || abort
+	make -C "$build_dir/$base" 1>&$log 2>&1 || abort
+    elif test -f "$build_dir/$base/Rakefile"; then
+	ruby -C "$build_dir/$base" -S rake 1>&$log 2>&1 || abort
     fi
     echo done
 
     echo -n "Installing $base..."
-    if test -f "build/$base/GNUmakefile" -o -f "build/$base/Makefile"; then
-	make -C "build/$base" prefix="$PREFIX" install 1>&$log 2>&1 || abort
-    elif test -f "build/$base/Rakefile"; then
-	ruby -C "build/$base" -S rake install 1>&$log 2>&1 || abort
+    if test -f "$build_dir/$base/GNUmakefile" -o -f "build/$base/Makefile"; then
+	make -C "$build_dir/$base" prefix="$PREFIX" install 1>&$log 2>&1 || abort
+    elif test -f "$build_dir/$base/Rakefile"; then
+	ruby -C "$build_dir/$base" -S rake install 1>&$log 2>&1 || abort
     fi
     echo done
 
-    rm -fr "build/$base" > /dev/null 2>&1 || :
-    rmdir build >/dev/null 2>&1 || :
+    rm -fr "$build_dir/$base" > /dev/null 2>&1 || :
+    rmdir "$build_dir" >/dev/null 2>&1 || :
 }
 
 function download_all() {
