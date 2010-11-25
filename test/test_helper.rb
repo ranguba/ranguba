@@ -6,7 +6,8 @@ require 'shellwords'
 require 'fileutils'
 require 'yaml'
 require 'groonga'
-ARGV.unshift("--notify")
+
+Test::Unit::Notify.enable = true
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.

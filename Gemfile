@@ -51,8 +51,8 @@ gem 'will_paginate', '>=3.0.pre'
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :development, :test do
-  gem 'test-unit', '>=2'
-  gem 'test-unit-notify'
+  gem 'test-unit'
+  gem 'test-unit-notify', '>= 0.1.0'
   gem 'capybara'
   gem 'launchy'
   gem 'hoe'
