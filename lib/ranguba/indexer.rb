@@ -33,6 +33,9 @@ class Ranguba::Indexer
     @debug = false
     @oldest = nil
 
+    @url_category_hash = Ranguba::CategoryLoader.new.load
+    @mime_type_hash = Ranguba::TypeLoader.new.load
+
     parser = OptionParser.new
     banner = parser.banner
     parser.banner = <<EOS
@@ -108,7 +111,7 @@ EOS
       }
     else
       # crawl
-      if args.empty? and (args = Ranguba::Customize.category_definitions.keys).empty?
+      if args.empty? and (args = @url_category_hash.keys).empty?
         raise OptionParser::MissingArgument, "no URL"
         return
       end
@@ -257,13 +260,37 @@ EOS
     mtime ||= File.mtime(path) if path
     {
       title: meta.title,
-      type: Ranguba::Customize.normalize_type(meta.original_mime_type || ""),
+      type: normalize_type(meta.original_mime_type || ""),
       encoding: response["charset"] || meta.original_encoding || "",
-      category: Ranguba::Customize.category_for_url(url) || "",
+      category: category_for_url(url) || "",
       author: meta.author || "",
       modified_at: modification_time,
       updated_at: response["x-update-time"],
     }
+  end
+
+  def category_for_url(url="")
+    prefix, category = @url_category_hash.select do |prefix, category|
+      url.start_with?(prefix)
+    end.max_by do |prefix, category|
+      prefix.length
+    end
+    category.blank? ? "unknown" : category
+  end
+
+  def normalize_type(source="")
+    type = type_for_mime(source) || source.gsub(/^[^\/]+\/|\s*;\s*.*\z/, "").strip
+    type.blank? ? "unknown" : type
+  end
+
+  def type_for_mime(source)
+    source = source.sub(/\s*;\s*.*\z/, "").strip
+    mime, type = @mime_type_hash.select{|mime, type|
+      source == mime
+    }.max_by{|mime, type|
+      mime.length
+    }
+    type
   end
 end
 
