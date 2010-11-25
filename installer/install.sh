@@ -72,10 +72,10 @@ if test -z "$PREFIX"; then
     PREFIX=$(echo ~${RANGUBA_USERNAME})
 fi
 if test -z "$HTTPD_PREFIX"; then
-    HTTPD_PREFIX="/usr/local"
+    HTTPD_PREFIX="/usr/local/apache2"
 fi
 if test -z "$DOCUMENT_ROOT"; then
-    DOCUMENT_ROOT="$HTTPD_PREFIX/apache2/htdocs"
+    DOCUMENT_ROOT="$HTTPD_PREFIX/htdocs"
 fi
 
 SEPARATOR="
