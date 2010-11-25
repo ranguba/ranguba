@@ -55,11 +55,29 @@ module Ranguba
         type.blank? ? "unknown" : type
       end
 
-      private
       def base
        Ranguba::Application.config.customize_base_path
       end
 
+      def category_definitions
+        @@category_definitions ||= read_hash("#{base}/master/categories.txt")
+      end
+
+      def type_definitions
+        @@type_definitions ||= read_hash("#{base}/master/types.txt")
+      end
+
+      def type_for_mime(source)
+        source = source.sub(/\s*;\s*.*\z/, "").strip
+        mime, type = type_definitions.select do |mime, type|
+          source == mime
+        end.max_by do |mime, type|
+          mime.length
+        end
+        type
+      end
+
+      private
       def read(path)
         File.exists?(path) ? File.read(path) : ""
       end
@@ -83,24 +101,6 @@ module Ranguba
           contents = read(path)
         end
         contents
-      end
-
-      def category_definitions
-        @@category_definitions ||= read_hash("#{base}/master/categories.txt")
-      end
-
-      def type_definitions
-        @@type_definitions ||= read_hash("#{base}/master/types.txt")
-      end
-
-      def type_for_mime(source)
-        source = source.sub(/\s*;\s*.*\z/, "").strip
-        mime, type = type_definitions.select do |mime, type|
-          source == mime
-        end.max_by do |mime, type|
-          mime.length
-        end
-        type
       end
     end
   end

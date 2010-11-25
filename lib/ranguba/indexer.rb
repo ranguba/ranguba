@@ -20,7 +20,7 @@ class Ranguba::Indexer
     val
   end
 
-  def initialize(options={})
+  def initialize(argv)
     @wget = %w[wget]
     @log_file = nil
     @url_prefix = nil
@@ -33,58 +33,56 @@ class Ranguba::Indexer
     @debug = false
     @oldest = nil
 
-    options.each do |key, value|
-      send("#{key}=", value)
-    end
-  end
-
-  def set_options(opts)
-    banner = opts.banner
-    opts.banner = <<EOS
+    parser = OptionParser.new
+    banner = parser.banner
+    parser.banner = <<EOS
 #{banner} [URL...]
 #{banner} --from-log=LOG base-directory
 #{banner} --url-prefix=PREFIX files...
 
 EOS
 
-    opts.define("-w", "--wget[=WGET-PATH]", Shellwords) do |v|
+    parser.on("-w", "--wget[=WGET-PATH]", Shellwords) do |v|
       @wget = v
     end
-    opts.define("-f", "--from-log=FILE") do |v|
+    parser.on("-f", "--from-log=FILE") do |v|
       @log_file = v
     end
-    opts.define("-p", "--url-prefix=URL_PREFIX") do |v|
+    parser.on("-p", "--url-prefix=URL_PREFIX") do |v|
       @url_prefix = v
     end
-    opts.define("-l", "--level=NUMBER", Integer) do |v|
+    parser.on("-l", "--level=NUMBER", Integer) do |v|
       @level = v
     end
-    opts.define("-A", "--accept=LIST", Array) do |v|
+    parser.on("-A", "--accept=LIST", Array) do |v|
       @accept.concat(v)
     end
-    opts.define("-R", "--reject=LIST", Array) do |v|
+    parser.on("-R", "--reject=LIST", Array) do |v|
       @reject.concat(v)
     end
-    opts.define("-d", "--tmpdir=TMPDIR") do |v|
+    parser.on("-d", "--tmpdir=TMPDIR") do |v|
       @tmpdir = v
     end
-    opts.define("-d", "--[no-]auto-delete") do |v|
+    parser.on("-D", "--[no-]auto-delete") do |v|
       @auto_delete = v
     end
-    opts.define("-i", "--[no-]ignore-errors") do |v|
+    parser.on("-i", "--[no-]ignore-errors") do |v|
       @ignore_erros = v
     end
-    opts.define("--[no-]debug") do |v|
+    parser.on("--[no-]debug") do |v|
       @debug = v
     end
-    opts
+    begin
+      parser.parse!(argv)
+    rescue OptionParser::ParseError => ex
+      $stderr.puts ex.message
+      exit 1
+    end
   end
 
   def prepare(args)
-    if @log_file
-      if @url_prefix
-        raise OptionParser::InvalidOption, "--url-prefix and --from-log options are exclusive"
-      end
+    if @log_file and @url_prefix
+      raise OptionParser::InvalidOption, "--url-prefix and --from-log options are exclusive"
     end
     case
     when @log_file
@@ -110,31 +108,12 @@ EOS
       }
     else
       # crawl
-    end
-
-    unless process
       if args.empty? and (args = Ranguba::Customize.category_definitions.keys).empty?
         raise OptionParser::MissingArgument, "no URL"
         return
       end
       process = proc {
-        @auto_delete = true
-        base = Dir.mktmpdir("ranguba", @tmpdir)
-        wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
-        wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
-        wget << "--reject=#{@reject.join(',')}" unless @reject.empty?
-        wget.concat(args)
-        wget << {chdir: base, err: [:child, :out]}
-        begin
-          IO.popen(wget, "r", encoding: "utf-8") {|input|
-            process_from_log(base, input)
-          }
-        ensure
-          FileUtils.rm_rf(base)
-        end
-        if @oldest
-          purge_old_records(@oldest)
-        end
+        process_crawl(args)
       }
     end
 
@@ -188,6 +167,26 @@ EOS
       end
     end
     result
+  end
+
+  def process_crawl(args)
+    @auto_delete = true
+    base = Dir.mktmpdir("ranguba", @tmpdir)
+    wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
+    wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
+    wget << "--reject=#{@reject.join(',')}" unless @reject.empty?
+    wget.concat(args)
+    wget << {chdir: base, err: [:child, :out]}
+    begin
+      IO.popen(wget, "r", encoding: "utf-8") {|input|
+        process_from_log(base, input)
+      }
+    ensure
+      FileUtils.rm_rf(base)
+    end
+    if @oldest
+      purge_old_records(@oldest)
+    end
   end
 
   def add_entry(url, path, response = {})
