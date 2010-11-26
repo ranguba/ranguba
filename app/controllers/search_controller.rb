@@ -1,6 +1,11 @@
 class SearchController < ApplicationController
   SUMMARY_SIZE = 140
 
+  rescue_from Groonga::TooSmallPage, Groonga::TooLargePage do |ex|
+    handle_bad_request
+    render :action => "not_found", :status => 404
+  end
+
   def index
     @search_request = SearchRequest.new(request.path_info, params)
     if request.post?
@@ -24,21 +29,14 @@ class SearchController < ApplicationController
       setup_search_result_title
       @summary_size = SUMMARY_SIZE
     end
-  rescue Groonga::TooSmallPage
-    handle_bad_request
-    setup_search_result
-    render :action => "not_found", :status => 404
-  rescue Groonga::TooLargePage
-    handle_bad_request
-    setup_search_result
-    render :action => "not_found", :status => 404
   end
 
   private
 
   def handle_bad_request
     @bad_request = @search_request
-    @search_request = SearchRequest.new
+    @search_request = SearchRequest.new(request.path_info, params)
+    @topic_path = @search_request.topic_path
   end
 
   def setup_search_result
