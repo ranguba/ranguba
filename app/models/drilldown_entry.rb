@@ -18,7 +18,7 @@ class DrilldownEntry
   end
 
   def path
-    "#{CGI.escape(key.to_s)}/#{CGI.escape(value)}/"
+    "#{CGI.escape(key.to_s)}/#{CGI.escape(value)}"
   end
 
   def query_item?
