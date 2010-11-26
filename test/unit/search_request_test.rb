@@ -307,6 +307,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_to_readable_string
+    I18n.locale = :en
     I18n.backend.store_translations(:en, { 'type' => { 't' => 't'}})
     @request.type = "t"
     @request.query = "q"
