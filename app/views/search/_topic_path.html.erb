@@ -1,21 +1,18 @@
     <ol class="topic_path">
-      <% @topic_path_items.each do |item| %>
+      <% @topic_path_items.each_with_index do |item, index| %>
         <li class="topic_path_item"
             data-key="<%= item.key %>"
             data-value="<%= item.value %>">
           <span class="topic_path_item_<%= item.key %>_label">
+            <% topic_path = @topic_path_items[0..index]; Rails.logger.debug topic_path.inspect -%>
             <%= link_to_unless(@topic_path_items.last == item,
                                item.value_label,
-                               item.path,
-                               :title => item.title,
+                               { :controller => 'search', :action => 'index',
+                                 :search_request => topic_path.search_request },
+                               :title => topic_path.title,
                                :class => "topic_path_link") %>
           </span>
-          <%= link_to image_tag("delete.png",
-                                :alt => item.reduce_title,
-                                :size => "16x16"),
-                      item.reduce_path,
-                      :title => item.reduce_title,
-                      :class => "topic_path_reduce_link" %>
+          <%= delete_topic_path_link(@topic_path_items, item) %>
         </li>
       <% end %>
     </ol>

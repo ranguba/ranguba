@@ -96,7 +96,7 @@ class SearchRequest
         path_components << CGI.escape(value.to_s)
       end
     end
-    path_components.join("/")
+    path_components.join(DELIMITER)
   end
 
   def to_readable_string(options={})
@@ -127,16 +127,16 @@ class SearchRequest
         next if query.blank?
         terms = query.split
         terms.each do |term|
-          item = TopicPathItem.new(key, term, items)
+          item = TopicPathItem.new(key, term)
           item.value_label = term
           items << item if item.valid?
         end
       else
-        item = TopicPathItem.new(key, send(key.to_s), items)
+        item = TopicPathItem.new(key, send(key.to_s))
         items << item if item.valid?
       end
     end
-    items
+    TopicPath.new(*items)
   end
 
   def empty?

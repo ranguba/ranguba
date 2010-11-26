@@ -18,4 +18,18 @@ module SearchHelper
                              :size => "24x24"),
                    entry.path)
   end
+
+  def delete_topic_path_link(topic_path, item)
+    topic_path = topic_path.delete_item(item)
+    link_to(image_tag("delete.png",
+                      :alt => item.reduce_title,
+                      :size => "16x16"),
+            {
+              :controller => 'search',
+              :action => 'index',
+              :search_request => topic_path.search_request
+            },
+            :title => item.reduce_title,
+            :class => "topic_path_reduce_link")
+  end
 end
