@@ -6,6 +6,7 @@ class Ranguba::CategoryLoaderTest < ActiveSupport::TestCase
     @loader = Ranguba::CategoryLoader.new
   end
   def teardown
+    I18n.locate = :en
   end
 
   def test_load
