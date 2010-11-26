@@ -32,8 +32,8 @@ inst http://downloads.sourceforge.net/project/ruby-gnome2/ruby-gnome2/ruby-gnome
 inst http://rubygems.org/downloads/nokogiri-1.4.3.1.gem
 
 # inst cutter-1.1.5.tar.gz
-inst http://groonga.org/files/groonga/groonga-1.0.3.tar.gz # TODO
-inst http://rubyforge.org/frs/download.php/73173/chupatext-0.5.0.tar.gz # TODO
+inst http://groonga.org/files/groonga/groonga-1.0.4.tar.gz # TODO
+inst http://rubyforge.org/frs/download.php/73173/chupatext-0.6.0.tar.gz # TODO
 
 inst http://rubygems.org/downloads/bundler-1.0.7.gem
 download http://rubygems.org/downloads/fastthread-1.0.7.gem
