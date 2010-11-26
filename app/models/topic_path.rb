@@ -32,6 +32,7 @@ class TopicPath
   end
 
   def search_request
+    return nil if empty?
     @items.inject([]){|memo, item|
       if item.query_item?
         memo += [query] unless memo.any?{|v| /query/ =~ v }

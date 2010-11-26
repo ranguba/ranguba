@@ -23,4 +23,9 @@ class TopicPathTest < ActiveSupport::TestCase
     topic_path = topic_path[0..0]
     assert_equal 'type/html', topic_path.search_request
   end
+
+  def test_search_request__empty_items
+    topic_path = TopicPath.new
+    assert_nil topic_path.search_request
+  end
 end
