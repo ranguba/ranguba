@@ -272,6 +272,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_to_readable_string
+    I18n.backend.store_translations(:en, { 'type' => { 't' => 't'}})
     @request.type = "t"
     @request.query = "q"
 
@@ -279,7 +280,7 @@ class SearchRequestTest < ActiveSupport::TestCase
                   :type => I18n.t("column_type_name"),
                   :value => "t")
     separator = I18n.t("search_conditions_delimiter")
-    
+
     assert_equal [type, "q"].join(separator), @request.to_readable_string
     assert_equal ["q", type].join(separator), @request.to_readable_string(:canonical => true)
     assert_equal type, @request.to_readable_string(:without => :query)
@@ -317,14 +318,13 @@ class SearchRequestTest < ActiveSupport::TestCase
               :param => :query,
               :value => "q2"}
 
-    query1 = TopicPathItem.new(:query, 'q1', [])
+    query1 = TopicPathItem.new(:query, 'q1')
     query1.value_label = 'q1'
-    query2 = TopicPathItem.new(:query, 'q2', [query1])
+    query2 = TopicPathItem.new(:query, 'q2')
     query2.value_label = 'q2'
-    type   = TopicPathItem.new(:type, 't', [query1, query2])
+    type   = TopicPathItem.new(:type, 't')
 
-    assert_equal [query1, query2, type],
-                 @request.topic_path(:canonical => true)
+    assert_equal 'type/t/query/q1+q2', @request.topic_path.search_request
   end
 
   private
