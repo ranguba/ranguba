@@ -35,6 +35,7 @@ class Ranguba::Indexer
 
     @url_category_pair = Ranguba::CategoryLoader.new.load
     @mime_type_pair = Ranguba::TypeLoader.new.load
+    @authinfo_records = Ranguba::PasswordLoader.new.load
 
     parser = OptionParser.new
     banner = parser.banner
@@ -172,13 +173,54 @@ EOS
     result
   end
 
-  def process_crawl(args)
+  def process_crawl(urls)
+    url_auth_groups = Hash.new
+
+    @authinfo_records.each do |record|
+      url_auth_groups[record[:url]] = {
+        :authinfo => record,
+        :urls => []
+      }
+    end
+
+    no_auth_urls = Array.new
+    protected_urls = @authinfo_records.map{|record| record[:url]}
+
+    urls.each do |target_url|
+      protected_url = protected_urls.find{|protected_url|
+        target_url.index(protected_url) == 0
+      }
+      if protected_url
+        url_auth_groups[protected_url][:urls].push(target_url)
+      else
+        no_auth_urls.push(target_url)
+      end
+    end
+
+    url_auth_groups.each do |_,group|
+      if ! group[:urls].empty?
+        authinfo = group[:authinfo]
+        process_crawl_urls(group[:urls],
+                           :username => authinfo[:username],
+                           :password => authinfo[:password])
+      end
+    end
+    if ! no_auth_urls.empty?
+      process_crawl_urls(no_auth_urls)
+    end
+  end
+
+  def process_crawl_urls(urls, options = {})
     @auto_delete = true
     base = Dir.mktmpdir("ranguba", @tmpdir)
     wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
     wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
     wget << "--reject=#{@reject.join(',')}" unless @reject.empty?
-    wget.concat(args)
+    if options[:username] && options[:password]
+      wget << "--http-user=#{options[:username]}"
+      wget << "--http-password=#{options[:password]}"
+    end
+    wget.concat(urls)
     wget << {chdir: base, err: [:child, :out]}
     begin
       IO.popen(wget, "r", encoding: "utf-8") {|input|
