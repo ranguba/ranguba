@@ -119,7 +119,7 @@ class SearchRequest
     conditions.join(I18n.t("search_conditions_delimiter"))
   end
 
-  def topic_path_items(options={})
+  def topic_path(options={})
     items = []
     ordered_keys(options).each do |key|
       case key

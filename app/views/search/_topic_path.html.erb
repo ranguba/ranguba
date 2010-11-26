@@ -1,18 +1,18 @@
     <ol class="topic_path">
-      <% @topic_path_items.each_with_index do |item, index| %>
+      <% @topic_path.each_with_index do |item, index| %>
         <li class="topic_path_item"
             data-key="<%= item.key %>"
             data-value="<%= item.value %>">
           <span class="topic_path_item_<%= item.key %>_label">
-            <% topic_path = @topic_path_items[0..index]; Rails.logger.debug topic_path.inspect -%>
-            <%= link_to_unless(@topic_path_items.last == item,
+            <% current_topic_path = @topic_path[0..index] -%>
+            <%= link_to_unless(@topic_path.last == item,
                                item.value_label,
                                { :controller => 'search', :action => 'index',
-                                 :search_request => topic_path.search_request },
-                               :title => topic_path.title,
+                                 :search_request => current_topic_path.search_request },
+                               :title => current_topic_path.title,
                                :class => "topic_path_link") %>
           </span>
-          <%= delete_topic_path_link(@topic_path_items, item) %>
+          <%= delete_topic_path_link(@topic_path, item) %>
         </li>
       <% end %>
     </ol>

@@ -1,7 +1,7 @@
 <div class="search_request">
   <%= render :partial => "form" %>
   <%= render :partial => "drilldown_groups" %>
-  <% unless @topic_path_items.empty? %>
+  <% unless @topic_path.empty? %>
     <%= render :partial => "topic_path" %>
   <% end %>
 </div>

@@ -285,7 +285,7 @@ class SearchRequestTest < ActiveSupport::TestCase
     assert_equal type, @request.to_readable_string(:without => :query)
   end
 
-  def test_topic_path_items
+  def test_topic_path
     @request.type = "t"
     @request.query = "q1 q2"
 
@@ -324,7 +324,7 @@ class SearchRequestTest < ActiveSupport::TestCase
     type   = TopicPathItem.new(:type, 't', [query1, query2])
 
     assert_equal [query1, query2, type],
-                 @request.topic_path_items(:canonical => true)
+                 @request.topic_path(:canonical => true)
   end
 
   private
