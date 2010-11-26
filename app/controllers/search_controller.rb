@@ -2,11 +2,10 @@ class SearchController < ApplicationController
   SUMMARY_SIZE = 140
 
   def index
-
     @search_request = SearchRequest.new(request.path_info, params)
     if request.post?
       new_params = { :search_request => params[:search_request] }
-      redirect_to new_params.merge(:search_request => @search_request.to_s).tap{|a| p a }
+      redirect_to new_params.merge(:search_request => @search_request.to_s)
       return
     end
 
