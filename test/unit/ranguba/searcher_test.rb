@@ -75,13 +75,13 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
 
     assert_instance_of Array, result.entries
     assert_instance_of Ranguba::Entry, result.first
-    assert_equal 1, result.size
+    assert_equal 1, result.n_records
   end
 
   def test_add_entry_and_search
     searcher = Ranguba::Searcher.new
     searcher.query = "HTML"
-    assert_equal 1, searcher.search.size
+    assert_equal 1, searcher.search.n_records
     Ranguba::Entry.create(:key         => "http://www.example.com/another-html",
                           :title       => "Another HTML",
                           :type        => "html",
@@ -92,17 +92,17 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
                           :updated_at  => Time.now,
                           :body        => "This is the contents of another HTML entry.")
     @searcher.query = "HTML"
-    assert_equal 2, @searcher.search.size
+    assert_equal 2, @searcher.search.n_records
   end
 
   def test_search_by_query__not_found
     @searcher.query = "notfound"
-    assert_equal 0, @searcher.search.size
+    assert_equal 0, @searcher.search.n_records
   end
 
   def test_search_by_type_and_category
     searcher = Ranguba::Searcher.new(:type => "pdf", :category => "test")
-    assert_equal 1, searcher.search.size
+    assert_equal 1, searcher.search.n_records
   end
 
 end
