@@ -4,19 +4,21 @@ module SearchHelper
     when :type
       file_type_drilldown_link(entry)
     else
+      topic_path = TopicPath.new(entry)
       link_to_unless(@search_request.have_key?(entry.key),
                      entry.label,
-                     entry.path)
+                     search_path(:search_request => topic_path.search_request))
     end
   end
 
   def file_type_drilldown_link(entry)
+    topic_path = TopicPath.new(entry)
     link_to_unless(@search_request.have_key?(entry.key),
                    image_tag("file_types/#{entry.value}.png",
                              :alt => entry.label,
                              :title => entry.label,
                              :size => "24x24"),
-                   entry.path)
+                   search_path(:search_request => topic_path.search_request))
   end
 
   def delete_topic_path_link(topic_path, item)
@@ -24,11 +26,7 @@ module SearchHelper
     link_to(image_tag("delete.png",
                       :alt => item.reduce_title,
                       :size => "16x16"),
-            {
-              :controller => 'search',
-              :action => 'index',
-              :search_request => topic_path.search_request
-            },
+            search_path(:search_request => topic_path.search_request),
             :title => item.reduce_title,
             :class => "topic_path_reduce_link")
   end
