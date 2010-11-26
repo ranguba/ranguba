@@ -6,10 +6,12 @@
         <span class="drilldown_group_name"><%= t(@search_request.empty? ? "drilldown_group_label" : "drilldown_group_add_label",
                                                  :label => name) %></span><ul>
         <% entries.each do |entry| %>
+          <% new_topic_path = @topic_path.add(entry) %>
           <li class="drilldown_entry"
               data-key="<%= entry.key %>"
-              data-value="<%= entry.value %>"><%= link_to entry.label_with_count,
-                                                          entry.path %></li>
+              data-value="<%= entry.value %>">
+            <%= link_to(entry.label_with_count, search_path(:search_request => new_topic_path.search_request)) %>
+          </li>
         <% end %>
       </ul></li>
     <% end %>

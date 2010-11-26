@@ -10,6 +10,11 @@ class TopicPath
     @items = items
   end
 
+  def add(item)
+    new_items = @items + [item]
+    TopicPath.new(*new_items)
+  end
+
   def delete_item(item)
     new_items = @items.dup
     new_items.delete(item)
