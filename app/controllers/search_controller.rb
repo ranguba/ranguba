@@ -36,15 +36,6 @@ class SearchController < ApplicationController
   end
 
   private
-  # I have to use this instead of params[:search_request], because "%2F"
-  # in urls are always unescaped by Rails itself. So, if the path is
-  # "query/text%2Fhtml", params[:search_request] will be "query/text/html".
-  # To avoid this problem, I get the raw version of the part of the path
-  # from the PATH_INFO.
-  def raw_search_request
-    base = url_for(:only_path => true)
-    request.path_info.gsub(/\A#{Regexp.escape(base)}|\?.*\z/, "")
-  end
 
   def handle_bad_request
     @bad_request = @search_request
