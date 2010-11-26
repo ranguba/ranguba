@@ -40,19 +40,19 @@ class TopicPath
     return nil if empty?
     @items.inject([]){|memo, item|
       if item.query_item?
-        memo += [query] unless memo.any?{|v| /query/ =~ v }
+        memo += [query_path] unless memo.any?{|v| /query/ =~ v }
       else
-        memo += [item.condition]
+        memo += [item.path]
       end
       memo
     }.join('/')
   end
 
-  def query
+  def query_path
     first, *rest = @items.select{|item| item.query_item? }
     rest_terms = rest.map(&:value).join('+')
     rest_terms = "+#{rest_terms}" unless rest_terms.blank?
-    "#{first.condition}#{rest_terms}"
+    "#{first.path}#{rest_terms}"
   end
 
   def each

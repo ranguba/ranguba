@@ -22,7 +22,7 @@ class TopicPathItem
            :value => value_label)
   end
 
-  def condition
+  def path
     "#{CGI.escape(key)}/#{CGI.escape(value)}"
   end
 
