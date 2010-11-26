@@ -106,35 +106,35 @@ class SearchRequestTest < ActiveSupport::TestCase
   CANONICAL_KEYS = [:query, :category, :type]
 
   def test_ordered_keys_shuffle_keys
-    assert_equal CANONICAL_KEYS, @request.ordered_keys
+    assert_equal(CANONICAL_KEYS, @request.ordered_keys)
 
     @request.query = "q"
-    assert_equal [:category, :type, :query], @request.ordered_keys
-    assert_equal CANONICAL_KEYS, @request.ordered_keys(:canonical => true)
+    assert_equal([:category, :type, :query], @request.ordered_keys)
+    assert_equal(CANONICAL_KEYS, @request.ordered_keys(:canonical => true))
 
     @request.type = "t"
-    assert_equal [:category, :query, :type], @request.ordered_keys
-    assert_equal CANONICAL_KEYS, @request.ordered_keys(:canonical => true)
+    assert_equal([:category, :query, :type], @request.ordered_keys)
+    assert_equal(CANONICAL_KEYS, @request.ordered_keys(:canonical => true))
 
     @request.category = "c"
-    assert_equal [:query, :type, :category], @request.ordered_keys
-    assert_equal CANONICAL_KEYS, @request.ordered_keys(:canonical => true)
+    assert_equal([:query, :type, :category], @request.ordered_keys)
+    assert_equal(CANONICAL_KEYS, @request.ordered_keys(:canonical => true))
 
     @request.clear
-    assert_equal [:query, :category, :type], @request.ordered_keys
-    assert_equal CANONICAL_KEYS, @request.ordered_keys(:canonical => true)
+    assert_equal([:query, :category, :type], @request.ordered_keys)
+    assert_equal(CANONICAL_KEYS, @request.ordered_keys(:canonical => true))
   end
 
   def test_ordered_keys_complete_path_info
     @request = SearchRequest.new("/search/type/t/category/c/query/q")
-    assert_equal [:type, :category, :query], @request.ordered_keys
-    assert_equal CANONICAL_KEYS, @request.ordered_keys(:canonical => true)
+    assert_equal([:type, :category, :query], @request.ordered_keys)
+    assert_equal(CANONICAL_KEYS, @request.ordered_keys(:canonical => true))
   end
 
   def test_ordered_keys_empry_path_info
     @request = SearchRequest.new("", :type => "n", :category => "c")
-    assert_equal [:query, :type, :category], @request.ordered_keys
-    assert_equal CANONICAL_KEYS, @request.ordered_keys(:canonical => true)
+    assert_equal([:query, :type, :category], @request.ordered_keys)
+    assert_equal(CANONICAL_KEYS, @request.ordered_keys(:canonical => true))
   end
 
   def test_parse_valid_input_normal_path_info
@@ -227,28 +227,28 @@ class SearchRequestTest < ActiveSupport::TestCase
   def test_to_s
     @request = SearchRequest.new("", :type => "t", :query => "q")
 
-    assert_equal "type/t/query/q",
-                 @request.to_s
+    assert_equal("type/t/query/q",
+                 @request.to_s)
     assert_equal "query/q/type/t",
                  @request.to_s(:canonical => true)
 
-    assert_equal "query/q",
-                 @request.to_s(:without => :type)
-    assert_equal "query/q",
+    assert_equal("query/q",
+                 @request.to_s(:without => :type))
+    assert_equal("query/q",
                  @request.to_s(:without => :type,
-                               :canonical => true)
+                               :canonical => true))
   end
 
   def test_to_s_must_ignore_search_parameters
     @request = SearchRequest.new("", :type => "t", :query => "q")
 
-    assert_equal "type/t/query/q",
+    assert_equal("type/t/query/q",
                  @request.to_s(:type => "new_t",
-                               :query => "new_q")
-    assert_equal "query/q/type/t",
+                               :query => "new_q"))
+    assert_equal("query/q/type/t",
                  @request.to_s(:query => "new_q",
                                :type => "new_t",
-                               :canonical => true)
+                               :canonical => true))
   end
 
   def test_to_hash
@@ -316,9 +316,9 @@ class SearchRequestTest < ActiveSupport::TestCase
                   :value => "t")
     separator = I18n.t("search_conditions_delimiter")
 
-    assert_equal [type, "q"].join(separator), @request.to_readable_string
-    assert_equal ["q", type].join(separator), @request.to_readable_string(:canonical => true)
-    assert_equal type, @request.to_readable_string(:without => :query)
+    assert_equal([type, "q"].join(separator), @request.to_readable_string)
+    assert_equal(["q", type].join(separator), @request.to_readable_string(:canonical => true))
+    assert_equal(type, @request.to_readable_string(:without => :query))
   end
 
   def test_topic_path
@@ -359,7 +359,7 @@ class SearchRequestTest < ActiveSupport::TestCase
     query2.value_label = 'q2'
     type   = TopicPathItem.new(:type, 't')
 
-    assert_equal 'type/t/query/q1+q2', @request.topic_path.search_request
+    assert_equal('type/t/query/q1+q2', @request.topic_path.search_request)
   end
 
   private
@@ -381,11 +381,11 @@ class SearchRequestTest < ActiveSupport::TestCase
     options[:type] ||= nil
     options[:empty] = true if options[:empty].nil?
 
-    assert_equal options[:to_s], @request.to_s
-    assert_equal options[:canonical], @request.to_s(:canonical => true)
-    assert_equal options[:query], @request.query
-    assert_equal options[:category], @request.category
-    assert_equal options[:type], @request.type
-    assert_equal options[:empty], @request.empty?
+    assert_equal(options[:to_s], @request.to_s)
+    assert_equal(options[:canonical], @request.to_s(:canonical => true))
+    assert_equal(options[:query], @request.query)
+    assert_equal(options[:category], @request.category)
+    assert_equal(options[:type], @request.type)
+    assert_equal(options[:empty], @request.empty?)
   end
 end
