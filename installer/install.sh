@@ -163,7 +163,7 @@ function set_httpd_vars() {
 	HTTPD_CONF_DIR=$(${APXS2_PATH} -q SYSCONFDIR)
 	APACHECTL_PATH=$(${APXS2_PATH} -q SBINDIR)/apachectl
     else
-	APXS2_PATH=$(ruby -rphusion_passenger -rphusion_passenger/platform_info/apache -e 'print PhusionPassenger::PlatformInfo.apxs2')
+	APXS2_PATH=$("$PREFIX/bin/ruby" -rphusion_passenger -rphusion_passenger/platform_info/apache -e 'print PhusionPassenger::PlatformInfo.apxs2')
 	if test -x $APXS2_PATH; then
 	    HTTPD_CONF_DIR=$(${APXS2_PATH} -q SYSCONFDIR)
 	    APACHECTL_PATH=$(${APXS2_PATH} -q SBINDIR)/apachectl
