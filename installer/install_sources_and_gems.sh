@@ -33,7 +33,7 @@ function do_install1() {
 
     echo "Install: [$(date +%Y/%m/%d-%H:%M:%S)] $1" 1>&$log
 
-    build_dir="$HOME/build"
+    build_dir="$PREFIX/build"
 
     case "$1" in
       (*.tar.bz2)
