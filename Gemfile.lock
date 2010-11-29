@@ -15,7 +15,7 @@ GEM
       rack-mount (~> 0.6.12)
       rack-test (~> 0.5.4)
       tzinfo (~> 0.3.23)
-    activegroonga (1.0.0)
+    activegroonga (1.0.1)
       activemodel (>= 3.0.1)
       rroonga (>= 1.0.4)
     activemodel (3.0.1)
@@ -98,7 +98,7 @@ GEM
     rake (0.8.7)
     rake-compiler (0.7.5)
       rake
-    rroonga (1.0.4)
+    rroonga (1.0.5)
       pkg-config (>= 1.0.7)
     rubyforge (2.0.4)
       json_pure (>= 1.1.7)
