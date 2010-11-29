@@ -9,14 +9,6 @@ export noinst=yes
 
 function prepare_gems() {
     echo -n "Prepage gems..."
-    (cd ../../rroonga/
-        rake gem
-        cp pkg/rroonga*.gem "$SOURCE/"
-    )
-    (cd ../../activegroonga/
-        rake gem
-        cp pkg/activegroonga*.gem "$SOURCE/"
-    )
     (cd ../
         bundle package
         cp vendor/cache/*.gem "$SOURCE/"
@@ -36,8 +28,8 @@ cp ./data/* "$INSTALLER_DIR/data/"
     git archive --format=tar --prefix=ranguba/ HEAD | gzip > ./ranguba.tar.gz
     mv ./ranguba.tar.gz "$SOURCE/"
 )
-for f in $(ls -1 $SOURCE/);do
-    if test ! -s ${f};then
+for f in $(ls -1 "$SOURCE/");do
+    if test ! -s "${SOURCE}/${f}";then
         echo "${f} is empty."
         exit 1
     fi
