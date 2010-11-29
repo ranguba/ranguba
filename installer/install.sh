@@ -68,9 +68,6 @@ done
 if test -z "$RANGUBA_USERNAME"; then
     RANGUBA_USERNAME="ranguba"
 fi
-if test -z "$PREFIX"; then
-    PREFIX=$(echo ~${RANGUBA_USERNAME})
-fi
 if test -z "$HTTPD_PREFIX"; then
     HTTPD_PREFIX="/usr/local/apache2"
 fi
@@ -219,6 +216,10 @@ test $log && chmod 0666 install.log
 
 checkroot
 prepare_user
+
+if test -z "$PREFIX"; then
+    PREFIX=$(getent passwd |grep ${RANGUBA_USERNAME}| cut -d : -f 6)
+fi
 
 if ! test -d "${SOURCE}"; then
     sudo -u $RANGUBA_USERNAME mkdir -p sources
