@@ -13,24 +13,7 @@ gem 'chuparuby'
 
 gem 'rroonga'
 gem 'racknga'
-if ENV["RAILS_ENV"] == "production"
-  gem 'activegroonga'
-else
-  active_groonga_path = Pathname.new(__FILE__).dirname.parent + "activegroonga"
-  unless active_groonga_path.exist?
-    system("git", "clone",
-           "git://github.com/ranguba/activegroonga.git",
-           active_groonga_path.to_s)
-  end
-  unless (active_groonga_path + "activegroonga-1.0.0.gemspec").exist?
-    Dir.chdir(active_groonga_path) do
-      ruby = File.join(RbConfig::CONFIG["bindir"],
-                       RbConfig::CONFIG["RUBY_INSTALL_NAME"])
-      system(ruby, "-S", "rake", "-s", "generate_gemspec")
-    end
-  end
-  gem 'activegroonga', :path => active_groonga_path
-end
+gem 'activegroonga', '>=1.0.0'
 
 gem 'will_paginate', '>=3.0.pre'
 
