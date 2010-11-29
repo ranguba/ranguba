@@ -97,7 +97,7 @@ function do_install1() {
     echo done
 
     echo -n "Installing $base..."
-    if test -f "$build_dir/$base/GNUmakefile" -o -f "build/$base/Makefile"; then
+    if test -f "$build_dir/$base/GNUmakefile" -o -f "$build_dir/$base/Makefile"; then
 	make -C "$build_dir/$base" prefix="$PREFIX" install 1>&$log 2>&1 || abort
     elif test -f "$build_dir/$base/Rakefile"; then
 	ruby -C "$build_dir/$base" -S rake install 1>&$log 2>&1 || abort
