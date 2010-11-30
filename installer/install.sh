@@ -4,6 +4,7 @@ set -e
 
 BASE_DIR=$(dirname "$0")
 SOURCE="$BASE_DIR/sources"
+DATA_DIR="$BASE_DIR/data"
 
 nocheck=no
 noinst=no
@@ -240,6 +241,7 @@ sudo -H -u $RANGUBA_USERNAME \
     APXS2_PATH="$APXS2_PATH" \
     APR_CONFIG_PATH="$APR_CONFIG_PATH" \
     SOURCE="$SOURCE" \
+    DATA_DIR="$DATA_DIR" \
     SEPARATOR="'$SEPARATOR'" \
     bash ./install_sources_and_gems.sh
 

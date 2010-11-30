@@ -1,0 +1,5 @@
+#!/bin/sh
+(cd /home/ranguba/ranguba
+    RAILS_ENV=production /home/ranguba/bin/ruby \
+        /home/ranguba/ranguba/bin/ranguba_indexer
+)

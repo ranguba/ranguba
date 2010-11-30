@@ -191,7 +191,10 @@ function install_all() {
 
 function install_crontab() {
     echo -n "Install crontab ..."
-    local COMMAND="${PREFIX}/ranguba/bin/run_indexer"
+    if test -x "$DATA_DIR/make_index"; then
+	cp -f "$DATA_DIR/make_index" "$PREFIX/bin/make_index"
+    fi
+    local COMMAND="${PREFIX}/bin/make_index"
     echo "0 1 * * * $COMMAND" | crontab -
     echo "done"
 }
