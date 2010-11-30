@@ -153,6 +153,9 @@ function install_ranguba() {
     if test ! -L $PREFIX/etc/ranguba; then
 	ln -s $PREFIX/ranguba/config/customize $PREFIX/etc/ranguba
     fi
+    if test -f "$DATA_DIR/categories.csv"; then
+	cp -f "$DATA_DIR/categories.csv" "$PREFIX/ranguba/config/customize/categories.csv"
+    fi
     echo done
 }
 
