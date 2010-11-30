@@ -129,6 +129,9 @@ function install_passenger() {
 	ruby -S passenger-install-apache2-module -a \
 	    --apr-config-path "$APR_CONFIG_PATH" 1>&$log 2>&1 || abort
     else
+	if test -d "$HTTPD_PREFIX"; then
+	    export PATH="$HTTPD_PREFIX/bin:$PATH"
+	fi
 	ruby -S passenger-install-apache2-module -a 1>&$log 2>&1 || abort
     fi
     echo done
