@@ -207,7 +207,7 @@ test -f ./sourcelist && source ./sourcelist
 export PATH="$PREFIX/bin:$PATH"
 export LD_RUN_PATH="$PREFIX/lib:${LD_RUN_PATH-/usr/$lib}"
 export LD_LIBRARY_PATH="$PREFIX/lib:${LD_LIBRARY_PATH-/usr/$lib}"
-export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH-/usr/lib/pkgconfig}"
+export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH-/usr/$lib/pkgconfig}"
 
 if test "$noinst" = no; then
     exec 3> install.log

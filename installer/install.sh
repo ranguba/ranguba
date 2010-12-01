@@ -197,6 +197,7 @@ function append_ranguba_conf_to_httpd_conf() {
     test -x $APACHECTL_PATH && $APACHECTL_PATH restart
 }
 
+ARCH=$(uname --machine)
 case $ARCH in
   (x86_64*)
     lib=lib64
@@ -243,6 +244,7 @@ sudo -H -u $RANGUBA_USERNAME \
     SOURCE="$SOURCE" \
     DATA_DIR="$DATA_DIR" \
     SEPARATOR="'$SEPARATOR'" \
+    lib="$lib" \
     bash ./install_sources_and_gems.sh
 
 if test "$noinst" = no; then
