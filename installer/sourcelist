@@ -5,8 +5,8 @@ inst http://www.ring.gr.jp/archives/X/gnome/sources/libgsf/1.14/libgsf-1.14.19.t
 inst ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz
 inst ftp://xmlsoft.org/libxml2/libxslt-1.1.26.tar.gz
 inst http://www.ring.gr.jp/archives/X/gnome/sources/atk/1.29/atk-1.29.4.tar.bz2
-inst http://fontconfig.org/release/fontconfig-2.8.0.tar.gz
 inst http://downloads.sourceforge.net/project/freetype/freetype2/2.4.3/freetype-2.4.3.tar.bz2
+inst http://fontconfig.org/release/fontconfig-2.8.0.tar.gz
 
 inst http://cairographics.org/releases/pixman-0.18.4.tar.gz
 inst http://cairographics.org/releases/cairo-1.8.10.tar.gz
