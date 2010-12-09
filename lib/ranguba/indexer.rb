@@ -237,7 +237,10 @@ EOS
   def add_entry(url, path, response = {})
     begin
       metadata, body = decompose_file(path, response)
-      return false if metadata.nil?
+      if metadata.nil?
+        Rails.logger.warn("[indexer][decompose][failure] <#{url}>")
+        return false
+      end
       attributes = make_attributes(url, response, metadata, path)
       attributes.update(key: url, body: body)
       ::Ranguba::Entry.create!(attributes)
