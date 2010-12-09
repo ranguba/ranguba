@@ -8,7 +8,7 @@ require 'chupatext'
 class Ranguba::Indexer
   attr_accessor :wget, :log_file, :url_prefix, :level, :accept,
                 :reject, :tmpdir, :auto_delete,
-                :ignore_erros, :debug
+                :ignore_errors, :debug
 
   def accept=(val)
     @accept.concat(val)
@@ -29,7 +29,7 @@ class Ranguba::Indexer
     @reject = []
     @tmpdir = nil
     @auto_delete = false
-    @ignore_erros = false
+    @ignore_errors = false
     @debug = false
     @oldest = nil
 
@@ -71,7 +71,7 @@ EOS
       @auto_delete = v
     end
     parser.on("-i", "--[no-]ignore-errors") do |v|
-      @ignore_erros = v
+      @ignore_errors = v
     end
     parser.on("--[no-]debug") do |v|
       @debug = v
@@ -242,7 +242,7 @@ EOS
       attributes.update(key: url, body: body)
       ::Ranguba::Entry.create!(attributes)
     rescue => e
-      unless @ignore_erros
+      unless @ignore_errors
         STDERR.puts "#{e.class}: #{e.message}"
         STDERR.puts e.backtrace.map{|s|"\t#{s}"}
         return false
