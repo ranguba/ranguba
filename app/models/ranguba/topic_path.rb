@@ -1,6 +1,6 @@
 require 'forwardable'
 
-class TopicPath
+class Ranguba::TopicPath
   extend Forwardable
   include Enumerable
 
@@ -12,24 +12,24 @@ class TopicPath
 
   def add(item)
     new_items = @items + [item]
-    TopicPath.new(*new_items)
+    Ranguba::TopicPath.new(*new_items)
   end
 
   def delete_item(item)
     new_items = @items.dup
     new_items.delete(item)
-    TopicPath.new(*new_items)
+    Ranguba::TopicPath.new(*new_items)
   end
 
   def delete_item_at(index)
     new_items = @items.dup
     new_items.delete_at(index)
-    TopicPath.new(*new_items)
+    Ranguba::TopicPath.new(*new_items)
   end
 
   def [](*args)
     new_items = @items[*args]
-    TopicPath.new(*new_items)
+    Ranguba::TopicPath.new(*new_items)
   end
 
   def title

@@ -136,7 +136,7 @@ class Ranguba::SearchRequest
         items << item if item.valid?
       end
     end
-    TopicPath.new(*items)
+    Ranguba::TopicPath.new(*items)
   end
 
   def empty?
