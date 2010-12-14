@@ -1,4 +1,4 @@
-module CachedResultSet
+module Ranguba::CachedResultSet
   RECORDS_PER_PAGE = 10
 
   def drilldown(key)

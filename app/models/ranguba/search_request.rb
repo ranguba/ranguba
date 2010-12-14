@@ -191,7 +191,7 @@ class Ranguba::SearchRequest
                                        :type => @request.type,
                                        :category => @request.category)
       set = searcher.search
-      set.extend(CachedResultSet)
+      set.extend(Ranguba::CachedResultSet)
       drilldown_targets = [:category, :type].find_all do |column|
         @request.send(column).blank?
       end
