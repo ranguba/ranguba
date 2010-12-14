@@ -7,11 +7,11 @@ class Ranguba::TopicPathTest < ActiveSupport::TestCase
 
   def test_search_request
     items = []
-    items << TopicPathItem.new(:type, 'html')
-    items << TopicPathItem.new(:category, 'blog')
-    items << TopicPathItem.new(:query, 'q1')
-    items << TopicPathItem.new(:query, 'q2')
-    items << TopicPathItem.new(:query, 'q3')
+    items << Ranguba::TopicPathItem.new(:type, 'html')
+    items << Ranguba::TopicPathItem.new(:category, 'blog')
+    items << Ranguba::TopicPathItem.new(:query, 'q1')
+    items << Ranguba::TopicPathItem.new(:query, 'q2')
+    items << Ranguba::TopicPathItem.new(:query, 'q3')
     topic_path = Ranguba::TopicPath.new(*items)
     assert_equal('type/html/category/blog/query/q1+q2+q3', topic_path.search_request)
     topic_path = topic_path[0..3]

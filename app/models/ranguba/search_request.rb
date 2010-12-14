@@ -127,12 +127,12 @@ class Ranguba::SearchRequest
         next if query.blank?
         terms = query.split
         terms.each do |term|
-          item = TopicPathItem.new(key, term)
+          item = Ranguba::TopicPathItem.new(key, term)
           item.value_label = term
           items << item if item.valid?
         end
       else
-        item = TopicPathItem.new(key, send(key.to_s))
+        item = Ranguba::TopicPathItem.new(key, send(key.to_s))
         items << item if item.valid?
       end
     end

@@ -1,4 +1,4 @@
-class TopicPathItem
+class Ranguba::TopicPathItem
   attr_reader :key, :value
   attr_accessor :value_label
   def initialize(key, value)

@@ -356,11 +356,11 @@ class Ranguba::SearchRequestTest < ActiveSupport::TestCase
               :param => :query,
               :value => "q2"}
 
-    query1 = TopicPathItem.new(:query, 'q1')
+    query1 = Ranguba::TopicPathItem.new(:query, 'q1')
     query1.value_label = 'q1'
-    query2 = TopicPathItem.new(:query, 'q2')
+    query2 = Ranguba::TopicPathItem.new(:query, 'q2')
     query2.value_label = 'q2'
-    type   = TopicPathItem.new(:type, 't')
+    type   = Ranguba::TopicPathItem.new(:type, 't')
 
     assert_equal('type/t/query/q1+q2', @request.topic_path.search_request)
   end
