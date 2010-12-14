@@ -1,10 +1,12 @@
 # coding: utf-8
 require 'test_helper'
 
-class SearchRequestTest < ActiveSupport::TestCase
+class Ranguba::SearchRequestTest < ActiveSupport::TestCase
 
   def setup
-    @request = SearchRequest.new
+    @klass = Ranguba::SearchRequest
+    @basic = @klass.new
+    @request = @basic
   end
 
   def test_new
@@ -12,12 +14,12 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_new__empty_hash
-    @request = SearchRequest.new({})
+    @request = @klass.new({})
     assert_valid
   end
 
   def test_new_with_empty_path_info_query
-    @request = SearchRequest.new('', :query => "q")
+    @request = @klass.new('', :query => "q")
     assert_valid(:to_s => "query/q",
                  :query => "q",
                  :empty => false)
@@ -25,9 +27,9 @@ class SearchRequestTest < ActiveSupport::TestCase
 
   def test_new_with_empty_path_info_query_category
 
-    @request = SearchRequest.new('',
-                                 :query => "q",
-                                 :category => "c")
+    @request = @klass.new('',
+                          :query => "q",
+                          :category => "c")
     assert_valid(:to_s => "query/q/category/c",
                  :query => "q",
                  :category => "c",
@@ -35,9 +37,9 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_new_with_empty_path_info_query_type
-    @request = SearchRequest.new('',
-                                 :query => "q",
-                                 :type => "t")
+    @request = @klass.new('',
+                          :query => "q",
+                          :type => "t")
     assert_valid(:to_s => "query/q/type/t",
                  :query => "q",
                  :type => "t",
@@ -45,10 +47,10 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_new_with_empty_path_info_query_category_type
-    @request = SearchRequest.new('',
-                                 :query => "q",
-                                 :category => "c",
-                                 :type => "t")
+    @request = @klass.new('',
+                          :query => "q",
+                          :category => "c",
+                          :type => "t")
     assert_valid(:to_s => "query/q/category/c/type/t",
                  :query => "q",
                  :category => "c",
@@ -57,9 +59,9 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_new_with_empty_path_info_category_query
-    @request = SearchRequest.new('',
-                                 :category => "c",
-                                 :query => "q")
+    @request = @klass.new('',
+                          :category => "c",
+                          :query => "q")
     assert_valid(:to_s => "category/c/query/q",
                  :canonical => "query/q/category/c",
                  :query => "q",
@@ -68,7 +70,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_new_with_path_info_without_original_query
-    @request = SearchRequest.new("type/t", :query => "new")
+    @request = @klass.new("type/t", :query => "new")
     assert_valid(:to_s => "type/t/query/new",
                  :canonical => "query/new/type/t",
                  :query => "new",
@@ -77,7 +79,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_new_with_path_info_original_query
-    @request = SearchRequest.new("type/t/query/base", :query => "new")
+    @request = @klass.new("type/t/query/base", :query => "new")
     assert_valid(:to_s => "type/t/query/new",
                  :canonical => "query/new/type/t",
                  :query => "new",
@@ -86,7 +88,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_new_with_path_info_original_type_new_type
-    @request = SearchRequest.new("type/t/query/base", :type => "new")
+    @request = @klass.new("type/t/query/base", :type => "new")
     assert_valid(:to_s => "query/base/type/new",
                  :canonical => "query/base/type/new",
                  :query => "base",
@@ -95,7 +97,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_clear
-    @request = SearchRequest.new
+    @request = @klass.new
     @request.parse("unknown/value")
     assert_invalid(:to_s => "")
 
@@ -126,40 +128,40 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_ordered_keys_complete_path_info
-    @request = SearchRequest.new("/search/type/t/category/c/query/q")
+    @request = @klass.new("/search/type/t/category/c/query/q")
     assert_equal([:type, :category, :query], @request.ordered_keys)
     assert_equal(CANONICAL_KEYS, @request.ordered_keys(:canonical => true))
   end
 
   def test_ordered_keys_empry_path_info
-    @request = SearchRequest.new("", :type => "n", :category => "c")
+    @request = @klass.new("", :type => "n", :category => "c")
     assert_equal([:query, :type, :category], @request.ordered_keys)
     assert_equal(CANONICAL_KEYS, @request.ordered_keys(:canonical => true))
   end
 
   def test_parse_valid_input_normal_path_info
-    @request = SearchRequest.new("query/q")
+    @request = @klass.new("query/q")
     assert_valid(:to_s => "query/q",
                  :query => "q",
                  :empty => false)
   end
 
   def test_parse_valid_input_preceding_slash
-    @request = SearchRequest.new("/query/q")
+    @request = @klass.new("/query/q")
     assert_valid(:to_s => "query/q",
                  :query => "q",
                  :empty => false)
   end
 
   def test_parse_valid_input_trailing_slash
-    @request = SearchRequest.new("query/q/")
+    @request = @klass.new("query/q/")
     assert_valid(:to_s => "query/q",
                  :query => "q",
                  :empty => false)
   end
 
   def test_parse_valid_input_query_category
-    @request = SearchRequest.new("/query/q/category/c")
+    @request = @klass.new("/query/q/category/c")
     assert_valid(:to_s => "query/q/category/c",
                  :query => "q",
                  :category => "c",
@@ -167,7 +169,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_parse_valid_input_query_type
-    @request = SearchRequest.new("/query/q/type/t")
+    @request = @klass.new("/query/q/type/t")
     assert_valid(:to_s => "query/q/type/t",
                  :query => "q",
                  :type => "t",
@@ -175,7 +177,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_parse_valid_input_query_category_type
-    @request = SearchRequest.new("/query/q/category/c/type/t")
+    @request = @klass.new("/query/q/category/c/type/t")
     assert_valid(:to_s => "query/q/category/c/type/t",
                  :query => "q",
                  :category => "c",
@@ -192,7 +194,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_parse_mixed_order
-    @request = SearchRequest.new("category/c/query/q/type/t")
+    @request = @klass.new("category/c/query/q/type/t")
     assert_valid(:to_s => "category/c/query/q/type/t",
                  :canonical => "query/q/category/c/type/t",
                  :query => "q",
@@ -200,7 +202,7 @@ class SearchRequestTest < ActiveSupport::TestCase
                  :type => "t",
                  :empty => false)
 
-    @request = SearchRequest.new("type/t/category/c/query/q")
+    @request = @klass.new("type/t/category/c/query/q")
     assert_valid(:to_s => "type/t/category/c/query/q",
                  :canonical => "query/q/category/c/type/t",
                  :query => "q",
@@ -210,22 +212,22 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_parse_unknown_param
-    @request = SearchRequest.new("unknown/value")
+    @request = @klass.new("unknown/value")
     assert_invalid(:to_s => "")
 
-    @request = SearchRequest.new("query/q/unknown/value")
+    @request = @klass.new("query/q/unknown/value")
     assert_invalid(:to_s => "query/q",
                    :query => "q",
                    :empty => false)
 
-    @request = SearchRequest.new("unknown/value/query/q")
+    @request = @klass.new("unknown/value/query/q")
     assert_invalid(:to_s => "query/q",
                    :query => "q",
                    :empty => false)
   end
 
   def test_to_s
-    @request = SearchRequest.new("", :type => "t", :query => "q")
+    @request = @klass.new("", :type => "t", :query => "q")
 
     assert_equal("type/t/query/q",
                  @request.to_s)
@@ -240,7 +242,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_to_s_must_ignore_search_parameters
-    @request = SearchRequest.new("", :type => "t", :query => "q")
+    @request = @klass.new("", :type => "t", :query => "q")
 
     assert_equal("type/t/query/q",
                  @request.to_s(:type => "new_t",
@@ -252,7 +254,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_to_hash
-    @request = SearchRequest.new('', :type => "t", :query => "q")
+    @request = @klass.new('', :type => "t", :query => "q")
 
     assert_equal({:type => "t", :query => "q"},
                  @request.to_hash)
@@ -267,7 +269,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   end
 
   def test_to_hash_must_ignore_search_parameters
-    @request = SearchRequest.new('', :type => "t", :query => "q")
+    @request = @klass.new('', :type => "t", :query => "q")
 
     assert_equal({:type => "t", :query => "q"},
                  @request.to_hash(:type => "new_t",
@@ -281,7 +283,7 @@ class SearchRequestTest < ActiveSupport::TestCase
   def test_multibytes_io
     encoded = URI.encode("日本語")
     query_string = "query/#{encoded}"
-    @request = SearchRequest.new(query_string)
+    @request = @klass.new(query_string)
     assert_valid(:to_s => query_string,
                  :query => "日本語",
                  :empty => false)
@@ -295,7 +297,7 @@ class SearchRequestTest < ActiveSupport::TestCase
 
   def test_slash_io
     query_string = "type/text%2Fhtml"
-    @request = SearchRequest.new(query_string)
+    @request = @klass.new(query_string)
     assert_valid(:to_s => query_string,
                  :type => "text/html",
                  :empty => false)

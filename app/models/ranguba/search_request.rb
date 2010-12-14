@@ -1,4 +1,4 @@
-class SearchRequest
+class Ranguba::SearchRequest
   include ActiveModel::Validations
   include ActiveModel::Conversion
   extend ActiveModel::Naming
