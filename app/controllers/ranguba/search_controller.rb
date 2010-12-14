@@ -1,4 +1,4 @@
-class SearchController < ApplicationController
+class Ranguba::SearchController < ApplicationController
   SUMMARY_SIZE = 140
 
   rescue_from Groonga::TooSmallPage, Groonga::TooLargePage do |ex|
@@ -7,7 +7,7 @@ class SearchController < ApplicationController
   end
 
   def index
-    @search_request = SearchRequest.new(request.path_info, params)
+    @search_request = Ranguba::SearchRequest.new(request.path_info, params)
     if request.post?
       new_params = { :search_request => params[:search_request] }
       redirect_to new_params.merge(:search_request => @search_request.to_s)
@@ -35,7 +35,7 @@ class SearchController < ApplicationController
 
   def handle_bad_request
     @bad_request = @search_request
-    @search_request = SearchRequest.new(request.path_info, params)
+    @search_request = Ranguba::SearchRequest.new(request.path_info, params)
     @topic_path = @search_request.topic_path
   end
 

@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'test_helper'
 
-class SearchControllerTest < ActionController::TestCase
+class Ranguba::SearchControllerTest < ActionController::TestCase
 
   def setup
     setup_database
@@ -12,7 +12,7 @@ class SearchControllerTest < ActionController::TestCase
   end
 
   def test_routes
-    base = { :controller => 'search', :action => 'index' }
+    base = { :controller => 'ranguba/search', :action => 'index' }
     assert_recognizes(base.merge(:search_request => 'query/q'),
                       "/search/query/q")
     assert_recognizes(base.merge(:search_request => 'query/q/type/t'),
