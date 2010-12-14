@@ -43,13 +43,12 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (>= 0.0.27)
       xpath (~> 0.1.2)
-    celerity (0.8.4)
+    celerity (0.8.5)
     childprocess (0.1.4)
       ffi (~> 0.6.3)
     chuparuby (0.5.0)
       glib2
       nokogiri
-    configuration (1.2.0)
     culerity (0.2.12)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -57,17 +56,11 @@ GEM
       rake (>= 0.8.7)
     glib2 (0.90.5)
       pkg-config
-    hoe (2.7.0)
-      rake (>= 0.8.7)
-      rubyforge (>= 2.0.4)
     i18n (0.4.2)
     json_pure (1.4.6)
-    launchy (0.3.7)
-      configuration (>= 0.0.5)
-      rake (>= 0.8.1)
-    mail (2.2.10)
+    mail (2.2.12)
       activesupport (>= 2.3.6)
-      i18n (~> 0.4.1)
+      i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
@@ -96,14 +89,10 @@ GEM
       rake (>= 0.8.4)
       thor (~> 0.14.0)
     rake (0.8.7)
-    rake-compiler (0.7.5)
-      rake
     rroonga (1.0.5)
       pkg-config (>= 1.0.7)
-    rubyforge (2.0.4)
-      json_pure (>= 1.1.7)
     rubyzip (0.9.4)
-    selenium-webdriver (0.1.0)
+    selenium-webdriver (0.1.1)
       childprocess (= 0.1.4)
       ffi (~> 0.6.3)
       json_pure
@@ -127,12 +116,9 @@ DEPENDENCIES
   capybara
   chuparuby
   glib2
-  hoe
-  launchy
   nokogiri
   racknga
   rails (= 3.0.1)
-  rake-compiler
   rroonga
   test-unit
   test-unit-notify (>= 0.1.0)
