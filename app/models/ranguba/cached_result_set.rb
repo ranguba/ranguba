@@ -4,9 +4,9 @@ module Ranguba::CachedResultSet
   def drilldown(key)
     records = group(key).sort([["_nsubrecs", :descending]])
     records.collect do |record|
-      DrilldownEntry.new(:key => key,
-                         :value => record.key.key,
-                         :count => record.n_sub_records)
+      Ranguba::DrilldownEntry.new(:key => key,
+                                  :value => record.key.key,
+                                  :count => record.n_sub_records)
     end
   end
 

@@ -1,4 +1,4 @@
-class DrilldownEntry
+class Ranguba::DrilldownEntry
   attr_accessor :key
   attr_accessor :value
   attr_accessor :count

@@ -1,10 +1,12 @@
 # coding: utf-8
 require 'test_helper'
 
-class DrilldownEntryTest < ActiveSupport::TestCase
+class Ranguba::DrilldownEntryTest < ActiveSupport::TestCase
 
   def setup
-    @item = DrilldownEntry.new
+    @klass = Ranguba::DrilldownEntry
+    @basic = @klass.new
+    @item = @basic
   end
 
   def test_new
@@ -12,18 +14,17 @@ class DrilldownEntryTest < ActiveSupport::TestCase
   end
 
   def test_new_with_params
-    @item = DrilldownEntry.new({})
+    @item = @klass.new({})
     assert_properties
 
-    @item = DrilldownEntry.new(:key => :type, :value => "t")
+    @item = @klass.new(:key => :type, :value => "t")
     assert_properties(:key => :type, :value => "t")
 
-    @item = DrilldownEntry.new(:key => :query, :value => "q")
+    @item = @klass.new(:key => :query, :value => "q")
     assert_properties(:key => :query, :value => "q")
   end
 
   def test_path
-    @item = DrilldownEntry.new
     @item.key = :category
     @item.value = "c"
     assert_equal "category/c", @item.path
