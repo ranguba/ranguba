@@ -61,7 +61,7 @@ class InstallerGenerator
     FileUtils.cp(Dir.glob('./data/*').to_a, File.join(@output_dir, 'data'))
     Dir.chdir('../') do
       `git archive --format=tar --prefix=ranguba/ HEAD | gzip > ./ranguba.tar.gz`
-      FileUtils.mv('ranguba.tar.gz', @output_dir)
+      FileUtils.mv('ranguba.tar.gz', @source_dir)
     end
     files = check_filesize
     if files.empty?
