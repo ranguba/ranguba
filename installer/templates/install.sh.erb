@@ -160,15 +160,20 @@ function check_rpm_packages() {
 }
 
 function check_libreoffice_packages() {
+    local rpmdbpath="$PREFIX/rpm"
     if ! rpm -qa | grep -q libreoffice; then
-	echo -n "Installing LibreOffice ..."
-	tar xfz $SOURCE/LibO_3.3.0rc1_Linux_x86-64_install-rpm_en-US.tar.gz -C $SOURCE
-	tar xfz $SOURCE/LibO_3.3.0rc1_Linux_x86-64_langpack-rpm_ja.tar.gz -C $SOURCE
-	rpm --prefix $PREFIX/libreoffice -i $SOURCE/LibO_3.3.0rc1_Linux_x86-64_install-rpm_en-US/RPMS/*.rpm 1>&$log 2>&1 || abort
-	rpm --prefix $PREFIX/libreoffice -i $SOURCE/LibO_3.3.0rc1_Linux_x86-64_langpack-rpm_ja/RPMS/*.rpm 1>&$log 2>&1 || abort
-	mkdir -p "$PREFIX/bin"
-	cp $DATA_DIR/libreoffice "$PREFIX/bin/libreoffice"
-	echo done
+	if ! rpm --dbpath "$rpmdbpath" -qa | grep -q libreoffice; then
+	    echo -n "Installing LibreOffice ..."
+	    mkdir -p "$rpmdbpath"
+	    rpm --initdb --dbpath "$rpmdbpath"
+	    tar xfz $SOURCE/LibO_3.3.0rc1_Linux_x86-64_install-rpm_en-US.tar.gz -C $SOURCE
+	    tar xfz $SOURCE/LibO_3.3.0rc1_Linux_x86-64_langpack-rpm_ja.tar.gz -C $SOURCE
+	    rpm --dbpath "$rpmdbpath" --prefix $PREFIX/libreoffice -i $SOURCE/LibO_3.3.0rc1_Linux_x86-64_install-rpm_en-US/RPMS/*.rpm 1>&$log 2>&1 || abort
+	    rpm --dbpath "$rpmdbpath" --prefix $PREFIX/libreoffice -i $SOURCE/LibO_3.3.0rc1_Linux_x86-64_langpack-rpm_ja/RPMS/*.rpm 1>&$log 2>&1 || abort
+	    mkdir -p "$PREFIX/bin"
+	    cp $DATA_DIR/libreoffice "$PREFIX/bin/libreoffice"
+	    echo done
+	fi
     fi
 }
 
