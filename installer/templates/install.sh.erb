@@ -252,7 +252,7 @@ if test "$nocheck" != yes; then
 fi
 
 if sudo -u $RANGUBA_USERNAME test ! -O $PREFIX; then
-    original_owner=$(ls -ld $PREFIX | cut -d " " -f 3)
+    original_owner=$(stat -c %U $PREFIX)
     chown -R $RANGUBA_USERNAME $PREFIX
 fi
 
