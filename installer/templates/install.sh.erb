@@ -174,17 +174,17 @@ function check_libreoffice_packages() {
 
 function set_httpd_vars() {
     if test -x "$APXS2_PATH"; then
-	HTTPD_CONF_DIR=$(${APXS2_PATH} -q SYSCONFDIR)
-	APACHECTL_PATH=$(${APXS2_PATH} -q SBINDIR)/apachectl
+	HTTPD_CONF_DIR=$("${APXS2_PATH}" -q SYSCONFDIR)
+	APACHECTL_PATH=$("${APXS2_PATH}" -q SBINDIR)/apachectl
     else
 	APXS2_PATH=$("$PREFIX/bin/ruby" -rphusion_passenger -rphusion_passenger/platform_info/apache -e 'print PhusionPassenger::PlatformInfo.apxs2')
-	if test -x $APXS2_PATH; then
-	    HTTPD_CONF_DIR=$(${APXS2_PATH} -q SYSCONFDIR)
-	    APACHECTL_PATH=$(${APXS2_PATH} -q SBINDIR)/apachectl
+	if test -x "$APXS2_PATH"; then
+	    HTTPD_CONF_DIR=$("${APXS2_PATH}" -q SYSCONFDIR)
+	    APACHECTL_PATH=$("${APXS2_PATH}" -q SBINDIR)/apachectl
 	else
 	    if test $HTTPD_PREFIX; then
-		HTTPD_CONF_DIR=$HTTPD_PREFIX/conf/
-		APACHECTL_PATH=$HTTPD_PREFIX/bin/apachectl
+		HTTPD_CONF_DIR="$HTTPD_PREFIX/conf/"
+		APACHECTL_PATH="$HTTPD_PREFIX/bin/apachectl"
 	    else
 		echo <<EOF
 Please run below commands.
@@ -246,6 +246,11 @@ if test "$nocheck" != yes; then
     check_libreoffice_packages
 fi
 
+if sudo -u $RANGUBA_USERNAME test ! -O $PREFIX; then
+    original_owner=$(ls -ld $PREFIX | cut -d " " -f 3)
+    chown -R $RANGUBA_USERNAME $PREFIX
+fi
+
 sudo -H -u $RANGUBA_USERNAME \
     nocheck="$nocheck" \
     noinst="$noinst" \
@@ -264,6 +269,11 @@ sudo -H -u $RANGUBA_USERNAME \
 if test "$noinst" = no; then
     append_ranguba_conf_to_httpd_conf
 fi
+
+if test -n $original_owner; then
+    chown -R $original_owner $PREFIX
+fi
+chown -R $RANGUBA_USERNAME:$RANGUBA_USERNAME $PREFIX/ranguba
 
 test $fd && echo "Finished: $(LC_ALL=C date)" 1>&$log
 exec 3>&-
