@@ -1,10 +1,10 @@
-module SearchHelper
+module Ranguba::SearchHelper
   def drilldown_link(entry)
     case entry.key
     when :type
       file_type_drilldown_link(entry)
     else
-      topic_path = TopicPath.new(entry)
+      topic_path = Ranguba::TopicPath.new(entry)
       link_to_unless(@search_request.have_key?(entry.key),
                      entry.label,
                      search_path(:search_request => topic_path.search_request))
@@ -12,7 +12,7 @@ module SearchHelper
   end
 
   def file_type_drilldown_link(entry)
-    topic_path = TopicPath.new(entry)
+    topic_path = Ranguba::TopicPath.new(entry)
     link_to_unless(@search_request.have_key?(entry.key),
                    image_tag("file_types/#{entry.value}.png",
                              :alt => entry.label,
