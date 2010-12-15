@@ -1,3 +1,6 @@
+download http://download.documentfoundation.org/libreoffice/testing/3.3.0-rc1/rpm/x86_64/LibO_3.3.0rc1_Linux_x86-64_install-rpm_en-US.tar.gz
+download http://download.documentfoundation.org/libreoffice/testing/3.3.0-rc1/rpm/x86_64/LibO_3.3.0rc1_Linux_x86-64_langpack-rpm_ja.tar.gz
+
 inst http://www.ring.gr.jp/archives/GNU/autoconf/autoconf-2.68.tar.bz2
 inst http://www.ring.gr.jp/archives/GNU/gettext/gettext-0.18.1.1.tar.gz
 inst http://www.ring.gr.jp/archives/X/gnome/sources/glib/2.24/glib-2.24.2.tar.bz2

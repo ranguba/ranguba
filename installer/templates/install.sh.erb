@@ -159,6 +159,17 @@ function check_rpm_packages() {
     fi
 }
 
+function check_libreoffice_packages() {
+    if ! rpm -qa | grep -q libreoffice; then
+	echo -n "Installing LibreOffice ..."
+	tar xfz $SOURCE/LibO_3.3.0rc1_Linux_x86-64_install-rpm_en-US.tar.gz -C $SOURCE
+	tar xfz $SOURCE/LibO_3.3.0rc1_Linux_x86-64_langpack-rpm_ja.tar.gz -C $SOURCE
+	rpm --prefix $PREFIX/libreoffice -i $SOURCE/en_US/RPMS/*.rpm
+	rpm --prefix $PREFIX/libreoffice -i $SOURCE/ja/RPMS/*.rpm
+	echo done
+    fi
+}
+
 function set_httpd_vars() {
     if test -x "$APXS2_PATH"; then
 	HTTPD_CONF_DIR=$(${APXS2_PATH} -q SYSCONFDIR)
@@ -230,6 +241,7 @@ fi
 
 if test "$nocheck" != yes; then
     check_rpm_packages
+    check_libreoffice_packages
 fi
 
 sudo -H -u $RANGUBA_USERNAME \
