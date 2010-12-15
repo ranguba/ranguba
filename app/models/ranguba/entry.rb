@@ -84,7 +84,7 @@ class Ranguba::Entry < ActiveGroonga::Base
   private
   def compute_drilldown_entries
     entries = []
-    SearchRequest::KEYS.each do |key|
+    Ranguba::SearchRequest::KEYS.each do |key|
       next if key == :query || send(key).blank?
       entries << DrilldownEntry.new(:key => key,
                                     :value => send(key))
