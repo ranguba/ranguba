@@ -166,6 +166,7 @@ function check_libreoffice_packages() {
 	tar xfz $SOURCE/LibO_3.3.0rc1_Linux_x86-64_langpack-rpm_ja.tar.gz -C $SOURCE
 	rpm --prefix $PREFIX/libreoffice -i $SOURCE/en_US/RPMS/*.rpm
 	rpm --prefix $PREFIX/libreoffice -i $SOURCE/ja/RPMS/*.rpm
+	cp $DATA_DIR/libreoffice "$PREFIX/bin/libreoffice"
 	echo done
     fi
 }
