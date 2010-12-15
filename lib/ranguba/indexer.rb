@@ -174,7 +174,7 @@ EOS
   end
 
   def process_crawl(urls)
-    url_auth_groups = Hash.new
+    url_auth_groups = {}
 
     @authinfo_records.each do |record|
       url_auth_groups[record[:url]] = {
@@ -183,7 +183,7 @@ EOS
       }
     end
 
-    no_auth_urls = Array.new
+    no_auth_urls = []
     protected_urls = @authinfo_records.map{|record| record[:url]}
 
     urls.each do |target_url|
@@ -198,14 +198,14 @@ EOS
     end
 
     url_auth_groups.each do |_,group|
-      if ! group[:urls].empty?
+      unless group[:urls].empty?
         authinfo = group[:authinfo]
         process_crawl_urls(group[:urls],
                            :username => authinfo[:username],
                            :password => authinfo[:password])
       end
     end
-    if ! no_auth_urls.empty?
+    unless no_auth_urls.empty?
       process_crawl_urls(no_auth_urls)
     end
   end
