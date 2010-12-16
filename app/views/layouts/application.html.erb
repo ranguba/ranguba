@@ -11,8 +11,14 @@
   <% end %>
 </head>
 <body>
-<%=raw @ranguba_template.header %>
-<%= yield %>
-<%=raw @ranguba_template.footer %>
+  <div>
+    <%=raw @ranguba_template.header %>
+  </div>
+  <div>
+    <%= yield %>
+  </div>
+  <div>
+    <%=raw @ranguba_template.footer %>
+  </div>
 </body>
 </html>
