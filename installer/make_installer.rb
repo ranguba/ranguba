@@ -10,8 +10,10 @@ class InstallerGenerator
     @prefix = '$(getent passwd |grep ${RANGUBA_USERNAME}| cut -d : -f 6)'
     @httpd_prefix = '/usr/local/apache2'
     @document_root = '$HTTPD_PREFIX/htdocs'
+    @rails_base_uri = "/ranguba"
+    @application_name = "ranguba"
+    @embed_extracted_config = "false" # "false" is shell command
     @output_dir = File.join(@base_dir, 'ranguba_installer')
-    @ranguba_archive_name = 'ranguba.tar.gz'
     parser = OptionParser.new(argv)
     parser.banner = "#{$0} OPTIONS"
     parser.on('-u', '--user=USER') do |v|
@@ -29,8 +31,14 @@ class InstallerGenerator
     parser.on('-o', '--output-dir=OUTPUT_DIR') do |v|
       @output_dir = File.expand_path(v)
     end
-    parser.on('-n', '--archive-name=ARCHIVE_NAME') do |v|
-      @ranguba_archive_name = v
+    parser.on('-b', '--rails-base-uri=RAILS_BASE_URI') do |v|
+      @rails_base_uri = v
+    end
+    parser.on('-n', '--application-name=APP') do |v|
+      @application_name = v
+    end
+    parser.on('-e', '--embed-extracted-config') do
+      @embed_extracted_config = "true" # "true" is shell command
     end
     begin
       parser.parse!
@@ -60,8 +68,8 @@ class InstallerGenerator
     FileUtils.mkdir_p(File.join(@output_dir, 'data'))
     FileUtils.cp(Dir.glob('./data/*').to_a, File.join(@output_dir, 'data'))
     Dir.chdir('../') do
-      `git archive --format=tar --prefix=ranguba/ HEAD | gzip > ./ranguba.tar.gz`
-      FileUtils.mv('ranguba.tar.gz', @source_dir)
+      `git archive --format=tar --prefix=#{@application_name}/ HEAD | gzip > ./#{@application_name}.tar.gz`
+      FileUtils.mv("#{@application_name}.tar.gz", @source_dir)
     end
     files = check_filesize
     if files.empty?

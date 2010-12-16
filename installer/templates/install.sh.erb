@@ -10,6 +10,7 @@ nocheck=no
 noinst=no
 showlist=no
 install_ranguba_only=no
+EMBED_EXTRACTED_CONFIG=<%= @embed_extracted_config %>
 until test $# = 0; do
     case "$1" in
       (--download-only)
@@ -25,6 +26,7 @@ until test $# = 0; do
 	noinst=yes
 	;;
       (--install-ranguba-only)
+	nocheck=yes
 	install_ranguba_only=yes
 	;;
       (--user)
@@ -51,6 +53,18 @@ until test $# = 0; do
 	shift
 	DOCUMENT_ROOT="$1"
 	;;
+      (--embed-extracted-config)
+	shift
+	EMBED_EXTRACTED_CONFIG=true
+	;;
+      (--rails-base-uri)
+	shift
+	RAILS_BASE_URI="$1"
+	;;
+      (--application-name)
+        shift
+	APPLICATION_NAME="$1"
+	;;
       (--)
 	shift
 	break
@@ -74,6 +88,12 @@ if test -z "$HTTPD_PREFIX"; then
 fi
 if test -z "$DOCUMENT_ROOT"; then
     DOCUMENT_ROOT="<%= @document_root %>"
+fi
+if test -z "$RAILS_BASE_URI"; then
+    RAILS_BASE_URI="<%= @rails_base_uri %>"
+fi
+if test -z "$APPLICATION_NAME"; then
+    APPLICATION_NAME="<%= @application_name %>"
 fi
 
 SEPARATOR="
@@ -206,11 +226,17 @@ EOF
 
 function append_ranguba_conf_to_httpd_conf() {
     set_httpd_vars
-    if ! grep -q "ranguba.conf" "${HTTPD_CONF_DIR}/httpd.conf"; then
-	echo "include ${PREFIX}/ranguba/ranguba.conf" >> "${HTTPD_CONF_DIR}/httpd.conf"
+    if $EMBED_EXTRACTED_CONFIG; then
+	if ! grep -q "$PREFIX" "${HTTPD_CONF_DIR}/httpd.conf"; then
+	    cat "$PREFIX/$APPLICATION_NAME/$APPLICATION_NAME.conf" >> "${HTTPD_CONF_DIR}/httpd.conf"
+	fi
+    else
+	if ! grep -q "$APPLICATION_NAME.conf" "${HTTPD_CONF_DIR}/httpd.conf"; then
+	    echo "include ${PREFIX}/$APPLICATION_NAME/$APPLICATION_NAME.conf" >> "${HTTPD_CONF_DIR}/httpd.conf"
+	fi
     fi
-    if test ! -L "$DOCUMENT_ROOT/ranguba"; then
-	ln -s "$PREFIX/ranguba/public" "$DOCUMENT_ROOT/ranguba"
+    if test ! -L "$DOCUMENT_ROOT/$APPLICATION_NAME"; then
+	ln -s "$PREFIX/$APPLICATION_NAME/public" "$DOCUMENT_ROOT/$APPLICATION_NAME"
     fi
     test -x $APACHECTL_PATH && $APACHECTL_PATH restart
 }
@@ -269,6 +295,8 @@ sudo -H -u $RANGUBA_USERNAME \
     DATA_DIR="$DATA_DIR" \
     SEPARATOR="'$SEPARATOR'" \
     lib="$lib" \
+    RAILS_BASE_URI="$RAILS_BASE_URI" \
+    APPLICATION_NAME="$APPLICATION_NAME" \
     bash ./install_sources_and_gems.sh
 
 if test "$noinst" = no; then
@@ -278,7 +306,7 @@ fi
 if test -n "$original_owner"; then
     chown -R "$original_owner" "$PREFIX"
 fi
-chown -R "$RANGUBA_USERNAME":"$RANGUBA_USERNAME" "$PREFIX/ranguba"
+chown -R "$RANGUBA_USERNAME":"$RANGUBA_USERNAME" "$PREFIX/$APPLICATION_NAME"
 
 test $fd && echo "Finished: $(LC_ALL=C date)" 1>&$log
 exec 3>&-

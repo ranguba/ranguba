@@ -139,22 +139,22 @@ function install_passenger() {
 
 function install_ranguba() {
     install_passenger
-    echo -n "set up ranguba..."
+    echo -n "set up $APPLICATION_NAME..."
     mkdir -p "$PREFIX/"
-    test ! -f "$PREFIX/ranguba/Gemfile" && tar xfz "$SOURCE/ranguba.tar.gz" -C "$PREFIX/"
-    mkdir -p "$PREFIX/ranguba/vendor/cache"
-    cp -a ${SOURCE}/*.gem $PREFIX/ranguba/vendor/cache
-    cd "$PREFIX/ranguba"
+    test ! -f "$PREFIX/$APPLICATION_NAME/Gemfile" && tar xfz "$SOURCE/$APPLICATION_NAME.tar.gz" -C "$PREFIX/"
+    mkdir -p "$PREFIX/$APPLICATION_NAME/vendor/cache"
+    cp -a ${SOURCE}/*.gem "$PREFIX/$APPLICATION_NAME/vendor/cache"
+    cd "$PREFIX/$APPLICATION_NAME"
     cp config/groonga.yml.example config/groonga.yml
     RAILS_ENV="production" ruby -S bundle --no-color install \
 	--local --without development test 1>&$log 2>&1 || abort "Failed in install_ranguba"
     RAILS_ENV="production" ruby -S rake groonga:migrate 1>&$log 2>&1 || abort "Failed in install_ranguba"
     generate_ranguba_conf
-    if test ! -L $PREFIX/etc/ranguba; then
-	ln -s $PREFIX/ranguba/config/customize $PREFIX/etc/ranguba
+    if test ! -L "$PREFIX/etc/$APPLICATION_NAME"; then
+	ln -s "$PREFIX/$APPLICATION_NAME/config/customize" "$PREFIX/etc/$APPLICATION_NAME"
     fi
     if test -f "$DATA_DIR/categories.csv"; then
-	cp -f "$DATA_DIR/categories.csv" "$PREFIX/ranguba/config/customize/categories.csv"
+	cp -f "$DATA_DIR/categories.csv" "$PREFIX/$APPLICATION_NAME/config/customize/categories.csv"
     fi
     echo done
 }
@@ -163,14 +163,14 @@ function generate_ranguba_conf() {
     if test ! -f ranguba.conf; then
         ruby -S passenger-install-apache2-module --snippet > ranguba.conf
 	cat >> ranguba.conf <<EOF
-RailsBaseURI /ranguba
-<Directory ${PREFIX}/ranguba>
+RailsBaseURI ${RAILS_BASE_URI}
+<Directory ${PREFIX}/${APPLICATION_NAME}>
   Options -MultiViews
 </Directory>
 EOF
     fi
-    if test ! -f "$PREFIX/ranguba/ranguba.conf";then
-	cp -f ranguba.conf "$PREFIX/ranguba/ranguba.conf"
+    if test ! -f "$PREFIX/$APPLICATION_NAME/$APPLICATION_NAME.conf";then
+	cp -f ranguba.conf "$PREFIX/$APPLICATION_NAME/$APPLICATION_NAME.conf"
     fi
 }
 
