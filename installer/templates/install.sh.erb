@@ -251,9 +251,9 @@ if test "$nocheck" != yes; then
     check_libreoffice_packages
 fi
 
-if sudo -u $RANGUBA_USERNAME test ! -O $PREFIX; then
-    original_owner=$(stat -c %U $PREFIX)
-    chown -R $RANGUBA_USERNAME $PREFIX
+if sudo -u "$RANGUBA_USERNAME" test ! -O "$PREFIX"; then
+    original_owner=$(stat -c %U "$PREFIX")
+    chown -R "$RANGUBA_USERNAME" "$PREFIX"
 fi
 
 sudo -H -u $RANGUBA_USERNAME \
@@ -275,10 +275,10 @@ if test "$noinst" = no; then
     append_ranguba_conf_to_httpd_conf
 fi
 
-if test -n $original_owner; then
-    chown -R $original_owner $PREFIX
+if test -n "$original_owner"; then
+    chown -R "$original_owner" "$PREFIX"
 fi
-chown -R $RANGUBA_USERNAME:$RANGUBA_USERNAME $PREFIX/ranguba
+chown -R "$RANGUBA_USERNAME":"$RANGUBA_USERNAME" "$PREFIX/ranguba"
 
 test $fd && echo "Finished: $(LC_ALL=C date)" 1>&$log
 exec 3>&-
