@@ -346,11 +346,14 @@ EOS
 
   def valid_encoding?(attributes)
     url = attributes[:key]
-    attributes.each do |key, value|
-      unless valid_utf8?(value)
-        log(:warn, "[encoding][invalid][#{key}] key: #{url}")
-        return false
-      end
+    invalid_encoding_keys = attributes.reject do |key, value|
+      valid_utf8?(value)
+    end
+    if invalid_encoding_keys.blank?
+      true
+    else
+      log(:warn, "[encoding][invalid] key: #{url} - #{invalid_encoding_keys.join(',')}")
+      false
     end
   end
 
