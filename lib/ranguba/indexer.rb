@@ -272,7 +272,8 @@ EOS
       end
       feeder.feed(input_data)
     rescue GLib::Error => e
-      logger.error path
+      # TODO
+      log(:error, path)
       raise
       if @debug
         raise unless /unknown mime-type/ =~ e.message
