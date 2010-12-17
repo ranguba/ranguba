@@ -150,7 +150,7 @@ EOS
       when /^--([-\d]+.*?)\s*--\s+(.+)/
         update = $1
         url = $2
-        logger.info "#{Time.now} [indexer] URL: #{url}"
+        log(:info, "[indexer] URL: #{url}")
         if response = log[/^(?:  .*\n)+/]
           response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
         end
@@ -165,7 +165,7 @@ EOS
         end
       when /saved/
         unless url and path and File.file?(path)
-          logger.warn "#{Time.now} [indexer][file][not_found] path #{path}"
+          log(:warn, "[indexer][file][not_found] path #{path}")
           next
         end
         add_entry(url, path, response)
@@ -241,7 +241,7 @@ EOS
     begin
       metadata, body = decompose_file(path, response)
       if metadata.nil?
-        logger.warn("#{Time.now} [indexer][decompose][failure] <#{url}>")
+        log(:warn, "[indexer][decompose][failure] <#{url}>")
         return false
       end
       attributes = make_attributes(url, response, metadata, path)
@@ -250,8 +250,8 @@ EOS
       ::Ranguba::Entry.create!(attributes)
     rescue => e
       unless @ignore_errors
-        logger.error "#{Time.now} - #{e.class}: #{e.message}"
-        logger.error e.backtrace.map{|s|"\t#{s}"}.join("\n")
+        log(:error, "[indexer][error] #{e.class}: #{e.message}")
+        log(:error, e.backtrace.map{|s|"\t#{s}"}.join("\n"))
         return false
       end
     end
@@ -348,7 +348,7 @@ EOS
     url = attributes[:key]
     attributes.each do |key, value|
       unless valid_utf8?(value)
-        logger.warn "#{Time.now} [encoding][invalid][#{key}] key: #{url}"
+        log(:warn, "[encoding][invalid][#{key}] key: #{url}")
         return false
       end
     end
@@ -360,9 +360,10 @@ EOS
     value.force_encoding("UTF-8").valid_encoding?
   end
 
-  def logger
-    Rails.logger
+  def log(level, messeage)
+    Rails.logger.send(level, "#{Time.now} #{messeage}")
   end
+
 end
 
 class Ranguba::Indexer::TestOnly < Ranguba::Indexer
