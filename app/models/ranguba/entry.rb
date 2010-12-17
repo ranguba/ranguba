@@ -15,7 +15,7 @@ class Ranguba::Entry < ActiveGroonga::Base
     _title = super
     unless _title.valid_encoding?
       _title = ""
-      logger.warn "[InvalidEndoding title] #{Time.now.to_s} key: #{key}"
+      logger.warn "#{Time.now} [encoding][invalid][title] key: #{key}"
     end
     _title = url if _title.blank?
     _title
@@ -43,7 +43,7 @@ class Ranguba::Entry < ActiveGroonga::Base
 
   def summary(expression, options={})
     unless body.valid_encoding?
-      logger.warn "[InvalidEndoding body] #{Time.now.to_s} key: #{key}"
+      logger.warn "#{Time.now} [encoding][invalid][body] key: #{key}"
       return ""
     end
     summary = summary_by_query(expression, options)
