@@ -7,6 +7,7 @@ class Ranguba::SearchController < ApplicationController
   end
 
   def index
+    start_time = Time.now.to_f
     @search_request = Ranguba::SearchRequest.new(request.path_info, params)
     if request.post?
       new_params = { :search_request => params[:search_request] }
@@ -29,6 +30,8 @@ class Ranguba::SearchController < ApplicationController
       setup_search_result_title
       @summary_size = SUMMARY_SIZE
     end
+    end_time = Time.now.to_f
+    @elapsed_time = end_time - start_time
   end
 
   private
@@ -58,4 +61,5 @@ class Ranguba::SearchController < ApplicationController
     end
     @title = [title, @ranguba_template.title].join(I18n.t("title_delimiter"))
   end
+
 end

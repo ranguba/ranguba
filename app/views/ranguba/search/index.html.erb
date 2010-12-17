@@ -9,6 +9,7 @@
   <% if @result_set.n_records > 0 %>
     <p class="search_result_count">
       <%= t("search_result_count", :count => @result_set.n_records) %>
+      <%= t("search_elapsed_time", :elapsed_time => ("%.3f" % @elapsed_time)) %>
     </p>
     <%= will_paginate @result_set.paginated_records,
 		      :previous_label => t("search_result_previous_link"),

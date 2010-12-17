@@ -15,6 +15,7 @@ ja:
   column_query_name: "キーワード"
 
   search_top: "検索トップページ"
+  search_elapsed_time: "(%{elapsed_time} 秒)"
 
   search_result_title: "%{conditions} の検索結果"
   search_result_title_paginated: "%{conditions} の検索結果（%{page}/%{max_page}ページ）"

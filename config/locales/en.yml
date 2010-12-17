@@ -15,6 +15,7 @@ en:
   column_query_name: "Keyword"
 
   search_top: "Search Top"
+  search_elapsed_time: "(%{elapsed_time} sec)"
 
   search_result_title: "Search results of %{conditions}"
   search_result_title_paginated: "Search results of %{conditions} (page %{page}/%{max_page})"
