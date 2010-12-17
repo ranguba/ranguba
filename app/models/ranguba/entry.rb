@@ -14,7 +14,7 @@ class Ranguba::Entry < ActiveGroonga::Base
   def title
     _title = super
     _title = url if _title.blank?
-    unless _title && _title.valid_encoding?
+    if _title && !_title.valid_encoding?
       _title = ""
       logger.warn "#{Time.now} [encoding][invalid][title] key: #{key}"
     end
@@ -42,7 +42,7 @@ class Ranguba::Entry < ActiveGroonga::Base
   end
 
   def summary(expression, options={})
-    unless body && body.valid_encoding?
+    if body && !body.valid_encoding?
       logger.warn "#{Time.now} [encoding][invalid][body] key: #{key}"
       return ""
     end
