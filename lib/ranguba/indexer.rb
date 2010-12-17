@@ -28,7 +28,7 @@ class Ranguba::Indexer
     @accept = %w[html doc xls ppt pdf]
     @reject = []
     @tmpdir = nil
-    @auto_delete = false
+    @auto_delete = true
     @ignore_errors = false
     @debug = false
     @oldest = nil
@@ -211,7 +211,6 @@ EOS
   end
 
   def process_crawl_urls(urls, options = {})
-    @auto_delete = true
     base = Dir.mktmpdir("ranguba", @tmpdir)
     wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
     wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
@@ -227,7 +226,7 @@ EOS
         process_from_log(base, input)
       }
     ensure
-      FileUtils.rm_rf(base)
+      FileUtils.rm_rf(base) if @auto_delete
     end
     if @oldest
       purge_old_records(@oldest)
