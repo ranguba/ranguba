@@ -259,13 +259,14 @@ case $ARCH in
 esac
 
 if test "$noinst" = no; then
-    exec 3> install.log
+    log_file="install-$(date +%Y%m%d%H%M%S).log"
+    exec 3> $log_file
     log=3
 else
     log=
 fi
 test $log && echo "Start: $(LC_ALL=C date)" 1>&$log
-test $log && chmod 0666 install.log
+test $log && chmod 0666 $log_file
 
 check_current_directory
 checkroot
