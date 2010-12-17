@@ -150,7 +150,7 @@ EOS
       when /^--([-\d]+.*?)\s*--\s+(.+)/
         update = $1
         url = $2
-        log(:info, "[indexer] URL: #{url}")
+        log(:info, " URL: #{url}")
         if response = log[/^(?:  .*\n)+/]
           response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
         end
@@ -165,7 +165,7 @@ EOS
         end
       when /saved/
         unless url and path and File.file?(path)
-          log(:warn, "[indexer][file][not_found] path #{path}")
+          log(:warn, "[file][not_found] path #{path}")
           next
         end
         add_entry(url, path, response)
@@ -241,7 +241,7 @@ EOS
     begin
       metadata, body = decompose_file(path, response)
       if metadata.nil?
-        log(:warn, "[indexer][decompose][failure] <#{url}>")
+        log(:warn, "[decompose][failure] <#{url}>")
         return false
       end
       attributes = make_attributes(url, response, metadata, path)
@@ -250,7 +250,7 @@ EOS
       ::Ranguba::Entry.create!(attributes)
     rescue => e
       unless @ignore_errors
-        log(:error, "[indexer][error] #{e.class}: #{e.message}")
+        log(:error, "[error] #{e.class}: #{e.message}")
         log(:error, e.backtrace.map{|s|"\t#{s}"}.join("\n"))
         return false
       end
@@ -365,7 +365,7 @@ EOS
   end
 
   def log(level, messeage)
-    Rails.logger.send(level, "#{Time.now} #{messeage}")
+    Rails.logger.send(level, "#{Time.now} [indexer]#{messeage}")
   end
 
 end
