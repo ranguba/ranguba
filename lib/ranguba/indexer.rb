@@ -218,6 +218,7 @@ EOS
     wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
     wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
     wget << "--reject=#{@reject.join(',')}" unless @reject.empty?
+    wget << "--restrict-file-names=ascii"
     if options[:username] && options[:password]
       wget << "--http-user=#{options[:username]}"
       wget << "--http-password=#{options[:password]}"
