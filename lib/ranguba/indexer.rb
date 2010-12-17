@@ -259,7 +259,7 @@ EOS
   end
 
   def postprocess_file(path)
-      FileUtils.rm_f(path) if @auto_delete
+    FileUtils.rm_f(path) if @auto_delete
   end
 
   def decompose_file(path, response = {})
