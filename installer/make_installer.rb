@@ -55,6 +55,7 @@ class InstallerGenerator
     File.open(File.join(@output_dir, 'install.sh'), 'w+:utf-8') do |file|
       file.write(erb.result(binding))
     end
+    FileUtils.chmod(0755, File.join(@output_dir, 'install.sh'))
   end
 
   def package
