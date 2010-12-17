@@ -238,7 +238,7 @@ EOS
     begin
       metadata, body = decompose_file(path, response)
       if metadata.nil?
-        Rails.logger.warn("[indexer][decompose][failure] <#{url}>")
+        Rails.logger.warn("#{Time.now} [indexer][decompose][failure] <#{url}>")
         return false
       end
       attributes = make_attributes(url, response, metadata, path)
@@ -246,8 +246,8 @@ EOS
       ::Ranguba::Entry.create!(attributes)
     rescue => e
       unless @ignore_errors
-        STDERR.puts "#{e.class}: #{e.message}"
-        STDERR.puts e.backtrace.map{|s|"\t#{s}"}
+        Rails.logger.error "#{Time.now} - #{e.class}: #{e.message}"
+        Rails.logger.error e.backtrace.map{|s|"\t#{s}"}
         return false
       end
     end
