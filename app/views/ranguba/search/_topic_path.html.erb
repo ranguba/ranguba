@@ -1,4 +1,7 @@
     <ol class="topic_path">
+      <li class="topic_path_item">
+        <%= link_to_unless_current(t("search_top"), search_path) %>
+      </li>
       <% @topic_path.each_with_index do |item, index| %>
         <li class="topic_path_item"
             data-key="<%= item.key %>"
