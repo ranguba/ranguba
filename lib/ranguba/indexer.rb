@@ -164,7 +164,10 @@ EOS
           @oldest = update
         end
       when /saved/
-        next unless url and path and File.file?(path)
+        unless url and path and File.file?(path)
+          logger.warn "#{Time.now} [indexer][file][not_found] path #{path}"
+          next
+        end
         add_entry(url, path, response)
         postprocess_file(path)
         path = nil
