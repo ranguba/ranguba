@@ -104,8 +104,8 @@ function do_install1() {
     fi
     echo done
 
-    rm -fr "$build_dir/$base" > /dev/null 2>&1 || :
-    rmdir "$build_dir" >/dev/null 2>&1 || :
+    # rm -fr "$build_dir/$base" > /dev/null 2>&1 || :
+    # rmdir "$build_dir" >/dev/null 2>&1 || :
 }
 
 function download_all() {
