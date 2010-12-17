@@ -150,7 +150,7 @@ EOS
       when /^--([-\d]+.*?)\s*--\s+(.+)/
         update = $1
         url = $2
-        puts "URL: #{url}"
+        logger.info "#{Time.now} [indexer] URL: #{url}"
         if response = log[/^(?:  .*\n)+/]
           response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
         end
@@ -238,7 +238,7 @@ EOS
     begin
       metadata, body = decompose_file(path, response)
       if metadata.nil?
-        Rails.logger.warn("#{Time.now} [indexer][decompose][failure] <#{url}>")
+        logger.warn("#{Time.now} [indexer][decompose][failure] <#{url}>")
         return false
       end
       attributes = make_attributes(url, response, metadata, path)
@@ -247,8 +247,8 @@ EOS
       ::Ranguba::Entry.create!(attributes)
     rescue => e
       unless @ignore_errors
-        Rails.logger.error "#{Time.now} - #{e.class}: #{e.message}"
-        Rails.logger.error e.backtrace.map{|s|"\t#{s}"}
+        logger.error "#{Time.now} - #{e.class}: #{e.message}"
+        logger.error e.backtrace.map{|s|"\t#{s}"}.join("\n")
         return false
       end
     end
@@ -271,6 +271,8 @@ EOS
       end
       feeder.feed(input_data)
     rescue GLib::Error => e
+      logger.error path
+      raise
       if @debug
         raise unless /unknown mime-type/ =~ e.message
       end
@@ -345,7 +347,7 @@ EOS
     url = attributes[:key]
     attributes.each do |key, value|
       unless valid_utf8?(value)
-        Rails.logger.warn "#{Time.now} [encoding][invalid][#{key}] key: #{url}"
+        logger.warn "#{Time.now} [encoding][invalid][#{key}] key: #{url}"
         return false
       end
     end
@@ -355,6 +357,10 @@ EOS
     return true unless value.respond_to?(:encode)
     value = value.dup
     value.force_encoding("UTF-8").valid_encoding?
+  end
+
+  def logger
+    Rails.logger
   end
 end
 
