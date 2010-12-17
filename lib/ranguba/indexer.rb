@@ -243,6 +243,7 @@ EOS
       end
       attributes = make_attributes(url, response, metadata, path)
       attributes.update(key: url, body: body)
+      return false unless valid_encoding?(attributes)
       ::Ranguba::Entry.create!(attributes)
     rescue => e
       unless @ignore_errors
@@ -336,6 +337,24 @@ EOS
       mime.length
     }
     type
+  end
+
+  private
+
+  def valid_encoding?(attributes)
+    url = attributes[:key]
+    attributes.each do |key, value|
+      unless valid_utf8?(value)
+        Rails.logger.warn "#{Time.now} [encoding][invalid][#{key}] key: #{url}"
+        return false
+      end
+    end
+  end
+
+  def valid_utf8?(value)
+    return true unless value.respond_to?(:encode)
+    value = value.dup
+    value.force_encoding("UTF-8").valid_encoding?
   end
 end
 
