@@ -28,7 +28,7 @@ class Ranguba::SearchRequest
   end
 
   def query=(value)
-    @query = value.strip
+    @query = value.strip.gsub(/\u{3000}/, " ")
     @ordered_keys = @ordered_keys - [:query]
     @ordered_keys << :query
   end

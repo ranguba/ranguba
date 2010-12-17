@@ -96,6 +96,20 @@ class Ranguba::SearchRequestTest < ActiveSupport::TestCase
                  :empty => false)
   end
 
+  def test_new_with_empty_path_info_query_space
+    @request = @klass.new('', :query => "q r")
+    assert_valid(:to_s => "query/q+r",
+                 :query => "q r",
+                 :empty => false)
+  end
+
+  def test_new_with_empty_path_info_query_fillwidth_space
+    @request = @klass.new('', :query => "q　r")
+    assert_valid(:to_s => "query/q+r",
+                 :query => "q r",
+                 :empty => false)
+  end
+
   def test_clear
     @request = @klass.new
     @request.parse("unknown/value")
