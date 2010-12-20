@@ -198,7 +198,7 @@ function install_crontab() {
 	cp -f "$DATA_DIR/make_index" "$PREFIX/bin/make_index"
     fi
     local COMMAND="${PREFIX}/bin/make_index"
-    echo "0 1 * * * $COMMAND" | crontab -
+    echo "0 2 * * * $COMMAND" | crontab -
     echo "done"
 }
 
