@@ -8,12 +8,12 @@ class Ranguba::EncodingLoader
   end
 
   def load
-    hash = Hash.new{|h,k| h[k] = Encoding.find("utf-8")}
-    return hash unless File.exist?(@path)
+    encodings = Hash.new{|h,k| h[k] = Encoding.find("utf-8")}
+    return encodings unless File.exist?(@path)
     CSV.foreach(@path, encoding:"utf-8", skip_blanks:true) do |row|
       filename, encoding = row
-      hash[filename] = Encoding.find(encoding)
+      encodings[filename] = Encoding.find(encoding)
     end
-    hash
+    encodings
   end
 end
