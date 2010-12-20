@@ -10,7 +10,7 @@ class Ranguba::Searcher
 
   def search
     conditions = []
-    ::Ranguba::Entry.select{|record|
+    ::Ranguba::Entry.select do |record|
       if query
         query.split.each do |term|
           conditions << ((record.key.key =~ term) |
@@ -21,6 +21,6 @@ class Ranguba::Searcher
       conditions << (record["type"] == type) if type
       conditions << (record["category"] == category) if category
       conditions
-    }
+    end
   end
 end
