@@ -1,5 +1,10 @@
 class Ranguba::Template
-  def initialize
+  def initialize(encodings = {
+                   'title.txt'  => Encoding.find('utf-8'),
+                   'header.txt' => Encoding.find('utf-8'),
+                   'footer.txt' => Encoding.find('utf-8'),
+                 })
+    @encodings = encodings
     @base = Ranguba::Application.config.customize_base_path + 'templates'
     @title_path = @base + 'title.txt'
     @header_path = @base + 'header.txt'
@@ -7,14 +12,19 @@ class Ranguba::Template
   end
 
   def title
-    @title ||= File.read(@title_path)
+    @title ||= read(@title_path, @encodings['title.txt'])
   end
 
   def header
-    @header ||= File.read(@header_path)
+    @header ||= read(@header_path, @encodings['header.txt'])
   end
 
   def footer
-    @footer ||= File.read(@footer_path)
+    @footer ||= read(@footer_path, @encodings['footer.txt'])
+  end
+
+  def read(path, encoding = Encoding.find('utf-8'))
+    return '' unless File.exist?(path)
+    File.open(path, "r:#{encoding}"){|file| file.read }
   end
 end

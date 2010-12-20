@@ -14,11 +14,13 @@ class ApplicationController < ActionController::Base
   end
 
   def set_ranguba_template
-    @ranguba_template = Ranguba::Template.new
+    encodings = Rails.configuration.ranguba_config_encodings
+    @ranguba_template = Ranguba::Template.new(encodings)
   end
 
   def load_labels
-    Ranguba::CategoryLoader.new.load_labels
-    Ranguba::TypeLoader.new.load_labels
+    encodings = Rails.configuration.ranguba_config_encodings
+    Ranguba::CategoryLoader.new(encodings['categories.csv']).load_labels
+    Ranguba::TypeLoader.new(encodings['types.csv']).load_labels
   end
 end

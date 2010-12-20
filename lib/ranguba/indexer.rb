@@ -33,8 +33,9 @@ class Ranguba::Indexer
     @debug = false
     @oldest = nil
 
-    @url_category_pair = Ranguba::CategoryLoader.new.load
-    @mime_type_pair = Ranguba::TypeLoader.new.load
+    encodings = Rails.configuration.ranguba_config_encodings
+    @url_category_pair = Ranguba::CategoryLoader.new(encodings['categories.csv']).load
+    @mime_type_pair = Ranguba::TypeLoader.new(encodings['types.csv']).load
     @authinfo_records = Ranguba::PasswordLoader.new.load
 
     parser = OptionParser.new

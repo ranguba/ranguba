@@ -2,14 +2,15 @@ require 'csv'
 
 class Ranguba::CategoryLoader
 
-  def initialize
+  def initialize(encoding = Encoding.find("utf-8"))
     @base = Ranguba::Application.config.customize_base_path
     @path = @base + 'categories.csv'
+    @encoding = encoding
   end
 
   def load
     array = []
-    CSV.foreach(@path, encoding:"utf-8", skip_blanks:true) do |row|
+    CSV.foreach(@path, encoding:@encoding, skip_blanks:true) do |row|
       url, key, _ = row
       array << [url, key]
     end
@@ -18,7 +19,7 @@ class Ranguba::CategoryLoader
 
   def load_labels
     hash = {}
-    CSV.foreach(@path, encoding:"utf-8", skip_blanks:true) do |row|
+    CSV.foreach(@path, encoding:@encoding, skip_blanks:true) do |row|
       _, key, label = row
       hash[key] = label
     end
