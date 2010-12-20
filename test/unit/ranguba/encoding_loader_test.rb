@@ -19,7 +19,7 @@ class Ranguba::EncodingLoaderTest < ActiveSupport::TestCase
     @loader.instance_variable_set(:@path, 'missing')
     hash = @loader.load
     assert_true(hash.empty?)
-    assert_equal(hash['categories.csv'], Encoding.find('utf-8'))
+    assert_equal(Encoding.find('utf-8'), hash['categories.csv'])
   end
 
 end
