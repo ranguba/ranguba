@@ -13,7 +13,7 @@ class Ranguba::Searcher
       conditions = []
       if query
         target = record.match_target do |match_record|
-          (match_record["_key"] * 1000) |
+          (match_record["basename"] * 1000) |
             (match_record["title"] * 100) |
             (match_record["body"])
         end
