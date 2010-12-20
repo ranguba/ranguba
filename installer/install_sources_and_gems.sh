@@ -153,8 +153,17 @@ function install_ranguba() {
     if test ! -L "$PREFIX/etc/$APPLICATION_NAME"; then
 	ln -s "$PREFIX/$APPLICATION_NAME/config/customize" "$PREFIX/etc/$APPLICATION_NAME"
     fi
+    if test -f "$DATA_DIR/encodings.csv"; then
+	cp -f "$DATA_DIR/encodings.csv" "$PREFIX/$APPLICATION_NAME/config/customize/encodings.csv"
+    fi
     if test -f "$DATA_DIR/categories.csv"; then
 	cp -f "$DATA_DIR/categories.csv" "$PREFIX/$APPLICATION_NAME/config/customize/categories.csv"
+    fi
+    if test -f "$DATA_DIR/passwords.csv"; then
+	cp -f "$DATA_DIR/passwords.csv" "$PREFIX/$APPLICATION_NAME/config/customize/passwords.csv"
+    fi
+    if test -f "$DATA_DIR/title.txt"; then
+	cp -f "$DATA_DIR/title.txt" "$PREFIX/$APPLICATION_NAME/config/customize/title.txt"
     fi
     echo done
 }
