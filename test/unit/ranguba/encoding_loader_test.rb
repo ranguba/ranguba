@@ -9,10 +9,10 @@ class Ranguba::EncodingLoaderTest < ActiveSupport::TestCase
   def test_load
     hash = @loader.load
     assert_equal(Encoding.find('UTF-8'), hash['categories.csv'])
-    assert_equal(Encoding.find('utf-8'), hash['title.txt'])
-    assert_equal(Encoding.find('utf-8'), hash['header.txt'])
-    assert_equal(Encoding.find('utf-8'), hash['footer.txt'])
-    assert_equal(Encoding.find('utf-8'), hash['unknown.txt'])
+    assert_equal(Encoding.find('UTF-8'), hash['title.txt'])
+    assert_equal(Encoding.find('EUC-JP'), hash['header.txt'])
+    assert_equal(Encoding.find('Shift_JIS'), hash['footer.txt'])
+    assert_equal(Encoding.find('UTF-8'), hash['unknown.txt'])
   end
 
   def test_load_not_exist_path
