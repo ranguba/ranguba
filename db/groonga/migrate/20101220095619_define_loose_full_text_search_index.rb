@@ -5,10 +5,10 @@ class DefineLooseFullTextSearchIndex < ActiveGroonga::Migration
                  :key_type => "ShortText",
                  :default_tokenizer => "TokenBigramIgnoreBlankSplitSymbolAlphaDigit",
                  :key_normalize => true) do |table|
-      table.index("entries.title")
-      table.index("entries.body")
-      table.index("entries.basename")
-      table.index("authors._key")
+      table.index("entries.title", :with_position => true)
+      table.index("entries.body", :with_position => true)
+      table.index("entries.basename", :with_position => true)
+      table.index("authors._key", :with_position => true)
     end
   end
 
