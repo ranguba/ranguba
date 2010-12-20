@@ -246,7 +246,7 @@ EOS
         return false
       end
       attributes = make_attributes(url, response, metadata, path)
-      attributes.update(key: url, body: body)
+      attributes.update(key: url, body: body, basename: url.split(/\//).last)
       return false unless valid_encoding?(attributes)
       ::Ranguba::Entry.create!(attributes)
     rescue => e
