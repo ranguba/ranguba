@@ -43,7 +43,7 @@ download http://rubygems.org/downloads/fastthread-1.0.7.gem
 download http://rubygems.org/downloads/daemon_controller-0.2.5.gem
 download http://rubygems.org/downloads/spruz-0.2.2.gem
 download http://rubygems.org/downloads/file-tail-1.0.5.gem
-inst http://rubygems.org/downloads/passenger-3.0.0.gem
+inst http://rubygems.org/downloads/passenger-3.0.2.gem
 
 # inst ranguba-0.1.0.tar.gz
 
