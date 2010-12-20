@@ -8,15 +8,15 @@ class Ranguba::Template
   end
 
   def title
-    @title ||= read(@title_path, @encodings['title.txt'])
+    @title ||= Ranguba::File.read(@title_path, @encodings['title.txt'])
   end
 
   def header
-    @header ||= read(@header_path, @encodings['header.txt'])
+    @header ||= Ranguba::File.read(@header_path, @encodings['header.txt'])
   end
 
   def footer
-    @footer ||= read(@footer_path, @encodings['footer.txt'])
+    @footer ||= Ranguba::File.read(@footer_path, @encodings['footer.txt'])
   end
 
   def read(path, encoding='utf-8')
