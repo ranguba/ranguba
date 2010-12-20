@@ -219,7 +219,7 @@ export LD_LIBRARY_PATH="$PREFIX/lib:${LD_LIBRARY_PATH-/usr/$lib}"
 export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH-/usr/$lib/pkgconfig}"
 
 if test "$noinst" = no; then
-    exec 3> install.log
+    exec 3> $log_file
     log=3
 else
     log=
