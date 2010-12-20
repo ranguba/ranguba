@@ -39,3 +39,5 @@ en:
   not_found_message: "Page not found."
   invalid_request_message: "Invalid request."
 
+  category:
+    unknown: "Unknown"

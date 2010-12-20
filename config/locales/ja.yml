@@ -39,3 +39,6 @@ ja:
   not_found_message: "ページは存在しません。"
   invalid_request_message: "不正な要求です。"
 
+  category:
+    unknown: "不明"
+
