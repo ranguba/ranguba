@@ -10,7 +10,7 @@ class Ranguba::CategoryLoader
 
   def load
     array = []
-    CSV.foreach(@path, encoding:@encoding, skip_blanks:true) do |row|
+    CSV.foreach(@path, encoding: @encoding, skip_blanks: true) do |row|
       url, key, _ = row
       array << [url, key]
     end
@@ -19,7 +19,7 @@ class Ranguba::CategoryLoader
 
   def load_labels
     hash = {}
-    CSV.foreach(@path, encoding:@encoding, skip_blanks:true) do |row|
+    CSV.foreach(@path, encoding: @encoding, skip_blanks: true) do |row|
       _, key, label = row
       hash[key] = label
     end
