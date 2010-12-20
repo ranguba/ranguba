@@ -25,6 +25,6 @@ class Ranguba::Template
 
   def read(path, encoding=Encoding.find('utf-8'))
     return '' unless File.exist?(path)
-    File.open(path, "r:#{encoding}") {|file| file.read }
+    File.open(path, "r:#{encoding}") {|file| file.read}
   end
 end
