@@ -9,8 +9,8 @@ class Ranguba::Searcher
   end
 
   def search
-    conditions = []
     ::Ranguba::Entry.select do |record|
+      conditions = []
       if query
         query.split.each do |term|
           conditions << ((record.key.key =~ term) |
