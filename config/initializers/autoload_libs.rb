@@ -1,3 +1,4 @@
+require 'ranguba/file'
 require 'ranguba/encoding_loader'
 require 'ranguba/category_loader'
 require 'ranguba/type_loader'
