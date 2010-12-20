@@ -271,11 +271,14 @@ EOS
         data = _data
       end
       feeder.feed(input_data)
-    rescue GLib::Error => e
+    rescue Chupa::Error => e
       log(:error, "[error] #{e.class}: #{e.message}")
       log(:error, "[error] path: #{path}")
-      if @debug
-        raise unless /unknown mime-type/ =~ e.message
+      case e.code
+      when Chupa::DecomposerErrorCode::ENCRYPTED
+        return nil
+      else
+        raise
       end
     else
       if data
