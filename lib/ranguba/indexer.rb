@@ -36,6 +36,7 @@ class Ranguba::Indexer
     @level = 5
     @accept = %w[html doc xls ppt pdf]
     @reject = []
+    @exclude_directories = []
     @tmpdir = nil
     @auto_delete = true
     @safe_text_extracting = true
@@ -72,6 +73,9 @@ EOS
     end
     parser.on("-R", "--reject=LIST", Array) do |v|
       @reject.concat(v)
+    end
+    parser.on("-X", "--exclude-directories=LIST", Array) do |v|
+      @exclude_directories.concat(v)
     end
     parser.on("-d", "--tmpdir=TMPDIR") do |v|
       @tmpdir = v
@@ -230,6 +234,7 @@ EOS
     wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
     wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
     wget << "--reject=#{@reject.join(',')}" unless @reject.empty?
+    wget << "--exclude-directories=#{@exclude_directories.join(',')}" unless @exclude_directories.empty?
     wget << "--restrict-file-names=ascii"
     if options[:username] && options[:password]
       wget << "--http-user=#{options[:username]}"
