@@ -41,8 +41,9 @@ CSV
       file.puts str
       @loader.instance_variable_set(:@base, Rails.root + 'tmp')
       @loader.instance_variable_set(:@path, file.path)
-      assert_nothing_raised do
-        @loader.load
+      @loader.load.each do |url, key|
+        assert_equal([Encoding::UTF_8, Encoding::UTF_8],
+                     [url.encoding, key.encoding], url)
       end
     end
   ensure

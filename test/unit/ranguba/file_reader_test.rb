@@ -12,10 +12,9 @@ http://www.example.com/test,test,テストサイト
 CSV
       file.sync = true
       file.puts str
-      assert_nothing_raised do
-        Ranguba::FileReader.read_csv(file.path, Encoding.find('sjis')) do |row|
-          # nop
-        end
+      Ranguba::FileReader.read_csv(file.path, Encoding::Shift_JIS) do |row|
+        assert_equal([Encoding::UTF_8, Encoding::UTF_8, Encoding::UTF_8],
+                     row.collect(&:encoding), row.first)
       end
     end
   ensure
