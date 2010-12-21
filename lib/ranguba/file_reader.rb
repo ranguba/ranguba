@@ -1,4 +1,4 @@
-class Ranguba::File
+class Ranguba::FileReader
 
   def self.read(path, external_encoding=Encoding.find('utf-8'))
     return '' unless File.exist?(path)
