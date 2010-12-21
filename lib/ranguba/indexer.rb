@@ -290,7 +290,7 @@ EOS
         io.read
       else
         result = decompose_file_in_same_process(url, path, response)
-        print(Marshal.dump(result))
+        Marshal.dump(result, STDOUT)
       end
     end
     status = $?
