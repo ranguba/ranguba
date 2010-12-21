@@ -7,8 +7,17 @@ require 'chupatext'
 
 class Ranguba::Indexer
   attr_accessor :wget, :log_file, :url_prefix, :level, :accept,
-                :reject, :tmpdir, :auto_delete,
+                :reject, :tmpdir, :auto_delete, :safe_text_extracting,
                 :ignore_errors, :debug
+
+  module Loggable
+    private
+    def log(level, messeage)
+      Rails.logger.send(level, "#{Time.now} [indexer]#{messeage}")
+    end
+  end
+
+  include Loggable
 
   def accept=(val)
     @accept.concat(val)
@@ -29,13 +38,12 @@ class Ranguba::Indexer
     @reject = []
     @tmpdir = nil
     @auto_delete = true
+    @safe_text_extracting = true
     @ignore_errors = false
     @debug = false
     @oldest = nil
 
-    encodings = Rails.configuration.ranguba_config_encodings
-    @url_category_pair = Ranguba::CategoryLoader.new(encodings['categories.csv']).load
-    @mime_type_pair = Ranguba::TypeLoader.new(encodings['types.csv']).load
+    @resolver = Resolver.new
     @authinfo_records = Ranguba::PasswordLoader.new.load
 
     parser = OptionParser.new
@@ -70,6 +78,9 @@ EOS
     end
     parser.on("-D", "--[no-]auto-delete") do |v|
       @auto_delete = v
+    end
+    parser.on("--[no-]safe-text-extracting") do |v|
+      @safe_text_extracting = v
     end
     parser.on("-i", "--[no-]ignore-errors") do |v|
       @ignore_errors = v
@@ -113,7 +124,7 @@ EOS
       }
     else
       # crawl
-      if args.empty? and (args = @url_category_pair.map(&:first)).empty?
+      if args.empty? and (args = @resolver.urls).empty?
         raise OptionParser::MissingArgument, "no URL"
         return
       end
@@ -238,17 +249,14 @@ EOS
     end
   end
 
-  def add_entry(url, path, response = {})
+  def add_entry(url, path, response={})
     begin
-      metadata, body = decompose_file(path, response)
-      if metadata.nil?
+      attributes = decompose_file(url, path, response)
+      if attributes.nil?
         log(:warn, "[decompose][failure] <#{url}>")
         return false
       end
-      attributes = make_attributes(url, response, metadata, path)
-      attributes.update(key: url, body: body, basename: url.split(/\//).last)
-      return false unless valid_encoding?(attributes)
-      ::Ranguba::Entry.create!(attributes)
+      Ranguba::Entry.create!(attributes)
     rescue => e
       unless @ignore_errors
         log(:error, "[error] #{e.class}: #{e.message}")
@@ -263,10 +271,47 @@ EOS
     FileUtils.rm_f(path) if @auto_delete && @url_prefix.blank?
   end
 
-  def decompose_file(path, response={})
+  def decompose_file(url, path, response={})
+    if @safe_text_extracting
+      decompose_file_in_sub_process(url, path, response)
+    else
+      decompose_file_in_same_process(url, path, response)
+    end
+  end
+
+  def decompose_file_in_sub_process(url, path, response)
+    output_read, output_write = IO.pipe
+    output_read.set_encoding("ascii-8bit")
+    output_write.set_encoding("ascii-8bit")
+    pid = fork do
+      output_read.close
+      result = decompose_file_in_same_process(url, path, response)
+      output_write.print(Marshal.dump(result))
+      output_write.close
+      exit!(true)
+    end
+    output_write.close
+    result = ""
+    chunk = ""
+    begin
+      while output_read.readpartial(4096, chunk)
+        result << chunk
+      end
+      rescue EOFError
+    end
+    pid, status = Process.waitpid2(pid)
+    if status.exited? && status.exitstatus.zero?
+      Marshal.load(result)
+    else
+      log(:error, "[decompose][sub-process][error] #{result}")
+      nil
+    end
+  end
+
+  def decompose_file_in_same_process(url, path, response)
+    data = nil
     begin
       input_data = Chupa::Data.new(path)
-      data = nil
       feeder = Chupa::Feeder.new
       feeder.signal_connect("accepted") do |_feeder, _data|
         data = _data
@@ -282,15 +327,9 @@ EOS
         raise
       end
     else
-      if data
-        meta = data.metadata
-        body = data.read || ""
-        if body.encoding == Encoding::ASCII_8BIT
-          body.force_encoding(meta.encoding || Encoding::UTF_8)
-          return unless body.valid_encoding?
-        end
-        return meta, body
-      end
+      return nil if data.nil?
+      decomposed_file = DecomposedFile.new(@resolver, url, path, response, data)
+      decomposed_file.attributes
     end
   end
 
@@ -301,75 +340,121 @@ EOS
     old_entries.each(&:delete)
   end
 
-  def make_attributes(url, response, meta, path)
-    modification_time = response["last-modified"] || meta.modification_time
-    if modification_time
-      begin
-        modification_time = Time.parse(modification_time)
-      rescue
-        modification_time = nil
+  class Resolver
+    def initialize
+      encodings = Rails.configuration.ranguba_config_encodings
+      @url_category_pair = Ranguba::CategoryLoader.new(encodings['categories.csv']).load
+      @mime_type_pair = Ranguba::TypeLoader.new(encodings['types.csv']).load
+    end
+
+    def urls
+      @url_category_pair.map(&:first)
+    end
+
+    def category_for_url(url)
+      url ||= ''
+      prefix, category = @url_category_pair.select do |prefix, category|
+        url.start_with?(prefix)
+      end.max_by do |prefix, category|
+        prefix.length
+      end
+      category.blank? ? nil : category
+    end
+
+    def normalize_type(source)
+      source ||= ''
+      type = type_for_mime(source)
+      type ||= source.gsub(/^[^\/]+\/|\s*;\s*.*\z/, "").strip
+      type.blank? ? nil : type
+    end
+
+    def type_for_mime(source)
+      source = source.sub(/\s*;\s*.*\z/, "").strip
+      mime, type = @mime_type_pair.select do |mime, type|
+        source == mime
+      end.max_by do |mime, type|
+        mime.length
+      end
+      type
+    end
+  end
+
+  class DecomposedFile
+    include Loggable
+
+    def initialize(resolver, url, path, response, data)
+      @resolver = resolver
+      @url = url
+      @path = path
+      @response = response
+      @metadata = data.metadata
+      @body = data.read || ""
+      if @body.encoding == Encoding::ASCII_8BIT
+        @body.force_encoding(@metadata.encoding || Encoding::UTF_8)
       end
     end
-    mtime ||= File.mtime(path) if path
-    {
-      title: meta.title,
-      type: normalize_type(meta.original_mime_type || ""),
-      encoding: response["charset"] || meta.original_encoding || "",
-      category: category_for_url(url) || "",
-      author: meta.author || "",
-      modified_at: modification_time,
-      updated_at: response["x-update-time"],
-    }
-  end
 
-  def category_for_url(url="")
-    prefix, category = @url_category_pair.select do |prefix, category|
-      url.start_with?(prefix)
-    end.max_by do |prefix, category|
-      prefix.length
+    def attributes
+      {
+        key: @url,
+        title: @metadata.title,
+        body: @body,
+        basename: @url.split(/\//).last,
+        type: normalize_type(@metadata.original_mime_type),
+        encoding: @response["charset"] || @metadata.original_encoding || "",
+        category: category_for_url(@url) || "",
+        author: @metadata.author || "",
+        modified_at: modification_time,
+        updated_at: @response["x-update-time"],
+      }
     end
-    category.blank? ? "unknown" : category
-  end
 
-  def normalize_type(source="")
-    type = type_for_mime(source) || source.gsub(/^[^\/]+\/|\s*;\s*.*\z/, "").strip
-    type.blank? ? "unknown" : type
-  end
-
-  def type_for_mime(source)
-    source = source.sub(/\s*;\s*.*\z/, "").strip
-    mime, type = @mime_type_pair.select{|mime, type|
-      source == mime
-    }.max_by{|mime, type|
-      mime.length
-    }
-    type
-  end
-
-  private
-
-  def valid_encoding?(attributes)
-    url = attributes[:key]
-    invalid_encoding_attributes = attributes.reject do |key, value|
-      valid_utf8?(value)
+    private
+    def modification_time
+      modification_time = @response["last-modified"]
+      modification_time ||= @metadata.modification_time
+      if modification_time
+        begin
+          modification_time = Time.parse(modification_time)
+        rescue
+        modification_time = nil
+        end
+      end
+      modification_time ||= File.mtime(@path) if @path
+      modification_time
     end
-    invalid_encoding_keys = invalid_encoding_attributes.keys
-    if invalid_encoding_keys.blank?
-      true
-    else
-      log(:warn, "[encoding][invalid] key: #{url} - #{invalid_encoding_keys.join(',')}")
-      false
+
+    def category_for_url(url)
+      @resolver.category_for_url(url) || "unknown"
+    end
+
+    def normalize_type(source)
+      @resolver.normalize_type(source) || "unknown"
+    end
+
+    def valid_encoding?(attributes)
+      url = attributes[:key]
+      invalid_encoding_attributes = attributes.reject do |key, value|
+        valid_utf8?(value)
+      end
+      invalid_encoding_keys = invalid_encoding_attributes.keys
+      if invalid_encoding_keys.blank?
+        true
+      else
+        message = "[#{invalid_encoding_keys.join(', ')}]"
+        log(:warn, "[encoding][invalid] key: #{url} - #{message}")
+        false
+      end
+    end
+
+    def valid_utf8?(value)
+      return true unless value.respond_to?(:encode)
+      value = value.dup
+      value.force_encoding("UTF-8").valid_encoding?
+    end
+
+    def log(level, message)
+      super(level, "[decompose]#{message}")
     end
   end
-
-  def valid_utf8?(value)
-    return true unless value.respond_to?(:encode)
-    value = value.dup
-    value.force_encoding("UTF-8").valid_encoding?
-  end
-
-  def log(level, messeage)
-    Rails.logger.send(level, "#{Time.now} [indexer]#{messeage}")
-  end
-
 end
