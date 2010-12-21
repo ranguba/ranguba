@@ -263,7 +263,7 @@ EOS
     FileUtils.rm_f(path) if @auto_delete && @url_prefix.blank?
   end
 
-  def decompose_file(path, response = {})
+  def decompose_file(path, response={})
     begin
       input_data = Chupa::Data.new(path)
       data = nil
