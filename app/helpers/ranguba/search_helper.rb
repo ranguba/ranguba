@@ -30,4 +30,14 @@ module Ranguba::SearchHelper
             :title => item.reduce_title,
             :class => "topic_path_reduce_link")
   end
+
+  def drilldown_group_name(search_request, name)
+    label = I18n.t("drilldown_group_label_#{name}")
+    if search_request.empty?
+      I18n.t("drilldown_group_label", :label => label)
+    else
+      I18n.t("drilldown_group_add_label", :label => label)
+    end
+  end
+
 end

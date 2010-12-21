@@ -35,9 +35,13 @@ en:
   drilldown_group_label: "Find by %{label}"
   drilldown_group_add_label: "Filter by %{label}"
   drilldown_entry_label: "%{label} (%{count})"
+  drilldown_group_label_category: "Category"
+  drilldown_group_label_type: "FileType"
 
   not_found_message: "Page not found."
   invalid_request_message: "Invalid request."
 
   category:
     unknown: "Unknown"
+
+
