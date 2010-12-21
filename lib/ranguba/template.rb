@@ -19,11 +19,6 @@ class Ranguba::Template
     @footer ||= Ranguba::FileReader.read(@footer_path, @encodings['footer.txt'])
   end
 
-  def read(path, encoding='utf-8')
-    return '' unless File.exist?(path)
-    File.open(path, "r:#{encoding}") {|file| file.read}
-  end
-
   private
   def default_encodings
     {
