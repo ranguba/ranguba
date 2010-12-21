@@ -10,7 +10,7 @@ class Ranguba::TypeLoader
 
   def load
     array = []
-    str = Ranguba::File.read(@path, @encoding)
+    str = Ranguba::FileReader.read(@path, @encoding)
     CSV.parse(str, skip_blanks:true) do |row|
       mime_type, key, _ = row
       array << [mime_type, key]
@@ -20,7 +20,7 @@ class Ranguba::TypeLoader
 
   def load_labels
     hash = {}
-    str = Ranguba::File.read(@path, @encoding)
+    str = Ranguba::FileReader.read(@path, @encoding)
     CSV.parse(str, skip_blanks:true) do |row|
       _, key, label = row
       hash[key] = label
