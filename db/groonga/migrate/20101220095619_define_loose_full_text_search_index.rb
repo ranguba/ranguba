@@ -13,6 +13,6 @@ class DefineLooseFullTextSearchIndex < ActiveGroonga::Migration
   end
 
   def down
-    remove_table("bigram_loose")
+    remove_table("bigram")
   end
 end
