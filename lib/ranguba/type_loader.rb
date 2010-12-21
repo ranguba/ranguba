@@ -2,7 +2,7 @@ require 'csv'
 
 class Ranguba::TypeLoader
 
-  def initialize(encoding=Encoding.find("utf-8"))
+  def initialize(encoding=Encoding::UTF_8)
     @base = Ranguba::Application.config.customize_base_path
     @path = @base + 'types.csv'
     @encoding = encoding

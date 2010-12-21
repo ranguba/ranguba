@@ -22,9 +22,9 @@ class Ranguba::Template
   private
   def default_encodings
     {
-      'title.txt'  => Encoding.find('utf-8'),
-      'header.txt' => Encoding.find('utf-8'),
-      'footer.txt' => Encoding.find('utf-8'),
+      'title.txt'  => Encoding::UTF_8,
+      'header.txt' => Encoding::UTF_8,
+      'footer.txt' => Encoding::UTF_8,
     }
   end
 end

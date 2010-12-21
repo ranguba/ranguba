@@ -30,7 +30,7 @@ class Ranguba::CategoryLoaderTest < ActiveSupport::TestCase
   end
 
   def test_load_with_sjis
-    @loader = Ranguba::CategoryLoader.new(Encoding.find('sjis'))
+    @loader = Ranguba::CategoryLoader.new(Encoding::Shift_JIS)
     path = Rails.root + 'tmp' + 'categories.csv'
     File.open(path, 'w+:sjis:utf-8') do |file|
       str=<<CSV
