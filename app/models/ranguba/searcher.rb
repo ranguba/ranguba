@@ -13,7 +13,7 @@ class Ranguba::Searcher
       conditions = []
       if query
         query.split.each do |term|
-          conditions << ((record.key.key =~ term) |
+          conditions << ((record["basename"] =~ term) |
                          (record["title"] =~ term) |
                          (record["body"] =~ term))
         end
