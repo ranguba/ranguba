@@ -17,8 +17,8 @@ inst http://www.ring.gr.jp/archives/X/gnome/sources/pango/1.28/pango-1.28.3.tar.
 
 inst http://www.ring.gr.jp/archives/X/gnome/sources/gtk+/2.20/gtk+-2.20.1.tar.bz2
 inst http://www.ring.gr.jp/archives/X/gnome/sources/libglade/2.6/libglade-2.6.4.tar.bz2
-inst http://poppler.freedesktop.org/poppler-0.14.4.tar.gz
-inst http://poppler.freedesktop.org/poppler-data-0.4.3.tar.gz
+inst http://poppler.freedesktop.org/poppler-0.14.5.tar.gz
+inst http://poppler.freedesktop.org/poppler-data-0.4.4.tar.gz
 
 inst http://downloads.sourceforge.net/project/wvware/wv/1.2.4/wv-1.2.4.tar.gz
 inst http://www.ring.gr.jp/archives/X/gnome/sources/goffice/0.8/goffice-0.8.11.tar.bz2
