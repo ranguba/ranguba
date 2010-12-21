@@ -285,26 +285,15 @@ EOS
   end
 
   def decompose_file_in_sub_process(url, path, response)
-    output_read, output_write = IO.pipe
-    output_read.set_encoding("ascii-8bit")
-    output_write.set_encoding("ascii-8bit")
-    pid = fork do
-      output_read.close
-      result = decompose_file_in_same_process(url, path, response)
-      output_write.print(Marshal.dump(result))
-      output_write.close
-      exit!(true)
-    end
-    output_write.close
-    result = ""
-    chunk = ""
-    begin
-      while output_read.readpartial(4096, chunk)
-        result << chunk
+    result = IO.popen("-", "rb") do |io|
+      if io
+        io.read
+      else
+        result = decompose_file_in_same_process(url, path, response)
+        print(Marshal.dump(result))
       end
-      rescue EOFError
     end
-    pid, status = Process.waitpid2(pid)
+    status = $?
     if status.exited? && status.exitstatus.zero?
       Marshal.load(result)
     else
