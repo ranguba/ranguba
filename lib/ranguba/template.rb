@@ -1,6 +1,6 @@
 class Ranguba::Template
   def initialize(encodings=nil)
-    @encodings = encodings || default_encoding
+    @encodings = encodings || default_encodings
     @base = Ranguba::Application.config.customize_base_path + 'templates'
     @title_path = @base + 'title.txt'
     @header_path = @base + 'header.txt'
