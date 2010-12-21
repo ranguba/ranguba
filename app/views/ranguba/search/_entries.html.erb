@@ -3,9 +3,6 @@
       <li class="search_result_entry">
         <div class="search_result_entry_header">
           <span class="search_result_title"><%= link_to entry.title, entry.key %></span>
-<% if entry.respond_to?(:score) %>
-          <span class="search_result_score">(<%= entry.score %>)</span>
-<% end %>
           <span class="search_result_location"><%= link_to entry.key, entry.key %></span>
         </div>
         <div class="search_result_summary"><%=
