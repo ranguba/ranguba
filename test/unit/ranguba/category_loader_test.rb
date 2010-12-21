@@ -28,4 +28,24 @@ class Ranguba::CategoryLoaderTest < ActiveSupport::TestCase
     assert_equal('公開', I18n.t(:public, :scope => :category))
     assert_equal('ブログ', I18n.t(:blog, :scope => :category))
   end
+
+  def test_load_with_sjis
+    @loader = Ranguba::CategoryLoader.new(Encoding.find('sjis'))
+    path = Rails.root + 'tmp' + 'categories.csv'
+    File.open(path, 'w+:sjis:utf-8') do |file|
+      str=<<CSV
+http://www.example.com/,public,オフィシャルサイト
+http://www.example.com/test,test,テストサイト
+CSV
+      file.sync = true
+      file.puts str
+      @loader.instance_variable_set(:@base, Rails.root + 'tmp')
+      @loader.instance_variable_set(:@path, file.path)
+      assert_nothing_raised do
+        @loader.load
+      end
+    end
+  ensure
+    FileUtils.rm_f(path)
+  end
 end
