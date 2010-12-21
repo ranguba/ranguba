@@ -243,7 +243,8 @@ function append_ranguba_conf_to_httpd_conf() {
 	fi
     fi
     if test ! -L "$DOCUMENT_ROOT/$APPLICATION_NAME"; then
-	ln -s "$PREFIX/$APPLICATION_NAME/public" "$DOCUMENT_ROOT/$APPLICATION_NAME"
+	mkdir -p "${DOCUMENT_ROOT}${RAILS_BASE_URI}"
+	ln -s "$PREFIX/$APPLICATION_NAME/public" "${DOCUMENT_ROOT}${RAILS_BASE_URI}"
     fi
     test -x $APACHECTL_PATH && $APACHECTL_PATH restart
 }
