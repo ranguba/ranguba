@@ -1,5 +1,3 @@
-require 'csv'
-
 class Ranguba::CategoryLoader
 
   def initialize(encoding=Encoding::UTF_8)

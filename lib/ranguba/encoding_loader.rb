@@ -1,5 +1,3 @@
-require 'csv'
-
 class Ranguba::EncodingLoader
 
   def initialize

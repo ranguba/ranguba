@@ -1,5 +1,3 @@
-require 'csv'
-
 class Ranguba::TypeLoader
 
   def initialize(encoding=Encoding::UTF_8)
