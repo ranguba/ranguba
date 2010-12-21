@@ -25,5 +25,11 @@ Ranguba::Application.configure do
 
   config.index_db_path = ::Rails.root + "db/groonga/db"
   config.customize_base_path = ::Rails.root+ "config/customize"
+
+  require 'ranguba/log_path_loader'
+  log_dir = Ranguba::LogPathLoader.new.load
+  if log_dir
+    config.paths.log = log_dir + "#{Rails.env}.log"
+  end
 end
 
