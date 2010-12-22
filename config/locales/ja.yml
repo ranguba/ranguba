@@ -5,6 +5,8 @@ ja:
   global_title: "ラングバ"
   title_delimiter: " - "
 
+  help_label: "ヘルプ"
+
   search_conditions_delimiter: ", "
   search_request_blank_value: "%{key} に値がありません。"
   search_request_invalid_key: "不明なオプション %{key} に %{value} が指定されています。"

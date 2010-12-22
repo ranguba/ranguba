@@ -3,6 +3,7 @@
   <p>
     <%= text_field_tag :query, @search_request.query, :size => 25 %>
     <%= submit_tag t(@search_request.empty? ? "search_button_label" : "search_button_add_label") %>
+    <%= link_to t("help_label"), help_path %>
   </p>
 <% end %>
 </div>

@@ -5,6 +5,8 @@ en:
   global_title: "Ranguba"
   title_delimiter: " - "
 
+  help_label: "Help"
+
   search_conditions_delimiter: ", "
   search_request_blank_value: "\"%{key}\" has no value."
   search_request_invalid_key: "Unknown option \"%{key}\" is specified with a value \"%{value}\"."
