@@ -411,7 +411,7 @@ EOS
         begin
           modification_time = Time.parse(modification_time)
         rescue
-        modification_time = nil
+          modification_time = nil
         end
       end
       modification_time ||= File.mtime(@path) if @path
