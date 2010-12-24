@@ -39,7 +39,7 @@ class Ranguba::Indexer
     @exclude_directories = []
     @tmpdir = nil
     @auto_delete = true
-    @safe_text_extracting = true
+    @safe_text_extracting = false
     @ignore_errors = false
     @debug = false
     @oldest = nil
