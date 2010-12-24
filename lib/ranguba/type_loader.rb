@@ -16,14 +16,20 @@ class Ranguba::TypeLoader
   end
 
   def load_labels
-    hash = {}
-    Ranguba::FileReader.read_csv(@path, @encoding) do |row|
-      _, key, label = row
-      hash[key] = label
+    [nil, "en", "ja"].each do |language|
+      labels = {}
+      if language.nil?
+        path = @base + "types.csv"
+      else
+        path = @base + "types.#{language}.csv"
+      end
+      next unless path.exist?
+      Ranguba::FileReader.read_csv(path, @encoding) do |row|
+        _, key, label = row
+        labels[key] = label
+      end
+      I18n.backend.store_translations(language || 'en', :type => labels)
     end
-    # FIXME
-    I18n.backend.store_translations('en', :type => hash)
-    I18n.backend.store_translations('ja', :type => hash)
     nil
   end
 end
