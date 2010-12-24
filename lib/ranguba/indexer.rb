@@ -92,6 +92,12 @@ EOS
     parser.on("--[no-]debug") do |v|
       @debug = v
     end
+    parser.on("--no-buffer-log",
+              "Don't buffer log.",
+              "Log is buffered on production environment by default.",
+              "Log isn't buffered on development environment by default.") do |buffer|
+      Rails.logger.auto_flushing = !buffer
+    end
     begin
       parser.parse!(argv)
     rescue OptionParser::ParseError => ex
