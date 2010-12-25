@@ -185,7 +185,7 @@ EOS
       case log
       when /^--([-\d]+.*?)\s*--\s+(.+)/
         update = $1
-        url = $2
+        url = $2.sub(/\A\(try:\s*\d+\)\s*/, '')
         log(:info, " URL: #{url}")
         if response = log[/^(?:  .*\n)+/]
           response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
