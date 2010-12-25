@@ -8,7 +8,6 @@ class DefineLooseFullTextSearchIndex < ActiveGroonga::Migration
       table.index("entries.title")
       table.index("entries.body")
       table.index("entries.basename")
-      table.index("authors._key")
     end
   end
 
