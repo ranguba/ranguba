@@ -102,6 +102,16 @@ EOS
               "Log isn't buffered on development environment by default.") do |buffer|
       Rails.logger.auto_flushing = !buffer
     end
+    parser.on("--log-path=PATH",
+              "Log to PATH.") do |path|
+      original_logger = Rails.logger
+      path = STDOUT if path == "-"
+      logger = ActiveSupport::BufferedLogger.new(path)
+      logger.level = original_logger.level
+      logger.auto_flushing = original_logger.auto_flushing
+      Rails.logger = logger
+      original_logger.flush
+    end
     begin
       parser.parse!(argv)
     rescue OptionParser::ParseError => ex
