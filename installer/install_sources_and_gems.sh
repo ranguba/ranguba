@@ -208,7 +208,8 @@ function install_crontab() {
 	cp -f "$DATA_DIR/make_index" "$PREFIX/bin/make_index"
     fi
     local COMMAND="${PREFIX}/bin/make_index"
-    echo "0 2 * * * $COMMAND" | crontab -
+    local LOG_DIR="${PREFIX}/${APPLICATION_NAME}/log"
+    echo "0 2 * * * $COMMAND > ${LOG_DIR}/indexer.log" | crontab -
     echo "done"
 }
 
