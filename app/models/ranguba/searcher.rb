@@ -12,10 +12,13 @@ class Ranguba::Searcher
     ::Ranguba::Entry.select do |record|
       conditions = []
       if query
+        target = record.match_target do |match_record|
+          (match_record["basename"] * 1000) |
+            (match_record["title"] * 100) |
+            (match_record["body"])
+        end
         query.split.each do |term|
-          conditions << ((record["basename"] =~ term) |
-                         (record["title"] =~ term) |
-                         (record["body"] =~ term))
+          conditions << (target =~ term)
         end
       end
       conditions << (record["type"] == type) if type
