@@ -4,7 +4,12 @@ class Ranguba::SearchController < ApplicationController
   if Rails.env.production?
     rescue_from StandardError do |exception|
       handle_bad_request
-      render :action => "internal_server_error", :status => 500
+      begin
+        render :action => "internal_server_error", :status => 500
+      rescue
+        @topic_path = Ranguba::TopicPath.new
+        render :action => "internal_server_error", :status => 500
+      end
     end
   end
 
