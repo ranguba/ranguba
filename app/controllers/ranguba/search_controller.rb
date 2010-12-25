@@ -3,6 +3,11 @@ class Ranguba::SearchController < ApplicationController
 
   if Rails.env.production?
     rescue_from StandardError do |exception|
+      message = "#{exception.message} (#{exception.class}):\n"
+      exception.backtrace.each do |trace|
+        message << "#{trace}\n"
+      end
+      Rails.logger.fatal(message)
       handle_bad_request
       begin
         render :action => "internal_server_error", :status => 500
