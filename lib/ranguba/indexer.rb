@@ -15,6 +15,10 @@ class Ranguba::Indexer
     def log(level, messeage)
       Rails.logger.send(level, "#{Time.now} [indexer]#{messeage}")
     end
+
+    def flush_log
+      Rails.logger.flush
+    end
   end
 
   include Loggable
@@ -334,10 +338,14 @@ EOS
   end
 
   def purge_old_records(base_time)
+    log(:info, "[purge][start] <#{base_time.iso8601}>")
+    flush_log
     old_entries = ::Ranguba::Entry.select do |record|
       record.updated_at < base_time
     end
     old_entries.each(&:delete)
+    log(:info, "[purge][end] <#{base_time.iso8601}>")
+    flush_log
   end
 
   class Resolver
