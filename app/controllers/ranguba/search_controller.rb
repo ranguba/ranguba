@@ -1,6 +1,13 @@
 class Ranguba::SearchController < ApplicationController
   SUMMARY_SIZE = 140
 
+  if Rails.env.production?
+    rescue_from StandardError do |exception|
+      handle_bad_request
+      render :action => "internal_server_error", :status => 500
+    end
+  end
+
   rescue_from Groonga::TooSmallPage, Groonga::TooLargePage do |ex|
     handle_bad_request
     render :action => "not_found", :status => 404

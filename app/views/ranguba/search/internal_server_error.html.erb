@@ -5,13 +5,8 @@
 </div>
 <div class="search_result">
   <p class="search_result_error_message">
-    <%= t("invalid_request_message") %>
+    <%= t("internal_server_error_message") %>
     <%= t("please_back_to_top_page_message") %>
   </p>
-  <ul class="search_result_error_messages">
-    <% @bad_request.errors.each do |field, message| %>
-      <li><%= message %></li>
-    <% end %>
-  </ul>
 </div>
 

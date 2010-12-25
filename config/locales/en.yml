@@ -40,6 +40,8 @@ en:
   drilldown_group_label_category: "Category"
   drilldown_group_label_type: "FileType"
 
+  please_back_to_top_page_message: "Please back to the top page."
+  internal_server_error_message: "Sorry. Internal error is occurred."
   not_found_message: "Page not found."
   invalid_request_message: "Invalid request."
 

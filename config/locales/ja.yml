@@ -40,8 +40,10 @@ ja:
   drilldown_group_label_category: "カテゴリ"
   drilldown_group_label_type: "ファイル形式"
 
-  not_found_message: "ページは存在しません。"
-  invalid_request_message: "不正な要求です。"
+  please_back_to_top_page_message: "トップページから検索し直してください。"
+  internal_server_error_message: "申し訳ありません。内部エラーが発生しました。"
+  not_found_message: "指定したページが存在しません。"
+  invalid_request_message: "不正なリクエストです。"
 
   category:
     unknown: "不明"
