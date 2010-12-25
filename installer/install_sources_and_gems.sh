@@ -141,7 +141,7 @@ function install_ranguba() {
     install_passenger
     echo -n "set up $APPLICATION_NAME..."
     mkdir -p "$PREFIX/"
-    test ! -f "$PREFIX/$APPLICATION_NAME/Gemfile" && tar xfz "$SOURCE/$APPLICATION_NAME.tar.gz" -C "$PREFIX/"
+    tar xfz "$SOURCE/$APPLICATION_NAME.tar.gz" -C "$PREFIX/"
     mkdir -p "$PREFIX/$APPLICATION_NAME/vendor/cache"
     cp -a ${SOURCE}/*.gem "$PREFIX/$APPLICATION_NAME/vendor/cache"
     if test -f "$DATA_DIR/encodings.csv"; then
