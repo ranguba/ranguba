@@ -165,6 +165,8 @@ function install_ranguba() {
     if test ! -L "$PREFIX/etc/$APPLICATION_NAME"; then
 	ln -s "$PREFIX/$APPLICATION_NAME/config/customize" "$PREFIX/etc/$APPLICATION_NAME"
     fi
+    mkdir -p tmp
+    touch tmp/restart.txt
     cd -
     echo done
 }
