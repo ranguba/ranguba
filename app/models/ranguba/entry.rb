@@ -13,12 +13,19 @@ class Ranguba::Entry < ActiveGroonga::Base
 
   def title
     _title = super
-    _title = url if _title.blank?
-    if _title && !_title.valid_encoding?
-      _title = ""
-      logger.warn "#{Time.now} [encoding][invalid][title] key: #{key}"
+    if _title and !_title.valid_encoding?
+      logger.warn("#{Time.now} [encoding][invalid][title] " +
+                  "key: #{key}: #{_title.inspect}")
+      _title = nil
     end
-    _title
+    return _title unless _title.blank?
+    _url = url
+    if _url and !_url.valid_encoding?
+      logger.warn("#{Time.now} [encoding][invalid][title][fallback][url] " +
+                  "key: #{key}: <#{_url.inspect}>")
+      _url = ""
+    end
+    _url
   end
 
   def url
