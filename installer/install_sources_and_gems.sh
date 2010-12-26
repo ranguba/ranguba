@@ -146,18 +146,17 @@ function install_ranguba() {
     tar xfz "$SOURCE/$APPLICATION_NAME.tar.gz" -C "$PREFIX/"
     mkdir -p "$PREFIX/$APPLICATION_NAME/vendor/cache"
     cp -a ${SOURCE}/*.gem "$PREFIX/$APPLICATION_NAME/vendor/cache"
+    local config_dir="$PREFIX/$APPLICATION_NAME/config/customize"
     if test -f "$DATA_DIR/encodings.csv"; then
-	cp -f "$DATA_DIR/encodings.csv" "$PREFIX/$APPLICATION_NAME/config/customize/encodings.csv"
+	cp -f "$DATA_DIR/encodings.csv" "$config_dir/encodings.csv"
     fi
-    if test -f "$DATA_DIR/categories.csv"; then
-	cp -f "$DATA_DIR/categories.csv" "$PREFIX/$APPLICATION_NAME/config/customize/categories.csv"
-    fi
-    if test -f "$DATA_DIR/passwords.csv"; then
-	cp -f "$DATA_DIR/passwords.csv" "$PREFIX/$APPLICATION_NAME/config/customize/passwords.csv"
-    fi
-    if test -f "$DATA_DIR/title.txt"; then
-	cp -f "$DATA_DIR/title.txt" "$PREFIX/$APPLICATION_NAME/config/customize/title.txt"
-    fi
+    for config_file in categories.csv passwords.csv title.txt; do
+	local origin="$DATA_DIR/$config_file"
+	local dest="$config_dir/$config_file"
+	if test -f "$origin" -a ! -f "$dest"; then
+	    cp -f "$origin" "$dest"
+	fi
+    done
     cd "$PREFIX/$APPLICATION_NAME"
     cp config/groonga.yml.example config/groonga.yml
     RAILS_ENV="production" ruby -S bundle --no-color install \
