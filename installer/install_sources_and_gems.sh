@@ -153,7 +153,7 @@ function install_ranguba() {
     for config_file in categories.csv passwords.csv title.txt; do
 	local origin="$DATA_DIR/$config_file"
 	local dest="$config_dir/$config_file"
-	if test -f "$origin" -a ! -f "$dest"; then
+	if test -f "$origin"; then
 	    cp -f "$origin" "$dest"
 	fi
     done
