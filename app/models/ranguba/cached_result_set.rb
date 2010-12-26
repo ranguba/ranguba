@@ -1,5 +1,5 @@
 module Ranguba::CachedResultSet
-  RECORDS_PER_PAGE = 10
+  RECORDS_PER_PAGE = 20
 
   def drilldown(key)
     records = group(key).sort([["_nsubrecs", :descending]])
