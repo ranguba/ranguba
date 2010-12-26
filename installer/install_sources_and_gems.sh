@@ -2,6 +2,8 @@
 
 set -e
 
+MAKE="make -j4"
+
 function abort() {
     local status=$?
     if test $# = 0; then
@@ -89,8 +91,8 @@ function do_install1() {
 
     echo -n "Building $base..."
     if test -f "$build_dir/$base/Makefile"; then
-	test "$patched" = yes && make -C "build/$base" prereq 1>&$log 2>&1 || true
-	make -C "$build_dir/$base" 1>&$log 2>&1 || abort
+	test "$patched" = yes && $MAKE -C "build/$base" prereq 1>&$log 2>&1 || true
+	$MAKE -C "$build_dir/$base" 1>&$log 2>&1 || abort
     elif test -f "$build_dir/$base/Rakefile"; then
 	ruby -C "$build_dir/$base" -S rake 1>&$log 2>&1 || abort
     fi
@@ -98,7 +100,7 @@ function do_install1() {
 
     echo -n "Installing $base..."
     if test -f "$build_dir/$base/GNUmakefile" -o -f "$build_dir/$base/Makefile"; then
-	make -C "$build_dir/$base" prefix="$PREFIX" install 1>&$log 2>&1 || abort
+	$MAKE -C "$build_dir/$base" prefix="$PREFIX" install 1>&$log 2>&1 || abort
     elif test -f "$build_dir/$base/Rakefile"; then
 	ruby -C "$build_dir/$base" -S rake install 1>&$log 2>&1 || abort
     fi
