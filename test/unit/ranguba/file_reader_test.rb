@@ -4,6 +4,7 @@ require 'test_helper'
 class Ranguba::FileReaderTest < ActiveSupport::TestCase
 
   def test_read_csv
+    FileUtils.mkdir_p(Rails.root + 'tmp')
     path = Rails.root + 'tmp' + 'categories.csv'
     File.open(path, 'w+:sjis:utf-8') do |file|
       str=<<CSV
