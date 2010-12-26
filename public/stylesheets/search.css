@@ -1,7 +1,12 @@
+/* layout */
+.content {
+  margin: 0 3em;
+}
+
 /* search form */
 
 .search_request {
-  margin: 0 3em 1em;
+  margin-bottom: 1em;
 }
 
 /* drilldown */
@@ -85,10 +90,6 @@
 }
 
 /* search results */
-
-.search_result {
-  margin: 0 3em;
-}
 
 .search_result_count,
 .search_result_message,
