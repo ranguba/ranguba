@@ -112,6 +112,18 @@ EOS
       Rails.logger = logger
       original_logger.flush
     end
+    parser.on("--[no-]redirect-stdout-to-log",
+              "Redirect standard output to log.") do |boolean|
+      if boolean
+        STDOUT.reopen(Rails.logger.instance_variable_get("@log"))
+      end
+    end
+    parser.on("--[no-]redirect-stderr-to-log",
+              "Redirect standard error to log.") do |boolean|
+      if boolean
+        STDERR.reopen(Rails.logger.instance_variable_get("@log"))
+      end
+    end
     begin
       parser.parse!(argv)
     rescue OptionParser::ParseError => ex
