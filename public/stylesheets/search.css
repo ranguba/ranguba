@@ -130,6 +130,7 @@
   margin: 0 0 0 2em;
 }
 
+em.keyword,
 .search_result_summary em {
   background: #FFCC66;
   font-style: normal;
