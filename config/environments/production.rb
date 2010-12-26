@@ -1,3 +1,5 @@
+ENV["RANGUBA_LIMIT_AS"] = "2GB"
+
 Ranguba::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
