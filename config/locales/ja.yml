@@ -21,11 +21,11 @@ ja:
 
   search_result_title: "%{conditions} の検索結果"
   search_result_title_paginated: "%{conditions} の検索結果（%{page}/%{max_page}ページ）"
-  search_result_count: "%{count}件ヒットしました。"
+  search_result_count: "%{count}件見つかりました。"
   search_result_previous_link: "«前"
   search_result_next_link: "次»"
   search_result_summary_ellipses: "…"
-  search_result_not_found_message: "ヒットする検索結果はありませんでした。"
+  search_result_not_found_message: "1件も見つかりませんでした。"
 
   search_button_label: "検索"
   search_button_add_label: "検索"
