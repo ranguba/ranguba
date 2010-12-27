@@ -264,6 +264,7 @@ EOS
   def process_crawl_urls(urls, options = {})
     base = Dir.mktmpdir("ranguba", @tmpdir)
     wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
+    wget << "--adjust-extension"
     wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
     wget << "--reject=#{@reject.join(',')}" unless @reject.empty?
     wget << "--exclude-directories=#{@exclude_directories.join(',')}" unless @exclude_directories.empty?
