@@ -288,6 +288,10 @@ EOS
 
   def add_entry(url, path, response={})
     begin
+      unless need_update?(url, path, response)
+        log(:info, "[skip] <#{url}>")
+        return true
+      end
       attributes = decompose_file(url, path, response)
       if attributes.nil?
         log(:warn, "[decompose][failure] <#{url}>")
@@ -302,6 +306,24 @@ EOS
       end
     end
     true
+  end
+
+  def need_update?(url, path, response)
+    modification_time = response["last-modified"]
+    return true if modification_time.nil?
+    begin
+      modification_time = Time.parse(modification_time)
+    rescue
+      modification_time = nil
+    end
+    modification_time ||= File.mtime(path) if path
+    return true if modification_time.nil?
+
+    entry = Ranguba::Entry.find(url)
+    return true if entry.nil?
+    entry_modification_time = entry.modified_at
+    return true if entry_modification_time.nil?
+    entry_modification_time < modification_time
   end
 
   def postprocess_file(path)
