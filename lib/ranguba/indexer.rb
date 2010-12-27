@@ -290,6 +290,9 @@ EOS
     begin
       unless need_update?(url, path, response)
         log(:info, "[skip] <#{url}>")
+        entry = Ranguba::Entry.find(url)
+        entry.category = @resolver.category_for_url(url) || "unknown"
+        entry.save!
         return true
       end
       attributes = decompose_file(url, path, response)
