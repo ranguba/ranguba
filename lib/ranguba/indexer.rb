@@ -204,7 +204,7 @@ EOS
         end
         file = log[/^Saving to: \`(.+)\'$/, 1]
         next unless file      # failed to start download
-        path = File.join(base, file)
+        path = File.join(base, file.gsub(/\\'/, "'"))
         response ||= {}
         update = Time.parse(update)
         response["x-update-time"] = update
