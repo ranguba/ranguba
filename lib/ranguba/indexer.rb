@@ -38,7 +38,9 @@ class Ranguba::Indexer
     @log_file = nil
     @url_prefix = nil
     @level = 5
-    @accept = %w[htm html doc xls ppt pdf *.html*]
+    @accept = %w[htm html doc docx xls xlsx ppt pptx pdf
+                 odt fodt ods fods odp fodp txt
+                 *.html* *.php* *.cgi*]
     @reject = []
     @exclude_directories = []
     @tmpdir = nil
