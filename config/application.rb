@@ -1,13 +1,13 @@
 require File.expand_path('../boot', __FILE__)
 
 # Pick the frameworks you want:
-# require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "active_resource/railtie"
 require "rails/test_unit/railtie"
 
 require 'active_groonga/railtie'
+require 'ranguba/railtie'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -39,7 +39,6 @@ module Ranguba
 
     # JavaScript files you want as :defaults (application.js is always included).
     # config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
-    config.action_view.javascript_expansions[:defaults] = []
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"

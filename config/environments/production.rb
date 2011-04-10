@@ -1,7 +1,5 @@
-ENV["RANGUBA_LIMIT_AS"] = "2GB"
-
 Ranguba::Application.configure do
-  # Settings specified here will take precedence over those in config/environment.rb
+  # Settings specified here will take precedence over those in config/application.rb
 
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
@@ -48,13 +46,4 @@ Ranguba::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
-
-  config.index_db_path = ::Rails.root + "db/groonga/db"
-  config.customize_base_path = ::Rails.root + "config/customize"
-
-  require 'ranguba/log_path_loader'
-  log_dir = Ranguba::LogPathLoader.new.load
-  if log_dir
-    config.paths.log = log_dir + "#{Rails.env}.log"
-  end
 end

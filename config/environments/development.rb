@@ -1,5 +1,5 @@
 Ranguba::Application.configure do
-  # Settings specified here will take precedence over those in config/environment.rb
+  # Settings specified here will take precedence over those in config/application.rb
 
   # In the development environment your application's code is reloaded on
   # every request.  This slows down response time but is perfect for development
@@ -22,14 +22,5 @@ Ranguba::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
-
-  config.index_db_path = ::Rails.root + "db/groonga/db"
-  config.customize_base_path = ::Rails.root+ "config/customize"
-
-  require 'ranguba/log_path_loader'
-  log_dir = Ranguba::LogPathLoader.new.load
-  if log_dir
-    config.paths.log = log_dir + "#{Rails.env}.log"
-  end
 end
 

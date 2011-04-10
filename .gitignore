@@ -12,3 +12,5 @@ vendor/plugins/racknga/
 vendor/cache/
 config/groonga.yml
 .gdb_history
+/Gemfile.lock
+/config/secret_token.txt

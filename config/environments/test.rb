@@ -1,5 +1,5 @@
 Ranguba::Application.configure do
-  # Settings specified here will take precedence over those in config/environment.rb
+  # Settings specified here will take precedence over those in config/application.rb
 
   # The test environment is used exclusively to run your application's
   # test suite.  You never need to work with it otherwise.  Remember that
@@ -32,7 +32,4 @@ Ranguba::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
-
-  config.index_db_path = ::Rails.root + "tmp/database/db"
-  config.customize_base_path = ::Rails.root + "test/fixtures/customize"
 end
