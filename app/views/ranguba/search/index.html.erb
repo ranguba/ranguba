@@ -11,11 +11,13 @@
       <%= t("search_result_count", :count => @result_set.n_records) %>
       <%= t("search_elapsed_time", :elapsed_time => ("%.3f" % @elapsed_time)) %>
     </p>
-    <%= paginate @result_set.paginated_records,
-		 :id => "pagination_top" %>
-    <%= render(:partial => "entries") %>
-    <%= paginate @result_set.paginated_records,
-		 :id => "pagination_bottom" %>
+    <div class="autopagerize_page_element">
+      <%= paginate @result_set.paginated_records,
+		   :id => "pagination_top" %>
+      <%= render(:partial => "entries") %>
+      <%= paginate @result_set.paginated_records,
+		   :id => "pagination_bottom" %>
+    </div>
   <% else %>
     <p class="search_result_message"><%= t("search_result_not_found_message") %></p>
   <% end %>
