@@ -11,15 +11,11 @@
       <%= t("search_result_count", :count => @result_set.n_records) %>
       <%= t("search_elapsed_time", :elapsed_time => ("%.3f" % @elapsed_time)) %>
     </p>
-    <%= will_paginate @result_set.paginated_records,
-		      :previous_label => t("search_result_previous_link"),
-		      :next_label => t("search_result_next_link"),
-		      :id => "pagination_top" %>
+    <%= paginate @result_set.paginated_records,
+		 :id => "pagination_top" %>
     <%= render(:partial => "entries") %>
-    <%= will_paginate @result_set.paginated_records,
-		      :previous_label => t("search_result_previous_link"),
-		      :next_label => t("search_result_next_link"),
-		      :id => "pagination_bottom" %>
+    <%= paginate @result_set.paginated_records,
+		 :id => "pagination_bottom" %>
   <% else %>
     <p class="search_result_message"><%= t("search_result_not_found_message") %></p>
   <% end %>

@@ -15,7 +15,7 @@ gem 'rroonga'
 gem 'racknga'
 gem 'activegroonga', '>=1.0.0'
 
-gem 'will_paginate', '>=3.0.pre'
+gem 'kaminari'
 
 # Use unicorn as the web server
 # gem 'unicorn'

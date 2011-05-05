@@ -48,3 +48,10 @@ ja:
   category:
     unknown: "不明"
 
+  views:
+    pagination:
+      first: "&laquo; 最初へ"
+      last: "最後へ &raquo;"
+      previous: "&lsaquo; 前へ"
+      next: "次へ &rsaquo;"
+      truncate: "..."
