@@ -38,5 +38,5 @@ gem 'will_paginate', '>=3.0.pre'
 group :development, :test do
   gem 'test-unit'
   gem 'test-unit-notify', '>= 0.1.0'
-  gem 'capybara'
+  gem 'test-unit-capybara'
 end
