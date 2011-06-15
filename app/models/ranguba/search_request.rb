@@ -12,7 +12,7 @@ class Ranguba::SearchRequest
 
   validate :validate_string
 
-  def initialize(path_info = nil, params = {})
+  def initialize(path_info=nil, params={})
     @path_info = path_info
     @params = params
     clear
