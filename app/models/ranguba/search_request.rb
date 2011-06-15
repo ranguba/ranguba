@@ -12,7 +12,7 @@ class Ranguba::SearchRequest
 
   validate :validate_string
 
-  def initialize(path_info = nil, params = { })
+  def initialize(path_info = nil, params = {})
     @path_info = path_info
     @params = params
     clear
@@ -76,7 +76,7 @@ class Ranguba::SearchRequest
   end
 
   def parse(string)
-    hash = { }
+    hash = {}
     return hash if string.blank?
     @string = string.gsub(%r!\A/|(?:.*/?search/?)?!, '')
     @string.split(DELIMITER).each_slice(2) do |key, value|
