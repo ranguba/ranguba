@@ -26,7 +26,9 @@ class ActiveSupport::TestCase
     source.each do |id, entry|
       attributes = entry.symbolize_keys
       [:modified_at, :updated_at].each do |key|
-        attributes[key] = Time.parse(attributes[key])
+        unless attributes[key].is_a?(Time)
+          attributes[key] = Time.parse(attributes[key])
+        end
       end
       Ranguba::Entry.create(attributes)
       @db_source[id.to_sym] = attributes.merge(:url => entry["url"])
