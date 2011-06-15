@@ -9,6 +9,7 @@ ja:
 
   search_conditions_delimiter: ", "
   search_request_blank_value: "%{key} に値がありません。"
+  search_request_invalid_utf8_value: "%{key} の値がUTF-8ではありません。"
   search_request_invalid_key: "不明なオプション %{key} に %{value} が指定されています。"
   search_request_invalid_key_blank_value: "不明なオプション %{key} が指定されています。"
 

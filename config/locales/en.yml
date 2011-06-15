@@ -9,6 +9,7 @@ en:
 
   search_conditions_delimiter: ", "
   search_request_blank_value: "\"%{key}\" has no value."
+  search_request_invalid_utf8_value: "\"%{key}\" has invalid UTF-8 value."
   search_request_invalid_key: "Unknown option \"%{key}\" is specified with a value \"%{value}\"."
   search_request_invalid_key_blank_value: "Unknown option \"%{key}\" is specified."
 

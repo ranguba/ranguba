@@ -34,12 +34,11 @@ class Ranguba::SearchController < ApplicationController
 
     if @search_request.valid?
       search_options = @search_request.attributes.merge(:page => params[:page])
+      setup_search_result
     else
       handle_bad_request
       search_options = {}
     end
-
-    setup_search_result
 
     if @bad_request
       render :action => "bad_request", :status => 400
@@ -55,7 +54,7 @@ class Ranguba::SearchController < ApplicationController
 
   def handle_bad_request
     @bad_request = @search_request
-    @search_request = Ranguba::SearchRequest.new(request.path_info, params)
+    @search_request ||= Ranguba::SearchRequest.new(request.path_info, params)
     @topic_path = @search_request.topic_path
   end
 

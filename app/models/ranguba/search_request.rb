@@ -11,6 +11,7 @@ class Ranguba::SearchRequest
   DELIMITER = "/"
 
   validate :validate_string
+  validate :validate_parameters
 
   def initialize(path_info=nil, params={})
     @path_info = path_info
@@ -23,7 +24,9 @@ class Ranguba::SearchRequest
 
   def update(options={})
     options.each do |key, value|
-      send("#{key.to_s}=", value) if KEYS.include?(key.to_sym)
+      if KEYS.include?(key.to_sym) and value.valid_encoding?
+        send("#{key.to_s}=", value)
+      end
     end
   end
 
@@ -157,11 +160,7 @@ class Ranguba::SearchRequest
     @string.split(DELIMITER).each_slice(2) do |key, value|
       case
       when KEYS.include?(key.to_sym)
-        if value.blank?
-          errors.add(key.to_sym, I18n.t("search_request_blank_value",
-                                        :key => key,
-                                        :value => value))
-        end
+        validate_parameter(key, value)
       when value.blank?
         errors.add(key.to_sym, I18n.t("search_request_invalid_key_blank_value",
                                       :key => key))
@@ -170,6 +169,24 @@ class Ranguba::SearchRequest
                                       :key => key,
                                       :value => value))
       end
+    end
+  end
+
+  def validate_parameters
+    @params.each do |key, value|
+      validate_parameter(key, value) if KEYS.include?(key.to_sym)
+    end
+  end
+
+  def validate_parameter(key, value)
+    if !value.valid_encoding?
+      errors.add(key.to_sym, I18n.t("search_request_invalid_utf8_value",
+                                    :key => key,
+                                    :value => value))
+    elsif value.blank?
+      errors.add(key.to_sym, I18n.t("search_request_blank_value",
+                                    :key => key,
+                                    :value => value))
     end
   end
 
