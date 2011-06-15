@@ -1,6 +1,8 @@
 class Ranguba::SearchController < ApplicationController
   SUMMARY_SIZE = 140
 
+  protect_from_forgery :except => :index
+
   if Rails.env.production?
     rescue_from StandardError do |exception|
       message = "#{exception.message} (#{exception.class}):\n"
