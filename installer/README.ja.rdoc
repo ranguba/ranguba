@@ -72,7 +72,7 @@ install.sh ファイルがあるディレクトリを $SETUP_DIR と表記しま
   /usr/local/apache2/htdocs ($HTTPD_PREFIX/apache2/htdocs) です。
 
 : --base-uri
-  ranguba_indexer が使用する URI を指定します。  デフォルトは空です。
+  ranguba-indexer が使用する URI を指定します。  デフォルトは空です。
 
 == インストール物一覧
 

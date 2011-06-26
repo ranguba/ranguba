@@ -10,4 +10,4 @@ if which dbus-launch > /dev/null; then
     DBUS_LAUNCH="dbus-launch --exit-with-session"
 fi
 
-$DBUS_LAUNCH /home/ranguba/bin/ruby /home/ranguba/ranguba/bin/ranguba_indexer
+$DBUS_LAUNCH /home/ranguba/bin/ruby /home/ranguba/ranguba/bin/ranguba-indexer
