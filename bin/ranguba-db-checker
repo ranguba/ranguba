@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby1.9.1
+# -*- ruby -*-
+
+base_dir = File.expand_path(File.join(File.dirname(__FILE__), ".."))
+require File.join(base_dir, "config", "environment")
+$LOAD_PATH.unshift(File.join(base_dir, "lib"))
+
+locked_objects = []
+database = Groonga::Context.default.database
+locked_objects << database if database.locked?
+database.each do |object|
+  if object.is_a?(Groonga::Table) or object.is_a?(Groonga::Column)
+    locked_objects << object if object.locked?
+  end
+end
+
+if locked_objects.empty?
+  exit(true)
+else
+  locked_object_names = locked_objects.collect do |object|
+    if object.is_a?(Groonga::Database)
+      "_database"
+    else
+      object.name
+    end
+  end
+  Rails.logger.warn("[db][checker][locked] #{locked_object_names.inspect}")
+  exit(false)
+end
