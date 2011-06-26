@@ -29,5 +29,6 @@ else
   time_stamp = Time.now.iso8601
   Rails.logger.warn("#{time_stamp} [db][checker][locked] " +
                     locked_object_names.inspect)
+  Rails.logger.flush
   exit(false)
 end
