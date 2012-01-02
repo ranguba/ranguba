@@ -13,7 +13,7 @@ module Ranguba
         require 'ranguba/log_path_loader'
         log_dir = Ranguba::LogPathLoader.new.load
         if log_dir
-          config.paths.log = log_dir + "#{Rails.env}.log"
+          config.paths["log"] = (log_dir + "#{Rails.env}.log").to_s
         end
       when "test"
         config.index_db_path = ::Rails.root + "tmp/database/db"
