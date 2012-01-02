@@ -1,8 +1,7 @@
 # coding: utf-8
 require 'test_helper'
-require 'integration_test_helper'
 
-class SearchTest < ActionController::IntegrationTest
+class SearchTest < ActionDispatch::IntegrationTest
   ENTRIES_PER_PAGE = 10
 
   def setup

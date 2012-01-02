@@ -1,7 +1,6 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
-require 'rails/test_help'
-require 'test/unit/notify'
+require 'test/unit/rails'
 require 'shellwords'
 require 'fileutils'
 require 'yaml'
