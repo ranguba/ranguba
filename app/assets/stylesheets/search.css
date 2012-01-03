@@ -78,15 +78,15 @@
 }
 
 .topic_path_item_type_label {
-  background-image: url(../images/keys/type-small.png);
+  background-image: url(keys/type-small.png);
 }
 
 .topic_path_item_category_label {
-  background-image: url(../images/keys/category-small.png);
+  background-image: url(keys/category-small.png);
 }
 
 .topic_path_item_query_label {
-  background-image: url(../images/keys/query-small.png);
+  background-image: url(keys/query-small.png);
 }
 
 /* search results */
@@ -172,11 +172,11 @@ li.search_result_drilldown_category_entry {
 }
 
 li.search_result_drilldown_type_entry {
-  background-image: url(../images/keys/type-small.png);
+  background-image: url(keys/type-small.png);
 }
 
 li.search_result_drilldown_category_entry {
-  background-image: url(../images/keys/category-small.png);
+  background-image: url(keys/category-small.png);
 }
 
 /* pagination */
