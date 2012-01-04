@@ -1,9 +1,10 @@
+<% if !current_page?(search_path) or !@topic_path.empty? -%>
     <ol class="topic_path">
-<% unless current_page?(search_path) -%>
+<%   unless current_page?(search_path) -%>
       <li class="topic_path_item">
         <%= link_to(t("search_top"), search_path) %>
       </li>
-<% end -%>
+<%   end -%>
       <% @topic_path.each_with_index do |item, index| %>
         <li class="topic_path_item"
             data-key="<%= item.key %>"
@@ -21,3 +22,4 @@
         </li>
       <% end %>
     </ol>
+<% end %>
