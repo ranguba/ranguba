@@ -244,7 +244,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => ["type", "xml"],
-                 :drilldown => {:category => @categories},
+                 :drilldown => {:category => ["test"]},
                  :pagination => "1/1"
   end
 
