@@ -142,7 +142,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
     # step back
     find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-param='type']"+
+                                "[@data-key='type']"+
                                 "[@data-value='html']"+
                  "/child::a[@class='topic_path_link']").click
     assert_equal "/search/query/HTML%20entry/type/html", current_path
@@ -156,7 +156,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
     # step back again
     find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-param='query']"+
+                                "[@data-key='query']"+
                                 "[@data-value='entry']"+
                  "/child::a[@class='topic_path_link']").click
     assert_equal "/search/query/HTML%20entry", current_path
@@ -173,7 +173,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     test_drilldown_twice_with_multiple_queries
 
     find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-param='query']"+
+                                "[@data-key='query']"+
                                 "[@data-value='entry']"+
                  "/child::a[@class='topic_path_link']").click
     assert_equal "/search/query/HTML%20entry", current_path
@@ -190,7 +190,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     test_drilldown_twice_with_multiple_queries
 
     find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-param='query']"+
+                                "[@data-key='query']"+
                                 "[@data-value='entry']"+
                  "/child::a[@class='topic_path_reduce_link']").click
     assert_equal "/search/query/HTML/type/html/category/test", current_path
@@ -202,7 +202,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                  :pagination => "1/1"
 
     find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-param='type']"+
+                                "[@data-key='type']"+
                                 "[@data-value='html']"+
                  "/child::a[@class='topic_path_reduce_link']").click
     assert_equal "/search/query/HTML/category/test", current_path
@@ -214,7 +214,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                  :pagination => "1/1"
 
     find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-param='category']"+
+                                "[@data-key='category']"+
                                 "[@data-value='test']"+
                  "/child::a[@class='topic_path_reduce_link']").click
     assert_equal "/search/query/HTML", current_path
@@ -226,7 +226,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                  :pagination => "1/1"
 
     find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-param='query']"+
+                                "[@data-key='query']"+
                                 "[@data-value='HTML']"+
                  "/child::a[@class='topic_path_reduce_link']").click
     assert_equal "/search/", current_path
@@ -495,7 +495,7 @@ class SearchTest < ActionDispatch::IntegrationTest
       key = items[index]
       value = items[index+1]
       item_xpath = "#{base_xpath}[#{count+1}]"+
-                                "[@data-param='#{key}']"+
+                                "[@data-key='#{key}']"+
                                 "[@data-value='#{value}']"
       assert page.has_xpath?(item_xpath),
              "there should be a topic path item for #{key} = #{value} at #{count}\n#{page.body}"
@@ -545,13 +545,13 @@ class SearchTest < ActionDispatch::IntegrationTest
     groups_count = 0
     groups.each do |param, group|
       group_xpath = "/descendant::li[@class='drilldown_group']"+
-                                   "[@data-param='#{param}']"
+                                   "[@data-key='#{param}']"
       assert page.has_xpath?(group_xpath),
              "page should have drilldown group for #{param}\n#{page.body}"
       group_count = 0
       group.each do |value|
         assert page.has_xpath?("/descendant::li[@class='drilldown_item']"+
-                                              "[@data-param='#{param}']"+
+                                              "[@data-key='#{param}']"+
                                               "[@data-value='#{value}']"),
                "drilldown group for #{param} should have item for #{value}\n#{page.body}"
         group_count += 1
