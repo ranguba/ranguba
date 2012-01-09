@@ -550,14 +550,14 @@ class SearchTest < ActionDispatch::IntegrationTest
              "page should have drilldown group for #{param}\n#{page.body}"
       group_count = 0
       group.each do |value|
-        assert page.has_xpath?("/descendant::li[@class='drilldown_item']"+
+        assert page.has_xpath?("/descendant::li[@class='drilldown_entry']"+
                                               "[@data-key='#{param}']"+
                                               "[@data-value='#{value}']"),
-               "drilldown group for #{param} should have item for #{value}\n#{page.body}"
+               "drilldown group for #{param} should have entry for #{value}\n#{page.body}"
         group_count += 1
       end
       assert page.has_xpath?("#{group_xpath}[count(descendant::li)=#{group_count}]"),
-             "drilldown group for #{param} should have #{group_count} item(s).\n#{page.body}"
+             "drilldown group for #{param} should have #{group_count} entry.\n#{page.body}"
       groups_count += 1
     end
     assert page.has_xpath?("#{groups_xpath}[count(child::li)=#{groups_count}]"),
