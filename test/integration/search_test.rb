@@ -487,7 +487,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def assert_topic_path(items)
     assert page.has_selector?(".topic_path"), page.body
-    count = 0
+    count = 1
     index = 0
     base_xpath = "/descendant::ol[@class='topic_path']"+
                  "/child::li[@class='topic_path_item']"
