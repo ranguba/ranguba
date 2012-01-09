@@ -10,7 +10,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     @categories = []
     @entries_count = 0
     @db_source.each do |key, value|
-      @types << value[:type] unless @categories.include?(value[:type])
+      @types << value[:type] unless @types.include?(value[:type])
       @categories << value[:category] unless @categories.include?(value[:category])
       @entries_count += 1
     end
