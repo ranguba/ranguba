@@ -420,7 +420,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   def assert_found(options={})
     assert page.has_selector?(".search_form"), page.body
     assert page.has_selector?(".search_result"), page.body
-    assert page.has_selector?(".search_result_items"), page.body
+    assert page.has_selector?(".search_result_entries"), page.body
     assert page.has_no_selector?(".search_result_error_message"), page.body
 
     assert_total_count(options[:total_count]) unless options[:total_count].nil?
@@ -441,7 +441,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   def assert_not_found(options={})
     assert page.has_selector?(".search_form"), page.body
     assert page.has_selector?(".search_result"), page.body
-    assert page.has_no_selector?(".search_result_items"), page.body
+    assert page.has_no_selector?(".search_result_entries"), page.body
     assert page.has_selector?(".search_result_message"), page.body
     assert page.has_content?(I18n.t("search_result_not_found_message")), page.body
     assert_no_pagination
@@ -455,7 +455,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   def assert_error(options={})
     assert page.has_selector?(".search_form"), page.body
     assert page.has_selector?(".search_result"), page.body
-    assert page.has_no_selector?(".search_result_items"), page.body
+    assert page.has_no_selector?(".search_result_entries"), page.body
     assert page.has_selector?(".search_result_error_message"), page.body
     assert page.has_content?(options[:message]), page.body unless options[:message].nil?
     assert_no_topic_path
@@ -473,14 +473,14 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def assert_entries_count(count)
-    assert page.has_xpath?("/descendant::ol[@class='search_result_items']"+
+    assert page.has_xpath?("/descendant::ol[@class='search_result_entries']"+
                            "[count(child::li[@class='search_result_item'])=#{count}]"),
            "count of entry items\n#{page.body}"
 
-    assert page.has_xpath?("/descendant::ol[@class='search_result_items']"+
+    assert page.has_xpath?("/descendant::ol[@class='search_result_entries']"+
                            "[count(descendant::li[@class='search_result_drilldown_category_item'])=#{count}]"),
            page.body
-    assert page.has_xpath?("/descendant::ol[@class='search_result_items']"+
+    assert page.has_xpath?("/descendant::ol[@class='search_result_entries']"+
                            "[count(descendant::li[@class='search_result_drilldown_type_item'])=#{count}]"),
            page.body
   end
