@@ -500,7 +500,7 @@ class SearchTest < ActionDispatch::IntegrationTest
       assert page.has_xpath?(item_xpath),
              "there should be a topic path item for #{key} = #{value} at #{count}\n#{page.body}"
       if index == items.size-2
-        assert page.has_xpath?("#{item_xpath}/child::span[@class='topic_path_current_label']"),
+        assert page.has_xpath?("#{item_xpath}/child::span[@class='topic_path_item_#{key}_label']"),
                "there should be a topic path label for #{key} = #{value} at #{count}\n#{page.body}"
       else
         assert page.has_xpath?("#{item_xpath}/child::a[@class='topic_path_link']"),
