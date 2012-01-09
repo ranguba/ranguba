@@ -474,8 +474,8 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def assert_entries_count(count)
     assert page.has_xpath?("/descendant::ol[@class='search_result_entries']"+
-                           "[count(child::li[@class='search_result_item'])=#{count}]"),
-           "count of entry items\n#{page.body}"
+                           "[count(child::li[@class='search_result_entry'])=#{count}]"),
+           "count of entry entries\n#{page.body}"
 
     assert page.has_xpath?("/descendant::ol[@class='search_result_entries']"+
                            "[count(descendant::li[@class='search_result_drilldown_category_item'])=#{count}]"),
