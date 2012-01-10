@@ -238,7 +238,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                                 "[@data-key='query']"+
                                 "[@data-value='HTML']"+
                  "/child::a[@class='topic_path_reduce_link']").click
-    assert_equal "/search/", current_path
+    assert_equal "/search", current_path
     assert_search_form :drilldown => {:type => @types,
                                       :category => @categories}
   end
