@@ -72,8 +72,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   def test_invalid_parameter
     assert_visit "/search/query"
     assert_error :message => I18n.t("invalid_request_message"),
-                 :drilldown => {:type => @types,
-                                :category => @categories}
+                 :topic_path => []
   end
 
   def test_invalid_pagination

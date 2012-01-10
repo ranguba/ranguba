@@ -179,12 +179,12 @@ class Ranguba::SearchRequest
   end
 
   def validate_parameter(key, value)
-    if !value.valid_encoding?
-      errors.add(key.to_sym, I18n.t("search_request_invalid_utf8_value",
+    if value.blank?
+      errors.add(key.to_sym, I18n.t("search_request_blank_value",
                                     :key => key,
                                     :value => value))
-    elsif value.blank?
-      errors.add(key.to_sym, I18n.t("search_request_blank_value",
+    elsif !value.valid_encoding?
+      errors.add(key.to_sym, I18n.t("search_request_invalid_utf8_value",
                                     :key => key,
                                     :value => value))
     end
