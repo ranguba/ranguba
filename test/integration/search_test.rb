@@ -508,7 +508,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def assert_no_topic_path
-    assert page.has_no_selector?(".topic_path"), page.body
+    assert_not_find(".topic_path")
   end
 
   def assert_pagination(pagination_label)
