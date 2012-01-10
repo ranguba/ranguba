@@ -79,8 +79,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   def test_invalid_pagination
     assert_visit "/search/query/entry?page=9999"
     assert_error :message => I18n.t("not_found_message"),
-                 :drilldown => {:type => @types,
-                                :category => @categories}
+                 :topic_path => [["query", "entry"]]
   end
 
   def test_no_entry_found
@@ -473,7 +472,11 @@ class SearchTest < ActionDispatch::IntegrationTest
     assert page.has_no_selector?(".search_result_entries"), page.body
     assert page.has_selector?(".search_result_error_message"), page.body
     assert page.has_content?(options[:message]), page.body unless options[:message].nil?
-    assert_no_topic_path
+    if options[:topic_path]
+      assert_topic_path(options[:topic_path])
+    else
+      assert_no_topic_path
+    end
     assert_no_pagination
     if options[:drilldown]
       assert_drilldown(options[:drilldown])
