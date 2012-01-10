@@ -68,8 +68,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   def test_unknown_parameter
     assert_visit "/search/query/entry/unknown/value"
     assert_error :message => I18n.t("invalid_request_message"),
-                 :drilldown => {:type => @types,
-                                :category => @categories}
+                 :topic_path => [["query", "entry"]]
   end
 
   def test_invalid_parameter
