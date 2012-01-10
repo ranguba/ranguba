@@ -10,10 +10,12 @@ class SearchTest < ActionDispatch::IntegrationTest
     @categories = []
     @entries_count = 0
     @db_source.each do |key, value|
-      @types << value[:type] unless @types.include?(value[:type])
-      @categories << value[:category] unless @categories.include?(value[:category])
+      @types << value[:type]
+      @categories << value[:category]
       @entries_count += 1
     end
+    @types = @types.uniq.sort
+    @categories = @categories.uniq.sort
   end
 
   def teardown
@@ -255,7 +257,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                  :entries_count => 1,
                  :topic_path => [["query", "entry"],
                                  ["type", "xml"]],
-                 :drilldown => {:category => @categories},
+                 :drilldown => {:category => ["test"]},
                  :pagination => "1/1"
   end
 
@@ -509,28 +511,17 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def assert_drilldown(groups)
-    groups_xpath = "/descendant::ul[@class='drilldown_groups']"
-    assert page.has_xpath?(groups_xpath), page.body
-    groups_count = 0
-    groups.each do |param, group|
-      group_xpath = "/descendant::li[@class='drilldown_group']"+
-                                   "[@data-key='#{param}']"
-      assert page.has_xpath?(group_xpath),
-             "page should have drilldown group for #{param}\n#{page.body}"
-      group_count = 0
-      group.each do |value|
-        assert page.has_xpath?("/descendant::li[@class='drilldown_entry']"+
-                                              "[@data-key='#{param}']"+
-                                              "[@data-value='#{value}']"),
-               "drilldown group for #{param} should have entry for #{value}\n#{page.body}"
-        group_count += 1
+    groups_ul = find("ul.drilldown_groups")
+    actual_groups = {}
+    groups_ul.all("li.drilldown_group").collect do |group|
+      key = group["data-key"].to_sym
+      actual_groups[key] ||= []
+      group.all("li.drilldown_entry").each do |entry|
+        actual_groups[entry["data-key"].to_sym] << entry["data-value"]
       end
-      assert page.has_xpath?("#{group_xpath}[count(descendant::li)=#{group_count}]"),
-             "drilldown group for #{param} should have #{group_count} entry.\n#{page.body}"
-      groups_count += 1
+      actual_groups[key].sort!
     end
-    assert page.has_xpath?("#{groups_xpath}[count(child::li)=#{groups_count}]"),
-           "page should have #{groups_count} drilldown group(s).\n#{page.body}"
+    assert_equal(groups, actual_groups)
   end
 
   def assert_no_drilldown
