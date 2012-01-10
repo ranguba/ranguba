@@ -338,7 +338,7 @@ class SearchTest < ActionDispatch::IntegrationTest
       click_link_or_button "Search"
     end
 
-    encoded = SearchRequest.encode_parameter("一太郎のドキュメント")
+    encoded = CGI.escape("一太郎のドキュメント")
     assert_equal "/search/query/#{encoded}", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
