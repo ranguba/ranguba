@@ -43,6 +43,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                                 :category => ["test"]},
                  :pagination => "1/1"
 
+    omit("support redirect")
     assert_visit "/search?search_request[type]=html&search_request[query]=HTML",
                  "/search/type/html/query/HTML"
     assert_found :total_count => 1,
