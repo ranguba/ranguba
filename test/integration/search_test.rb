@@ -115,8 +115,10 @@ class SearchTest < ActionDispatch::IntegrationTest
     assert_visit "/search/"
     assert_search_form :drilldown => {:type => @types,
                                       :category => @categories}
-    fill_in "search_request_query", :with => "entry"
-    click_link_or_button "Search"
+    within("div.search_form") do
+      fill_in "query", :with => "entry"
+      click_link_or_button "Search"
+    end
 
     assert_equal "/search/query/entry", current_path
     assert_found :total_count => @entries_count,
