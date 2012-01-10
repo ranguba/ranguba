@@ -147,10 +147,11 @@ class SearchTest < ActionDispatch::IntegrationTest
     test_drilldown_twice_with_multiple_queries
 
     # step back
-    find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-key='type']"+
-                                "[@data-value='html']"+
-                 "/child::a[@class='topic_path_link']").click
+    within(:xpath, "/descendant::li[@class='topic_path_item']"+
+                                  "[@data-key='type']"+
+                                  "[@data-value='html']") do
+      find("a.topic_path_link").click
+    end
     assert_equal "/search/query/HTML+entry/type/html", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -161,10 +162,11 @@ class SearchTest < ActionDispatch::IntegrationTest
                  :pagination => "1/1"
 
     # step back again
-    find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-key='query']"+
-                                "[@data-value='entry']"+
-                 "/child::a[@class='topic_path_link']").click
+    within(:xpath, "/descendant::li[@class='topic_path_item']"+
+                                  "[@data-key='query']"+
+                                  "[@data-value='entry']") do
+      find("a.topic_path_link").click
+    end
     assert_equal "/search/query/HTML+entry", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -178,10 +180,11 @@ class SearchTest < ActionDispatch::IntegrationTest
   def test_topic_path_link_jump_to_top_level
     test_drilldown_twice_with_multiple_queries
 
-    find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-key='query']"+
-                                "[@data-value='entry']"+
-                 "/child::a[@class='topic_path_link']").click
+    within(:xpath, "/descendant::li[@class='topic_path_item']"+
+                                  "[@data-key='query']"+
+                                  "[@data-value='entry']") do
+      find("a.topic_path_link").click
+    end
     assert_equal "/search/query/HTML+entry", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
