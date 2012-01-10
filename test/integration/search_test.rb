@@ -2,7 +2,7 @@
 require 'test_helper'
 
 class SearchTest < ActionDispatch::IntegrationTest
-  ENTRIES_PER_PAGE = 10
+  ENTRIES_PER_PAGE = 20
 
   def setup
     setup_database
@@ -122,7 +122,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
     assert_equal "/search/query/entry", current_path
     assert_found :total_count => @entries_count,
-                 :entries_count => ENTRIES_PER_PAGE,
+                 :entries_count => [ENTRIES_PER_PAGE, @entries_count].min,
                  :topic_path => ["query", "entry"],
                  :drilldown => {:type => @types,
                                 :category => @categories},
@@ -475,16 +475,13 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def assert_entries_count(count)
-    assert page.has_xpath?("/descendant::ol[@class='search_result_entries']"+
-                           "[count(child::li[@class='search_result_entry'])=#{count}]"),
-           "count of entry entries\n#{page.body}"
-
-    assert page.has_xpath?("/descendant::ol[@class='search_result_entries']"+
-                           "[count(descendant::li[@class='search_result_drilldown_category_entry'])=#{count}]"),
-           page.body
-    assert page.has_xpath?("/descendant::ol[@class='search_result_entries']"+
-                           "[count(descendant::li[@class='search_result_drilldown_type_entry'])=#{count}]"),
-           page.body
+    entries = find(:xpath, "/descendant::ol[@class='search_result_entries']")
+    assert_equal(count,
+                 entries.all(:xpath, "./li[@class='search_result_entry']").size)
+    assert_equal(count,
+                 entries.all("li.search_result_drilldown_category_entry").size)
+    assert_equal(count,
+                 entries.all("li.search_result_drilldown_type_entry").size)
   end
 
   def assert_topic_path(items)
