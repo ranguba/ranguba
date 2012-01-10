@@ -9,10 +9,12 @@ class SearchTest < ActionDispatch::IntegrationTest
     @types = []
     @categories = []
     @entries_count = 0
+    @test_category_entries_count = 0
     @db_source.each do |key, value|
       @types << value[:type]
       @categories << value[:category]
       @entries_count += 1
+      @test_category_entries_count += 1 if value[:category] == "test"
     end
     @types = @types.uniq.sort
     @categories = @categories.uniq.sort
@@ -305,7 +307,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     item = find("li.search_result_drilldown_category_entry")
     item.find("a").click
     assert_equal "/search/query/entry/category/test", current_path
-    assert_found :total_count => @entries_count,
+    assert_found :total_count => @test_category_entries_count,
                  :entries_count => ENTRIES_PER_PAGE,
                  :topic_path => [["query", "entry"],
                                  ["category", "test"]],
@@ -486,8 +488,11 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def assert_total_count(count)
-    assert page.has_content?(I18n.t("search_result_count", :count => count)),
-           "the message for 'N entry(es) found?'\n#{page.body}"
+    within("div.search_result") do
+      result_count = find(".search_result_count")
+      assert_equal(I18n.t("search_result_count", :count => count),
+                   result_count.text.gsub(/\([\d.]+ sec\)/m, "").strip)
+    end
   end
 
   def assert_entries_count(count)
