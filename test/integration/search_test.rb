@@ -313,8 +313,10 @@ class SearchTest < ActionDispatch::IntegrationTest
   def test_search_after_drilldown
     test_drilldown
 
-    fill_in "search_request_query", :with => "entry"
-    click_link_or_button "Search"
+    within("div.search_form") do
+      fill_in "query", :with => "entry"
+      click_link_or_button "Search"
+    end
 
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -368,8 +370,10 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def test_search_with_query_including_question
     assert_visit "/search/"
-    fill_in "search_request_query", :with => "unknown type?"
-    click_link_or_button "Search"
+    within("div.search_form") do
+      fill_in "query", :with => "unknown type?"
+      click_link_or_button "Search"
+    end
 
     assert_equal "/search/query/unknown%20type%3F", current_path
     assert_found :total_count => 1,
