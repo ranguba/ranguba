@@ -105,7 +105,7 @@ class SearchTest < ActionDispatch::IntegrationTest
       click_link_or_button "Search"
     end
 
-    assert_equal "/search/query/HTML%20entry", current_path
+    assert_equal "/search/query/HTML+entry", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => [["query", "HTML"], ["query", "entry"]],
@@ -150,7 +150,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                                 "[@data-key='type']"+
                                 "[@data-value='html']"+
                  "/child::a[@class='topic_path_link']").click
-    assert_equal "/search/query/HTML%20entry/type/html", current_path
+    assert_equal "/search/query/HTML+entry/type/html", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => [["query", "HTML"],
@@ -164,7 +164,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                                 "[@data-key='query']"+
                                 "[@data-value='entry']"+
                  "/child::a[@class='topic_path_link']").click
-    assert_equal "/search/query/HTML%20entry", current_path
+    assert_equal "/search/query/HTML+entry", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => [["query", "HTML"],
@@ -181,7 +181,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                                 "[@data-key='query']"+
                                 "[@data-value='entry']"+
                  "/child::a[@class='topic_path_link']").click
-    assert_equal "/search/query/HTML%20entry", current_path
+    assert_equal "/search/query/HTML+entry", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => [["query", "HTML"],
@@ -290,9 +290,9 @@ class SearchTest < ActionDispatch::IntegrationTest
   def test_drilldown_twice_with_multiple_queries
     test_one_entry_found
     click_link_or_button"html (1)"
-    assert_equal "/search/query/HTML%20entry/type/html", current_path
+    assert_equal "/search/query/HTML+entry/type/html", current_path
     click_link_or_button"test (1)"
-    assert_equal "/search/query/HTML%20entry/type/html/category/test", current_path
+    assert_equal "/search/query/HTML+entry/type/html/category/test", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => [["query", "HTML"],
@@ -383,7 +383,7 @@ class SearchTest < ActionDispatch::IntegrationTest
       click_link_or_button "Search"
     end
 
-    assert_equal "/search/query/unknown%20type%3F", current_path
+    assert_equal "/search/query/unknown+type%3F", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => [["query", "unknown"],
@@ -397,7 +397,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     test_search_with_query_including_question
 
     find(:xpath, "/descendant::li[@class='search_result_drilldown_category_item']/child::a").click
-    assert_equal "/search/query/unknown%20type%3F/category/test", current_path
+    assert_equal "/search/query/unknown+type%3F/category/test", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => [["query", "unknown"],
