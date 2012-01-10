@@ -516,20 +516,11 @@ class SearchTest < ActionDispatch::IntegrationTest
     assert page.has_no_selector?(".topic_path"), page.body
   end
 
-  def assert_pagination(pagenum)
-    assert page.has_selector?(".pagination"), page.body
-    pagenum = pagenum.split("/")
-    total = pagenum[1].to_i
-    current = pagenum[0].to_i
+  def assert_pagination(pagination_label)
+    current, total = pagination_label.split("/")
 
-    assert page.has_xpath?("/descendant::*[@class='pagination']"+
-                           "/descendant::em[text()='#{current}']"),
-           page.body
-    unless current == total
-      assert page.has_xpath?("/descendant::*[@class='pagination']"+
-                             "/descendant::a[last()-1][text()='#{total}']"),
-             page.body
-    end
+    pagination = find(".pagination")
+    assert_equal(current, pagination.find(".current").text)
   end
 
   def assert_no_pagination
