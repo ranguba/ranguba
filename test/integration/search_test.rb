@@ -519,9 +519,9 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def assert_no_pagination
-    assert page.has_no_selector?(".pagination"), page.body
-    assert page.has_no_selector?("#pagination_top"), page.body
-    assert page.has_no_selector?("#pagination_bottom"), page.body
+    assert_not_find(".pagination")
+    assert_not_find("#pagination_top")
+    assert_not_find("#pagination_bottom")
   end
 
   def assert_drilldown(groups)
