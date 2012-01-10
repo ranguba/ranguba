@@ -302,7 +302,8 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def test_search_result_drilldown_after_search
     test_many_entries_found
-    find(:xpath, "/descendant::li[@class='search_result_drilldown_category_item']/child::a").click
+    item = find("li.search_result_drilldown_category_entry")
+    item.find("a").click
     assert_equal "/search/query/entry/category/test", current_path
     assert_found :total_count => @entries_count,
                  :entries_count => ENTRIES_PER_PAGE,
