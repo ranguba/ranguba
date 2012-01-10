@@ -366,7 +366,8 @@ class SearchTest < ActionDispatch::IntegrationTest
   def test_drilldown_after_search_including_slash
     test_search_with_query_including_slash
 
-    find(:xpath, "/descendant::li[@class='search_result_drilldown_category_item']/child::a").click
+    item = find("li.search_result_drilldown_category_entry")
+    item.find("a").click
     assert_equal "/search/query/text%2Fhtml/category/test", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -396,7 +397,8 @@ class SearchTest < ActionDispatch::IntegrationTest
   def test_drilldown_after_search_including_question
     test_search_with_query_including_question
 
-    find(:xpath, "/descendant::li[@class='search_result_drilldown_category_item']/child::a").click
+    item = find("li.search_result_drilldown_category_entry")
+    item.find("a").click
     assert_equal "/search/query/unknown+type%3F/category/test", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
