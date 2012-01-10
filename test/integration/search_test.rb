@@ -268,16 +268,16 @@ class SearchTest < ActionDispatch::IntegrationTest
   def test_drilldown_twice
     test_many_entries_found
 
-    click_link_or_button"html (1)"
+    click_link_or_button "HTML (1)"
     assert_equal "/search/query/entry/type/html", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
                  :topic_path => [["query", "entry"],
                                  ["type", "html"]],
-                 :drilldown => {:category => @categories},
+                 :drilldown => {:category => ["test"]},
                  :pagination => "1/1"
 
-    click_link_or_button"test (1)"
+    click_link_or_button "test (1)"
     assert_equal "/search/query/entry/type/html/category/test", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
@@ -289,9 +289,9 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def test_drilldown_twice_with_multiple_queries
     test_one_entry_found
-    click_link_or_button"html (1)"
+    click_link_or_button "HTML (1)"
     assert_equal "/search/query/HTML+entry/type/html", current_path
-    click_link_or_button"test (1)"
+    click_link_or_button "test (1)"
     assert_equal "/search/query/HTML+entry/type/html/category/test", current_path
     assert_found :total_count => 1,
                  :entries_count => 1,
