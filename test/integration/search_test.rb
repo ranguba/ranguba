@@ -87,8 +87,10 @@ class SearchTest < ActionDispatch::IntegrationTest
     assert_visit "/search/"
     assert_search_form :drilldown => {:type => @types,
                                       :category => @categories}
-    fill_in "search_request_query", :with => "notfound"
-    click_link_or_button "Search"
+    within("div.search_form") do
+      fill_in "query", :with => "notfound"
+      click_link_or_button "Search"
+    end
 
     assert_equal "/search/query/notfound", current_path
     assert_not_found
@@ -98,8 +100,10 @@ class SearchTest < ActionDispatch::IntegrationTest
     assert_visit "/search/"
     assert_search_form :drilldown => {:type => @types,
                                       :category => @categories}
-    fill_in "search_request_query", :with => "HTML entry"
-    click_link_or_button "Search"
+    within("div.search_form") do
+      fill_in "query", :with => "HTML entry"
+      click_link_or_button "Search"
+    end
 
     assert_equal "/search/query/HTML%20entry", current_path
     assert_found :total_count => 1,
@@ -328,8 +332,10 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def test_search_with_multibytes_query
     assert_visit "/search/"
-    fill_in "search_request_query", :with => "一太郎のドキュメント"
-    click_link_or_button "Search"
+    within("div.search_form") do
+      fill_in "query", :with => "一太郎のドキュメント"
+      click_link_or_button "Search"
+    end
 
     encoded = SearchRequest.encode_parameter("一太郎のドキュメント")
     assert_equal "/search/query/#{encoded}", current_path
@@ -343,8 +349,10 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def test_search_with_query_including_slash
     assert_visit "/search/"
-    fill_in "search_request_query", :with => "text/html"
-    click_link_or_button "Search"
+    within("div.search_form") do
+      fill_in "query", :with => "text/html"
+      click_link_or_button "Search"
+    end
 
     assert_equal "/search/query/text%2Fhtml", current_path
     assert_found :total_count => 1,
