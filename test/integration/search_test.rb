@@ -2,7 +2,7 @@
 require 'test_helper'
 
 class SearchTest < ActionDispatch::IntegrationTest
-  ENTRIES_PER_PAGE = 20
+  ENTRIES_PER_PAGE = 10
 
   def setup
     setup_database
@@ -122,7 +122,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
     assert_equal "/search/query/entry", current_path
     assert_found :total_count => @entries_count,
-                 :entries_count => [ENTRIES_PER_PAGE, @entries_count].min,
+                 :entries_count => ENTRIES_PER_PAGE,
                  :topic_path => ["query", "entry"],
                  :drilldown => {:type => @types,
                                 :category => @categories},
