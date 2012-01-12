@@ -52,10 +52,9 @@ class SearchTest < ActionDispatch::IntegrationTest
                    :pagination => "1/1"
     end
 
-    def test_get_parameter
-      omit("support redirect")
-      assert_visit "/search?search_request[type]=html&search_request[query]=HTML",
-                   "/search/type/html/query/HTML"
+    def test_query_string
+      visit("/search?search_request[type]=html&search_request[query]=HTML")
+      assert_equal("/search/type/html/query/HTML", current_full_path)
       assert_found :total_count => 1,
                    :entries_count => 1,
                    :topic_path => [["type", "html"], ["query", "HTML"]],

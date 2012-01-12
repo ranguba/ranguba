@@ -27,12 +27,14 @@ class Ranguba::SearchController < ApplicationController
 
   def index
     start_time = Time.now.to_f
-    @search_request = Ranguba::SearchRequest.new(request.path_info, params)
-    if request.post?
-      new_params = { :search_request => params[:search_request] }
-      redirect_to new_params.merge(:search_request => @search_request.to_s)
+    search_request = params[:search_request]
+    if search_request.is_a?(Hash)
+      search_request = Ranguba::SearchRequest.new(request.path_info,
+                                                  search_request)
+      redirect_to(:search_request => search_request.to_s)
       return
     end
+    @search_request = Ranguba::SearchRequest.new(request.path_info, params)
 
     if @search_request.valid?
       search_options = @search_request.attributes.merge(:page => params[:page])
