@@ -24,7 +24,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     teardown_database
   end
 
-  class NoQueryTest < self
+  class NoValidQueryTest < self
     def test_with_trailing_slash
       assert_visit "/search/"
       assert_initial_view
@@ -32,6 +32,11 @@ class SearchTest < ActionDispatch::IntegrationTest
 
     def test_without_trailing_slash
       assert_visit "/search"
+      assert_initial_view
+    end
+
+    def test_unknown_query
+      assert_visit "/search?unknown"
       assert_initial_view
     end
 
@@ -70,10 +75,6 @@ class SearchTest < ActionDispatch::IntegrationTest
                  :topic_path => [["type", "html"], ["query", "HTML"]],
                  :drilldown => {:category => ["test"]},
                  :pagination => "1/1"
-
-    assert_visit "/search?foobar"
-    assert_search_form :drilldown => {:type => @types,
-                                      :category => @categories}
   end
 
   def test_unknown_parameter
@@ -96,8 +97,6 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def test_no_entry_found
     assert_visit "/search/"
-    assert_search_form :drilldown => {:type => @types,
-                                      :category => @categories}
     within("div.search_form") do
       fill_in "query", :with => "notfound"
       click_link_or_button "Search"
@@ -109,8 +108,6 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def test_one_entry_found
     assert_visit "/search/"
-    assert_search_form :drilldown => {:type => @types,
-                                      :category => @categories}
     within("div.search_form") do
       fill_in "query", :with => "HTML entry"
       click_link_or_button "Search"
@@ -127,8 +124,6 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def test_many_entries_found
     assert_visit "/search/"
-    assert_search_form :drilldown => {:type => @types,
-                                      :category => @categories}
     within("div.search_form") do
       fill_in "query", :with => "entry"
       click_link_or_button "Search"
@@ -255,9 +250,6 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def test_drilldown
     assert_visit "/search/"
-    assert_search_form :drilldown => {:type => @types,
-                                      :category => @categories}
-
     click_link_or_button "xml (1)"
     assert_equal "/search/type/xml", current_path
     assert_found :total_count => 1,
