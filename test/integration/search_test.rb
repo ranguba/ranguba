@@ -24,14 +24,18 @@ class SearchTest < ActionDispatch::IntegrationTest
     teardown_database
   end
 
-  def test_top_page
-    assert_visit "/search/"
-    assert_search_form :drilldown => {:type => @types,
-                                      :category => @categories}
+  class NoQueryTest < self
+    def test_with_trailing_slash
+      assert_visit "/search/"
+      assert_search_form :drilldown => {:type => @types,
+                                        :category => @categories}
+    end
 
-    assert_visit "/search"
-    assert_search_form :drilldown => {:type => @types,
-                                      :category => @categories}
+    def test_without_trailing_slash
+      assert_visit "/search"
+      assert_search_form :drilldown => {:type => @types,
+                                        :category => @categories}
+    end
   end
 
   def test_top_page_with_query
