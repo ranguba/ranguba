@@ -24,7 +24,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     teardown_database
   end
 
-  class NoValidQueryTest < self
+  class NoValidConditionTest < self
     def test_with_trailing_slash
       assert_visit "/search/"
       assert_initial_view
@@ -41,31 +41,38 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def test_top_page_with_query
-    assert_visit "/search/query/HTML"
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "HTML"]],
-                 :drilldown => {:type => ["html"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
+  class ValidConditionTest < self
+    def test_query
+      assert_visit "/search/query/HTML"
+      assert_found :total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "HTML"]],
+                   :drilldown => {:type => ["html"],
+                                  :category => ["test"]},
+                   :pagination => "1/1"
+    end
 
-    omit("support redirect")
-    assert_visit "/search?search_request[type]=html&search_request[query]=HTML",
-                 "/search/type/html/query/HTML"
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["type", "html"], ["query", "HTML"]],
-                 :drilldown => {:category => ["test"]},
-                 :pagination => "1/1"
+    def test_get_parameter
+      omit("support redirect")
+      assert_visit "/search?search_request[type]=html&search_request[query]=HTML",
+                   "/search/type/html/query/HTML"
+      assert_found :total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["type", "html"], ["query", "HTML"]],
+                   :drilldown => {:category => ["test"]},
+                   :pagination => "1/1"
+    end
 
-    assert_visit "/search?search_request[query]=HTML&search_request[base_params]=type%2Fhtml",
-                 "/search/type/html/query/HTML"
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["type", "html"], ["query", "HTML"]],
-                 :drilldown => {:category => ["test"]},
-                 :pagination => "1/1"
+    def test_base_params
+      omit
+      assert_visit "/search?search_request[query]=HTML&search_request[base_params]=type%2Fhtml",
+                   "/search/type/html/query/HTML"
+      assert_found :total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["type", "html"], ["query", "HTML"]],
+                   :drilldown => {:category => ["test"]},
+                   :pagination => "1/1"
+    end
   end
 
   def test_unknown_parameter
