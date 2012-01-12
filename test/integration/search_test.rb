@@ -62,17 +62,6 @@ class SearchTest < ActionDispatch::IntegrationTest
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1"
     end
-
-    def test_base_params
-      omit
-      assert_visit "/search?search_request[query]=HTML&search_request[base_params]=type%2Fhtml",
-                   "/search/type/html/query/HTML"
-      assert_found :total_count => 1,
-                   :entries_count => 1,
-                   :topic_path => [["type", "html"], ["query", "HTML"]],
-                   :drilldown => {:category => ["test"]},
-                   :pagination => "1/1"
-    end
   end
 
   def test_unknown_parameter
