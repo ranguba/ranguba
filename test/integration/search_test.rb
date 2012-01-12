@@ -39,15 +39,6 @@ class SearchTest < ActionDispatch::IntegrationTest
       assert_visit "/search?unknown"
       assert_initial_view
     end
-
-    private
-    def assert_initial_view
-      assert_have_search_form
-      assert_no_search_result
-      assert_no_topic_path
-      assert_no_pagination
-      assert_drilldown(:type => @types, :category => @categories)
-    end
   end
 
   def test_top_page_with_query
@@ -244,8 +235,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                                 "[@data-value='HTML']"+
                  "/child::a[@class='topic_path_reduce_link']").click
     assert_equal "/search", current_path
-    assert_search_form :drilldown => {:type => @types,
-                                      :category => @categories}
+    assert_initial_view
   end
 
   def test_drilldown
@@ -438,16 +428,12 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def assert_search_form(options={})
+  def assert_initial_view
     assert_have_search_form
     assert_no_search_result
     assert_no_topic_path
     assert_no_pagination
-    if options[:drilldown]
-      assert_drilldown(options[:drilldown])
-    else
-      assert_no_drilldown
-    end
+    assert_drilldown(:type => @types, :category => @categories)
   end
 
   def assert_found(options={})
