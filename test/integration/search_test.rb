@@ -27,14 +27,21 @@ class SearchTest < ActionDispatch::IntegrationTest
   class NoQueryTest < self
     def test_with_trailing_slash
       assert_visit "/search/"
-      assert_search_form :drilldown => {:type => @types,
-                                        :category => @categories}
+      assert_initial_view
     end
 
     def test_without_trailing_slash
       assert_visit "/search"
-      assert_search_form :drilldown => {:type => @types,
-                                        :category => @categories}
+      assert_initial_view
+    end
+
+    private
+    def assert_initial_view
+      assert_have_search_form
+      assert_no_search_result
+      assert_no_topic_path
+      assert_no_pagination
+      assert_drilldown(:type => @types, :category => @categories)
     end
   end
 
