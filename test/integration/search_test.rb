@@ -427,10 +427,21 @@ class SearchTest < ActionDispatch::IntegrationTest
     assert_equal (expected_path || path), current_full_path
   end
 
+  def assert_have_search_form
+    within(".search_request") do
+      find(".search_form")
+    end
+  end
+
+  def assert_no_search_result
+    within(".content") do
+      assert_not_find(".search_result")
+    end
+  end
+
   def assert_search_form(options={})
-    assert page.has_selector?(".search_form"), page.body
-    assert page.has_no_selector?(".search_result"), page.body
-    assert page.has_no_selector?(".search_result_error_message"), page.body
+    assert_have_search_form
+    assert_no_search_result
     assert_no_topic_path
     assert_no_pagination
     if options[:drilldown]
