@@ -148,34 +148,33 @@ class SearchTest < ActionDispatch::IntegrationTest
     def test_step_by_step
       assert_visit("/search/query/HTML+entry/type/html/category/test")
 
-      find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                  "[@data-key='query']"+
-                                  "[@data-value='entry']"+
-                   "/child::a[@class='topic_path_reduce_link']").click
-      assert_equal("/search/query/HTML/type/html/category/test", current_path)
+      within(".topic_path") do
+        assert_all(".topic_path_reduce_link").last.click
+      end
+      assert_equal("/search/query/HTML+entry/type/html", current_path)
       assert_found(:total_count => 1,
                    :entries_count => 1,
                    :topic_path => [["query", "HTML"],
-                                   ["type", "html"],
-                                   ["category", "test"]],
+                                   ["query", "entry"],
+                                   ["type", "html"]],
+                   :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
 
-      find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                  "[@data-key='type']"+
-                                  "[@data-value='html']"+
-                   "/child::a[@class='topic_path_reduce_link']").click
-      assert_equal("/search/query/HTML/category/test", current_path)
+      within(".topic_path") do
+        assert_all(".topic_path_reduce_link").last.click
+      end
+      assert_equal("/search/query/HTML+entry", current_path)
       assert_found(:total_count => 1,
                    :entries_count => 1,
                    :topic_path => [["query", "HTML"],
-                                   ["category", "test"]],
-                   :drilldown => {:type => ["html"]},
+                                   ["query", "entry"]],
+                   :drilldown => {:type => ["html"],
+                                  :category => ["test"]},
                    :pagination => "1/1")
 
-      find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                  "[@data-key='category']"+
-                                  "[@data-value='test']"+
-                   "/child::a[@class='topic_path_reduce_link']").click
+      within(".topic_path") do
+        assert_all(".topic_path_reduce_link").last.click
+      end
       assert_equal("/search/query/HTML", current_path)
       assert_found(:total_count => 1,
                    :entries_count => 1,
@@ -184,10 +183,9 @@ class SearchTest < ActionDispatch::IntegrationTest
                                   :category => ["test"]},
                    :pagination => "1/1")
 
-      find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                  "[@data-key='query']"+
-                                  "[@data-value='HTML']"+
-                   "/child::a[@class='topic_path_reduce_link']").click
+      within(".topic_path") do
+        assert_all(".topic_path_reduce_link").last.click
+      end
       assert_equal("/search", current_path)
       assert_initial_view
     end
