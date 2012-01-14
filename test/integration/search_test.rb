@@ -191,6 +191,22 @@ class SearchTest < ActionDispatch::IntegrationTest
       assert_equal("/search", current_path)
       assert_initial_view
     end
+
+    def test_delete_query_word
+      assert_visit("/search/query/HTML+entry/type/html")
+
+      within(".topic_path") do
+        query_items = assert_all(".topic_path_item[data-key=\"query\"]")
+        query_items.last.find(".topic_path_reduce_link").click
+      end
+      assert_equal("/search/query/HTML/type/html", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "HTML"],
+                                   ["type", "html"]],
+                   :drilldown => {:category => ["test"]},
+                   :pagination => "1/1")
+    end
   end
 
   def test_drilldown
