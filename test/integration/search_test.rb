@@ -134,103 +134,71 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def test_topic_path_link
-    test_drilldown_twice_with_multiple_queries
+  class TopicPathTest < self
+    def test_jump_to_top_level
+      assert_visit("/search/query/HTML+entry/type/html")
 
-    # step back
-    within(:xpath, "/descendant::li[@class='topic_path_item']"+
+      within(:xpath, "/descendant::li[@class='topic_path_item']"+
+                                    "[@data-key='query']"+
+                                    "[@data-value='entry']") do
+        find("a.topic_path_link").click
+      end
+      assert_equal("/search/query/HTML+entry", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "HTML"],
+                                   ["query", "entry"]],
+                   :drilldown => {:type => ["html"],
+                                  :category => ["test"]},
+                   :pagination => "1/1")
+    end
+
+    def test_step_by_step
+      assert_visit("/search/query/HTML+entry/type/html/category/test")
+
+      find(:xpath, "/descendant::li[@class='topic_path_item']"+
+                                  "[@data-key='query']"+
+                                  "[@data-value='entry']"+
+                   "/child::a[@class='topic_path_reduce_link']").click
+      assert_equal("/search/query/HTML/type/html/category/test", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "HTML"],
+                                   ["type", "html"],
+                                   ["category", "test"]],
+                   :pagination => "1/1")
+
+      find(:xpath, "/descendant::li[@class='topic_path_item']"+
                                   "[@data-key='type']"+
-                                  "[@data-value='html']") do
-      find("a.topic_path_link").click
-    end
-    assert_equal "/search/query/HTML+entry/type/html", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "HTML"],
-                                 ["query", "entry"],
-                                 ["type", "html"]],
-                 :drilldown => {:category => ["test"]},
-                 :pagination => "1/1"
+                                  "[@data-value='html']"+
+                   "/child::a[@class='topic_path_reduce_link']").click
+      assert_equal("/search/query/HTML/category/test", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "HTML"],
+                                   ["category", "test"]],
+                   :drilldown => {:type => ["html"]},
+                   :pagination => "1/1")
 
-    # step back again
-    within(:xpath, "/descendant::li[@class='topic_path_item']"+
+      find(:xpath, "/descendant::li[@class='topic_path_item']"+
+                                  "[@data-key='category']"+
+                                  "[@data-value='test']"+
+                   "/child::a[@class='topic_path_reduce_link']").click
+      assert_equal("/search/query/HTML", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "HTML"]],
+                   :drilldown => {:type => ["html"],
+                                  :category => ["test"]},
+                   :pagination => "1/1")
+
+      find(:xpath, "/descendant::li[@class='topic_path_item']"+
                                   "[@data-key='query']"+
-                                  "[@data-value='entry']") do
-      find("a.topic_path_link").click
+                                  "[@data-value='HTML']"+
+                   "/child::a[@class='topic_path_reduce_link']").click
+      assert_equal("/search", current_path)
+      assert_initial_view
     end
-    assert_equal "/search/query/HTML+entry", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "HTML"],
-                                 ["query", "entry"]],
-                 :drilldown => {:type => ["html"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
-  end
-
-  def test_topic_path_link_jump_to_top_level
-    test_drilldown_twice_with_multiple_queries
-
-    within(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                  "[@data-key='query']"+
-                                  "[@data-value='entry']") do
-      find("a.topic_path_link").click
-    end
-    assert_equal "/search/query/HTML+entry", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "HTML"],
-                                 ["query", "entry"]],
-                 :drilldown => {:type => ["html"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
-  end
-
-  def test_topic_path_reduce_link
-    test_drilldown_twice_with_multiple_queries
-
-    find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-key='query']"+
-                                "[@data-value='entry']"+
-                 "/child::a[@class='topic_path_reduce_link']").click
-    assert_equal "/search/query/HTML/type/html/category/test", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "HTML"],
-                                 ["type", "html"],
-                                 ["category", "test"]],
-                 :pagination => "1/1"
-
-    find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-key='type']"+
-                                "[@data-value='html']"+
-                 "/child::a[@class='topic_path_reduce_link']").click
-    assert_equal "/search/query/HTML/category/test", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "HTML"],
-                                 ["category", "test"]],
-                 :drilldown => {:type => ["html"]},
-                 :pagination => "1/1"
-
-    find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-key='category']"+
-                                "[@data-value='test']"+
-                 "/child::a[@class='topic_path_reduce_link']").click
-    assert_equal "/search/query/HTML", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "HTML"]],
-                 :drilldown => {:type => ["html"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
-
-    find(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                "[@data-key='query']"+
-                                "[@data-value='HTML']"+
-                 "/child::a[@class='topic_path_reduce_link']").click
-    assert_equal "/search", current_path
-    assert_initial_view
   end
 
   def test_drilldown
