@@ -138,19 +138,11 @@ class SearchTest < ActionDispatch::IntegrationTest
     def test_jump_to_top_level
       assert_visit("/search/query/HTML+entry/type/html")
 
-      within(:xpath, "/descendant::li[@class='topic_path_item']"+
-                                    "[@data-key='query']"+
-                                    "[@data-value='entry']") do
-        find("a.topic_path_link").click
+      within(".topic_path") do
+        find(".topic_path_link").click
       end
-      assert_equal("/search/query/HTML+entry", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
-                   :topic_path => [["query", "HTML"],
-                                   ["query", "entry"]],
-                   :drilldown => {:type => ["html"],
-                                  :category => ["test"]},
-                   :pagination => "1/1")
+      assert_equal("/search", current_path)
+      assert_initial_view
     end
 
     def test_step_by_step

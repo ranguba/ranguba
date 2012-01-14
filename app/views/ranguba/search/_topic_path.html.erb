@@ -2,7 +2,7 @@
     <ol class="topic_path">
 <%   unless current_page?(search_path) -%>
       <li class="topic_path_item">
-        <%= link_to(t("search_top"), search_path) %>
+        <%= link_to(t("search_top"), search_path, :class => "topic_path_link") %>
       </li>
 <%   end -%>
       <% @topic_path.each_with_index do |item, index| %>
