@@ -24,7 +24,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     teardown_database
   end
 
-  class NoValidConditionTest < self
+  class NoConditionTest < self
     def test_with_trailing_slash
       assert_visit "/search/"
       assert_initial_view
@@ -63,75 +63,75 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def test_unknown_parameter
-    assert_visit "/search/query/entry/unknown/value"
-    assert_error :message => I18n.t("invalid_request_message"),
-                 :topic_path => [["query", "entry"]]
-  end
-
-  def test_invalid_parameter
-    assert_visit "/search/query"
-    assert_error :message => I18n.t("invalid_request_message"),
-                 :topic_path => []
-  end
-
-  def test_invalid_pagination
-    assert_visit "/search/query/entry?page=9999"
-    assert_error :message => I18n.t("not_found_message"),
-                 :topic_path => [["query", "entry"]]
-  end
-
-  def test_no_entry_found
-    assert_visit "/search/"
-    within("div.search_form") do
-      fill_in "query", :with => "notfound"
-      click_link_or_button "Search"
+  class InvalidConditionTest < self
+    def test_unknown_parameter
+      assert_visit("/search/query/entry/unknown/value")
+      assert_error(:message => I18n.t("invalid_request_message"),
+                   :topic_path => [["query", "entry"]])
     end
 
-    assert_equal "/search/query/notfound", current_path
-    assert_not_found
+    def test_no_value
+      assert_visit("/search/query")
+      assert_error(:message => I18n.t("invalid_request_message"),
+                   :topic_path => [])
+    end
   end
 
-  def test_one_entry_found
-    assert_visit "/search/"
-    within("div.search_form") do
-      fill_in "query", :with => "HTML entry"
-      click_link_or_button "Search"
+  class PaginationTest < self
+    def test_too_large
+      assert_visit("/search/query/entry?page=9999")
+      assert_error(:message => I18n.t("not_found_message"),
+                   :topic_path => [["query", "entry"]])
     end
 
-    assert_equal "/search/query/HTML+entry", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "HTML"], ["query", "entry"]],
-                 :drilldown => {:type => ["html"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
+    def test_one_page
+      search("HTML entry")
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "HTML"], ["query", "entry"]],
+                   :drilldown => {:type => ["html"],
+                                  :category => ["test"]},
+                   :pagination => "1/1")
+    end
+
+    def test_two_pages
+      assert_visit("/search/")
+      within("div.search_form") do
+        fill_in("query", :with => "entry")
+        click_link_or_button("Search")
+      end
+
+      assert_equal("/search/query/entry", current_path)
+      assert_found(:total_count => @entries_count,
+                   :entries_count => ENTRIES_PER_PAGE,
+                   :topic_path => [["query", "entry"]],
+                   :drilldown => {:type => @types,
+                                  :category => @categories},
+                   :pagination => "1/2")
+
+      click_link_or_button("2")
+      assert_equal("/search/query/entry", current_path)
+      assert_match(/^\/search\/query\/entry?.*page=2/, current_full_path)
+      assert_found(:total_count => @entries_count,
+                   :entries_count => @entries_count - ENTRIES_PER_PAGE,
+                   :topic_path => [["query", "entry"]],
+                   :drilldown => {:type => @types,
+                                  :category => @categories},
+                   :pagination => "2/2")
+    end
   end
 
-  def test_many_entries_found
-    assert_visit "/search/"
-    within("div.search_form") do
-      fill_in "query", :with => "entry"
-      click_link_or_button "Search"
+  class QueryTest < self
+    def test_not_found
+      assert_visit( "/search/")
+      within("div.search_form") do
+        fill_in("query", :with => "nonexistent")
+        click_link_or_button("Search")
+      end
+
+      assert_equal("/search/query/nonexistent", current_path)
+      assert_not_found
     end
-
-    assert_equal "/search/query/entry", current_path
-    assert_found :total_count => @entries_count,
-                 :entries_count => ENTRIES_PER_PAGE,
-                 :topic_path => [["query", "entry"]],
-                 :drilldown => {:type => @types,
-                                :category => @categories},
-                 :pagination => "1/2"
-
-    click_link_or_button"2"
-    assert_equal "/search/query/entry", current_path
-    assert_match /^\/search\/query\/entry?.*page=2/, current_full_path
-    assert_found :total_count => @entries_count,
-                 :entries_count => @entries_count - ENTRIES_PER_PAGE,
-                 :topic_path => [["query", "entry"]],
-                 :drilldown => {:type => @types,
-                                :category => @categories},
-                 :pagination => "2/2"
   end
 
   def test_topic_path_link
@@ -245,7 +245,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def test_drilldown_after_search
-    test_many_entries_found
+    search("entry")
     click_link_or_button"xml (1)"
     assert_equal "/search/query/entry/type/xml", current_path
     assert_found :total_count => 1,
@@ -257,7 +257,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def test_drilldown_twice
-    test_many_entries_found
+    search("entry")
 
     click_link_or_button "HTML (1)"
     assert_equal "/search/query/entry/type/html", current_path
@@ -279,7 +279,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def test_drilldown_twice_with_multiple_queries
-    test_one_entry_found
+    search("HTML entry")
     click_link_or_button "HTML (1)"
     assert_equal "/search/query/HTML+entry/type/html", current_path
     click_link_or_button "test (1)"
@@ -294,7 +294,7 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def test_search_result_drilldown_after_search
-    test_many_entries_found
+    search("entry")
     item = find("li.search_result_drilldown_category_entry")
     item.find("a").click
     assert_equal "/search/query/entry/category/test", current_path
@@ -404,6 +404,16 @@ class SearchTest < ActionDispatch::IntegrationTest
   private
   def current_full_path
     current_url.sub(/^\w+:\/\/[^\/]+/, "")
+  end
+
+  def search(query)
+    assert_visit("/search/")
+    within("div.search_form") do
+      fill_in("query", :with => query)
+      click_link_or_button("Search")
+    end
+
+    assert_equal("/search/query/#{CGI.escape(query)}", current_path)
   end
 
   def assert_visit(path, expected_path=nil)
