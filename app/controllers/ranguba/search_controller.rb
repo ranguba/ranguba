@@ -34,6 +34,11 @@ class Ranguba::SearchController < ApplicationController
       redirect_to(:search_request => search_request.to_s)
       return
     end
+    if request.post?
+      search_request = Ranguba::SearchRequest.new(request.path_info, params)
+      redirect_to(:search_request => search_request.to_s)
+      return
+    end
     @search_request = Ranguba::SearchRequest.new(request.path_info, params)
 
     if @search_request.valid?
