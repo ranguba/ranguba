@@ -462,9 +462,10 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def assert_total_count(count)
     within("div.search_result") do
-      result_count = find(".search_result_count")
-      assert_equal(I18n.t("search_result_count", :count => count),
-                   result_count.text.gsub(/\([\d.]+ sec\)/m, "").strip)
+      within(".search_result_count") do
+        assert_equal(I18n.t("search_result_count", :count => count),
+                     text.gsub(/\([\d.]+ sec\)/m, "").strip)
+      end
     end
   end
 
