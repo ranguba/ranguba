@@ -26,24 +26,24 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   class NoConditionTest < self
     def test_with_trailing_slash
-      assert_visit("/search/")
+      visit("/search/")
       assert_initial_view
     end
 
     def test_without_trailing_slash
-      assert_visit("/search")
+      visit("/search")
       assert_initial_view
     end
 
     def test_unknown_query
-      assert_visit("/search?unknown")
+      visit("/search?unknown")
       assert_initial_view
     end
   end
 
   class ValidConditionTest < self
     def test_query
-      assert_visit("/search/query/HTML")
+      visit("/search/query/HTML")
       assert_found(:total_count => 1,
                    :entries_count => 1,
                    :topic_path => [["query", "HTML"]],
@@ -65,13 +65,13 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   class InvalidConditionTest < self
     def test_unknown_parameter
-      assert_visit("/search/query/entry/unknown/value")
+      visit("/search/query/entry/unknown/value")
       assert_error(:message => I18n.t("invalid_request_message"),
                    :topic_path => [["query", "entry"]])
     end
 
     def test_no_value
-      assert_visit("/search/query")
+      visit("/search/query")
       assert_error(:message => I18n.t("invalid_request_message"),
                    :topic_path => [])
     end
@@ -79,13 +79,13 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   class PaginationTest < self
     def test_too_large
-      assert_visit("/search/query/entry?page=9999")
+      visit("/search/query/entry?page=9999")
       assert_error(:message => I18n.t("not_found_message"),
                    :topic_path => [["query", "entry"]])
     end
 
     def test_one_page
-      assert_visit("/search/")
+      visit("/search/")
       search("HTML entry")
       assert_found(:total_count => 1,
                    :entries_count => 1,
@@ -96,7 +96,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_two_pages
-      assert_visit("/search/")
+      visit("/search/")
       search("entry")
       assert_found(:total_count => @entries_count,
                    :entries_count => ENTRIES_PER_PAGE,
@@ -122,14 +122,14 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   class QueryTest < self
     def test_not_found
-      assert_visit("/search/")
+      visit("/search/")
       search("nonexistent")
       assert_equal("/search/query/nonexistent", current_path)
       assert_not_found
     end
 
     def test_drilldown
-      assert_visit("/search/type/html")
+      visit("/search/type/html")
       search("entry")
       assert_found(:total_count => 1,
                    :entries_count => 1,
@@ -140,7 +140,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_multi_bytes
-      assert_visit("/search/")
+      visit("/search/")
       search("一太郎のドキュメント")
       assert_found(:total_count => 1,
                    :entries_count => 1,
@@ -151,7 +151,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_slash
-      assert_visit("/search/")
+      visit("/search/")
       search("text/html")
       assert_found(:total_count => 1,
                    :entries_count => 1,
@@ -162,7 +162,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_question
-      assert_visit("/search/")
+      visit("/search/")
       search("unknown type?")
       assert_found(:total_count => 1,
                    :entries_count => 1,
@@ -176,7 +176,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   class TopicPathTest < self
     def test_jump_to_top_level
-      assert_visit("/search/query/HTML+entry/type/html")
+      visit("/search/query/HTML+entry/type/html")
 
       within(".topic_path") do
         find(".topic_path_link").click
@@ -186,7 +186,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_step_by_step
-      assert_visit("/search/query/HTML+entry/type/html/category/test")
+      visit("/search/query/HTML+entry/type/html/category/test")
 
       within(".topic_path") do
         assert_all(".topic_path_reduce_link").last.click
@@ -231,7 +231,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_delete_query_word
-      assert_visit("/search/query/HTML+entry/type/html")
+      visit("/search/query/HTML+entry/type/html")
 
       within(".topic_path") do
         query_items = assert_all(".topic_path_item[data-key=\"query\"]")
@@ -249,7 +249,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   class DrilldownTest < self
     def test_initial_view
-      assert_visit("/search/")
+      visit("/search/")
 
       drilldown("xml (1)")
       assert_equal("/search/type/xml", current_path)
@@ -261,7 +261,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_after_search
-      assert_visit("/search/")
+      visit("/search/")
       search("entry")
 
       drilldown("xml (1)")
@@ -275,7 +275,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_twice
-      assert_visit("/search/")
+      visit("/search/")
       search("entry")
 
       drilldown("HTML (1)")
@@ -298,7 +298,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_multiple_queries
-      assert_visit("/search/")
+      visit("/search/")
       search("HTML entry")
 
       drilldown("HTML (1)")
@@ -317,7 +317,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_slash_in_context
-      assert_visit("/search/query/text%2Fhtml")
+      visit("/search/query/text%2Fhtml")
 
       drilldown("test (1)")
       assert_equal("/search/query/text%2Fhtml/category/test", current_path)
@@ -330,7 +330,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_drilldown_after_search_including_question
-      assert_visit("/search/")
+      visit("/search/")
       search("unknown type?")
 
       drilldown("test (1)")
@@ -368,11 +368,6 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     assert_equal("#{before_path}/query/#{CGI.escape(query)}", current_path)
-  end
-
-  def assert_visit(path, expected_path=nil)
-    visit(path)
-    assert_equal((expected_path || path), current_full_path)
   end
 
   def assert_have_search_form
