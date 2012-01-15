@@ -43,23 +43,23 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   class ValidConditionTest < self
     def test_query
-      assert_visit "/search/query/HTML"
-      assert_found :total_count => 1,
+      assert_visit("/search/query/HTML")
+      assert_found(:total_count => 1,
                    :entries_count => 1,
                    :topic_path => [["query", "HTML"]],
                    :drilldown => {:type => ["html"],
                                   :category => ["test"]},
-                   :pagination => "1/1"
+                   :pagination => "1/1")
     end
 
     def test_query_string
       visit("/search?search_request[type]=html&search_request[query]=HTML")
       assert_equal("/search/type/html/query/HTML", current_full_path)
-      assert_found :total_count => 1,
+      assert_found(:total_count => 1,
                    :entries_count => 1,
                    :topic_path => [["type", "html"], ["query", "HTML"]],
                    :drilldown => {:category => ["test"]},
-                   :pagination => "1/1"
+                   :pagination => "1/1")
     end
   end
 
@@ -85,6 +85,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_one_page
+      assert_visit("/search/")
       search("HTML entry")
       assert_found(:total_count => 1,
                    :entries_count => 1,
@@ -123,7 +124,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   class QueryTest < self
     def test_not_found
-      assert_visit( "/search/")
+      assert_visit("/search/")
       within("div.search_form") do
         fill_in("query", :with => "nonexistent")
         click_link_or_button("Search")
@@ -131,6 +132,73 @@ class SearchTest < ActionDispatch::IntegrationTest
 
       assert_equal("/search/query/nonexistent", current_path)
       assert_not_found
+    end
+
+    def test_drilldown
+      assert_visit("/search/type/html")
+
+      within("div.search_form") do
+        fill_in "query", :with => "entry"
+        click_link_or_button "Search"
+      end
+
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["type", "html"],
+                                   ["query", "entry"]],
+                   :drilldown => {:category => ["test"]},
+                   :pagination => "1/1")
+    end
+
+    def test_multi_bytes
+      assert_visit("/search/")
+
+      within("div.search_form") do
+        fill_in "query", :with => "一太郎のドキュメント"
+        click_link_or_button "Search"
+      end
+
+      encoded = CGI.escape("一太郎のドキュメント")
+      assert_equal("/search/query/#{encoded}", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "一太郎のドキュメント"]],
+                   :drilldown => {:type => ["jxw"],
+                                  :category => ["test"]},
+                   :pagination => "1/1")
+    end
+
+    def test_slash
+      assert_visit("/search/")
+      within("div.search_form") do
+        fill_in("query", :with => "text/html")
+        click_link_or_button("Search")
+      end
+
+      assert_equal("/search/query/text%2Fhtml", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "text/html"]],
+                   :drilldown => {:type => ["html"],
+                                  :category => ["test"]},
+                   :pagination => "1/1")
+    end
+
+    def test_question
+      assert_visit("/search/")
+      within("div.search_form") do
+        fill_in("query", :with => "unknown type?")
+        click_link_or_button("Search")
+      end
+
+      assert_equal("/search/query/unknown+type%3F", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "unknown"],
+                                   ["query", "type?"]],
+                   :drilldown => {:type => ["unknown"],
+                                  :category => ["test"]},
+                   :pagination => "1/1")
     end
   end
 
@@ -221,6 +289,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_after_search
+      assert_visit("/search/")
       search("entry")
 
       drilldown("xml (1)")
@@ -234,6 +303,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_twice
+      assert_visit("/search/")
       search("entry")
 
       drilldown("HTML (1)")
@@ -255,6 +325,53 @@ class SearchTest < ActionDispatch::IntegrationTest
                    :pagination => "1/1")
     end
 
+    def test_multiple_queries
+      assert_visit("/search/")
+      search("HTML entry")
+
+      drilldown("HTML (1)")
+      assert_equal("/search/query/HTML+entry/type/html", current_path)
+
+      drilldown("test (1)")
+      assert_equal("/search/query/HTML+entry/type/html/category/test",
+                   current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "HTML"],
+                                   ["query", "entry"],
+                                   ["type", "html"],
+                                   ["category", "test"]],
+                   :pagination => "1/1")
+    end
+
+    def test_slash_in_context
+      assert_visit("/search/query/text%2Fhtml")
+
+      drilldown("test (1)")
+      assert_equal("/search/query/text%2Fhtml/category/test", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "text/html"],
+                                   ["category", "test"]],
+                   :drilldown => {:type => ["html"]},
+                   :pagination => "1/1")
+    end
+
+    def test_drilldown_after_search_including_question
+      assert_visit("/search/")
+      search("unknown type?")
+
+      drilldown("test (1)")
+      assert_equal("/search/query/unknown+type%3F/category/test", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "unknown"],
+                                   ["query", "type?"],
+                                   ["category", "test"]],
+                   :drilldown => {:type => ["unknown"]},
+                   :pagination => "1/1")
+    end
+
     private
     def drilldown(item_label)
       within(".search_request") do
@@ -265,136 +382,12 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def test_drilldown_twice_with_multiple_queries
-    search("HTML entry")
-    click_link_or_button "HTML (1)"
-    assert_equal "/search/query/HTML+entry/type/html", current_path
-    click_link_or_button "test (1)"
-    assert_equal "/search/query/HTML+entry/type/html/category/test", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "HTML"],
-                                 ["query", "entry"],
-                                 ["type", "html"],
-                                 ["category", "test"]],
-                 :pagination => "1/1"
-  end
-
-  def test_search_result_drilldown_after_search
-    search("entry")
-    item = find("li.search_result_drilldown_category_entry")
-    item.find("a").click
-    assert_equal "/search/query/entry/category/test", current_path
-    assert_found :total_count => @test_category_entries_count,
-                 :entries_count => ENTRIES_PER_PAGE,
-                 :topic_path => [["query", "entry"],
-                                 ["category", "test"]],
-                 :drilldown => {:type => @types},
-                 :pagination => "1/2"
-  end
-
-  def test_search_after_drilldown
-    test_drilldown
-
-    within("div.search_form") do
-      fill_in "query", :with => "entry"
-      click_link_or_button "Search"
-    end
-
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["type", "xml"],
-                                 ["query", "entry"]],
-                 :drilldown => {:category => ["test"]},
-                 :pagination => "1/1"
-  end
-
-  def test_search_with_multibytes_query
-    assert_visit "/search/"
-    within("div.search_form") do
-      fill_in "query", :with => "一太郎のドキュメント"
-      click_link_or_button "Search"
-    end
-
-    encoded = CGI.escape("一太郎のドキュメント")
-    assert_equal "/search/query/#{encoded}", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "一太郎のドキュメント"]],
-                 :drilldown => {:type => ["jxw"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
-  end
-
-  def test_search_with_query_including_slash
-    assert_visit "/search/"
-    within("div.search_form") do
-      fill_in "query", :with => "text/html"
-      click_link_or_button "Search"
-    end
-
-    assert_equal "/search/query/text%2Fhtml", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "text/html"]],
-                 :drilldown => {:type => ["html"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
-  end
-
-  def test_drilldown_after_search_including_slash
-    test_search_with_query_including_slash
-
-    item = find("li.search_result_drilldown_category_entry")
-    item.find("a").click
-    assert_equal "/search/query/text%2Fhtml/category/test", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "text/html"],
-                                 ["category", "test"]],
-                 :drilldown => {:type => ["html"]},
-                 :pagination => "1/1"
-  end
-
-  def test_search_with_query_including_question
-    assert_visit "/search/"
-    within("div.search_form") do
-      fill_in "query", :with => "unknown type?"
-      click_link_or_button "Search"
-    end
-
-    assert_equal "/search/query/unknown+type%3F", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "unknown"],
-                                 ["query", "type?"]],
-                 :drilldown => {:type => ["unknown"],
-                                :category => ["test"]},
-                 :pagination => "1/1"
-  end
-
-  def test_drilldown_after_search_including_question
-    test_search_with_query_including_question
-
-    item = find("li.search_result_drilldown_category_entry")
-    item.find("a").click
-    assert_equal "/search/query/unknown+type%3F/category/test", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "unknown"],
-                                 ["query", "type?"],
-                                 ["category", "test"]],
-                 :drilldown => {:type => ["unknown"]},
-                 :pagination => "1/1"
-  end
-
   private
   def current_full_path
     current_url.sub(/^\w+:\/\/[^\/]+/, "")
   end
 
   def search(query)
-    assert_visit("/search/")
     within("div.search_form") do
       fill_in("query", :with => query)
       click_link_or_button("Search")
