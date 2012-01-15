@@ -391,10 +391,14 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def assert_found(options={})
-    assert page.has_selector?(".search_form"), page.body
-    assert page.has_selector?(".search_result"), page.body
-    assert page.has_selector?(".search_result_entries"), page.body
-    assert page.has_no_selector?(".search_result_error_message"), page.body
+    within(".search_request") do
+      find(".search_form")
+    end
+
+    within(".search_result") do
+      find(".search_result_entries")
+      assert_not_find(".search_result_error_message")
+    end
 
     assert_total_count(options[:total_count]) unless options[:total_count].nil?
     assert_entries_count(options[:entries_count]) unless options[:entries_count].nil?
@@ -412,11 +416,17 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def assert_not_found(options={})
-    assert page.has_selector?(".search_form"), page.body
-    assert page.has_selector?(".search_result"), page.body
-    assert page.has_no_selector?(".search_result_entries"), page.body
-    assert page.has_selector?(".search_result_message"), page.body
-    assert page.has_content?(I18n.t("search_result_not_found_message")), page.body
+    within(".search_request") do
+      find(".search_form")
+    end
+
+    within(".search_result") do
+      assert_not_find(".search_result_entries")
+      within(".search_result_message") do
+        assert_equal(I18n.t("search_result_not_found_message"), text)
+      end
+    end
+
     assert_no_pagination
     if options[:drilldown]
       assert_drilldown(options[:drilldown])
