@@ -207,49 +207,62 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def test_drilldown
-    assert_visit "/search/"
-    click_link_or_button "xml (1)"
-    assert_equal "/search/type/xml", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["type", "xml"]],
-                 :drilldown => {:category => ["test"]},
-                 :pagination => "1/1"
-  end
+  class DrilldownTest < self
+    def test_initial_view
+      assert_visit("/search/")
 
-  def test_drilldown_after_search
-    search("entry")
-    click_link_or_button"xml (1)"
-    assert_equal "/search/query/entry/type/xml", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "entry"],
-                                 ["type", "xml"]],
-                 :drilldown => {:category => ["test"]},
-                 :pagination => "1/1"
-  end
+      drilldown("xml (1)")
+      assert_equal("/search/type/xml", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["type", "xml"]],
+                   :drilldown => {:category => ["test"]},
+                   :pagination => "1/1")
+    end
 
-  def test_drilldown_twice
-    search("entry")
+    def test_after_search
+      search("entry")
 
-    click_link_or_button "HTML (1)"
-    assert_equal "/search/query/entry/type/html", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "entry"],
-                                 ["type", "html"]],
-                 :drilldown => {:category => ["test"]},
-                 :pagination => "1/1"
+      drilldown("xml (1)")
+      assert_equal("/search/query/entry/type/xml", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "entry"],
+                                   ["type", "xml"]],
+                   :drilldown => {:category => ["test"]},
+                   :pagination => "1/1")
+    end
 
-    click_link_or_button "test (1)"
-    assert_equal "/search/query/entry/type/html/category/test", current_path
-    assert_found :total_count => 1,
-                 :entries_count => 1,
-                 :topic_path => [["query", "entry"],
-                                 ["type", "html"],
-                                 ["category", "test"]],
-                 :pagination => "1/1"
+    def test_twice
+      search("entry")
+
+      drilldown("HTML (1)")
+      assert_equal("/search/query/entry/type/html", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "entry"],
+                                   ["type", "html"]],
+                   :drilldown => {:category => ["test"]},
+                   :pagination => "1/1")
+
+      drilldown("test (1)")
+      assert_equal("/search/query/entry/type/html/category/test", current_path)
+      assert_found(:total_count => 1,
+                   :entries_count => 1,
+                   :topic_path => [["query", "entry"],
+                                   ["type", "html"],
+                                   ["category", "test"]],
+                   :pagination => "1/1")
+    end
+
+    private
+    def drilldown(item_label)
+      within(".search_request") do
+        within(".drilldown_groups") do
+          click_link_or_button(item_label)
+        end
+      end
+    end
   end
 
   def test_drilldown_twice_with_multiple_queries
