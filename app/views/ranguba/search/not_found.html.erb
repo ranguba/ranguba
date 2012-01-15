@@ -6,7 +6,9 @@
 <div class="search_result">
   <p class="search_result_error_message">
     <%= t("not_found_message") %>
-    <%= t("please_back_to_top_page_message") %>
+  </p>
+  <p class="back_to_top">
+    <%= link_to(t("please_back_to_top_page_message"), search_path) %>
   </p>
 </div>
 

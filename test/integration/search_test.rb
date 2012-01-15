@@ -436,11 +436,17 @@ class SearchTest < ActionDispatch::IntegrationTest
   end
 
   def assert_error(options={})
-    assert page.has_selector?(".search_form"), page.body
-    assert page.has_selector?(".search_result"), page.body
-    assert page.has_no_selector?(".search_result_entries"), page.body
-    assert page.has_selector?(".search_result_error_message"), page.body
-    assert page.has_content?(options[:message]), page.body unless options[:message].nil?
+    within(".search_request") do
+      find(".search_form")
+    end
+
+    within(".search_result") do
+      assert_not_find(".search_result_entries")
+      within(".search_result_error_message") do
+        assert_equal(options[:message], text) unless options[:message].nil?
+      end
+    end
+
     if options[:topic_path]
       assert_topic_path(options[:topic_path])
     else
