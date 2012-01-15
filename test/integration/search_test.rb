@@ -384,7 +384,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   private
   def current_full_path
-    current_url.sub(/^\w+:\/\/[^\/]+/, "")
+    URI.parse(current_url).route_from(current_host).to_s
   end
 
   def search(query)
