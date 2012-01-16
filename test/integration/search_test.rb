@@ -8,13 +8,13 @@ class SearchTest < ActionDispatch::IntegrationTest
     setup_database
     @types = []
     @categories = []
-    @entries_count = 0
-    @test_category_entries_count = 0
+    @n_entries = 0
+    @test_category_n_entries = 0
     Ranguba::Entry.all.each do |entry|
       @types << entry.type
       @categories << entry.category
-      @entries_count += 1
-      @test_category_entries_count += 1 if entry.category == "test"
+      @n_entries += 1
+      @test_category_n_entries += 1 if entry.category == "test"
     end
     @types = @types.uniq.sort
     @categories = @categories.uniq.sort
@@ -44,8 +44,8 @@ class SearchTest < ActionDispatch::IntegrationTest
   class ValidConditionTest < self
     def test_query
       visit("/search/query/HTML")
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "HTML"]],
                    :drilldown => {:type => ["html"],
                                   :category => ["test"]},
@@ -55,8 +55,8 @@ class SearchTest < ActionDispatch::IntegrationTest
     def test_query_string
       visit("/search?search_request[type]=html&search_request[query]=HTML")
       assert_equal("/search/type/html/query/HTML", current_full_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["type", "html"], ["query", "HTML"]],
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
@@ -87,8 +87,8 @@ class SearchTest < ActionDispatch::IntegrationTest
     def test_one_page
       visit("/search/")
       search("HTML entry")
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "HTML"], ["query", "entry"]],
                    :drilldown => {:type => ["html"],
                                   :category => ["test"]},
@@ -98,8 +98,8 @@ class SearchTest < ActionDispatch::IntegrationTest
     def test_two_pages
       visit("/search/")
       search("entry")
-      assert_found(:total_count => @entries_count,
-                   :entries_count => ENTRIES_PER_PAGE,
+      assert_found(:total => @n_entries,
+                   :n_entries => ENTRIES_PER_PAGE,
                    :topic_path => [["query", "entry"]],
                    :drilldown => {:type => @types,
                                   :category => @categories},
@@ -111,8 +111,8 @@ class SearchTest < ActionDispatch::IntegrationTest
         end
       end
       assert_equal("/search/query/entry?page=2", current_full_path)
-      assert_found(:total_count => @entries_count,
-                   :entries_count => @entries_count - ENTRIES_PER_PAGE,
+      assert_found(:total => @n_entries,
+                   :n_entries => @n_entries - ENTRIES_PER_PAGE,
                    :topic_path => [["query", "entry"]],
                    :drilldown => {:type => @types,
                                   :category => @categories},
@@ -131,8 +131,8 @@ class SearchTest < ActionDispatch::IntegrationTest
     def test_drilldown
       visit("/search/type/html")
       search("entry")
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["type", "html"],
                                    ["query", "entry"]],
                    :drilldown => {:category => ["test"]},
@@ -142,8 +142,8 @@ class SearchTest < ActionDispatch::IntegrationTest
     def test_multi_bytes
       visit("/search/")
       search("一太郎のドキュメント")
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "一太郎のドキュメント"]],
                    :drilldown => {:type => ["jxw"],
                                   :category => ["test"]},
@@ -153,8 +153,8 @@ class SearchTest < ActionDispatch::IntegrationTest
     def test_slash
       visit("/search/")
       search("text/html")
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "text/html"]],
                    :drilldown => {:type => ["html"],
                                   :category => ["test"]},
@@ -164,8 +164,8 @@ class SearchTest < ActionDispatch::IntegrationTest
     def test_question
       visit("/search/")
       search("unknown type?")
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "unknown"],
                                    ["query", "type?"]],
                    :drilldown => {:type => ["unknown"],
@@ -192,8 +192,8 @@ class SearchTest < ActionDispatch::IntegrationTest
         assert_all(".topic_path_reduce_link").last.click
       end
       assert_equal("/search/query/HTML+entry/type/html", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "HTML"],
                                    ["query", "entry"],
                                    ["type", "html"]],
@@ -204,8 +204,8 @@ class SearchTest < ActionDispatch::IntegrationTest
         assert_all(".topic_path_reduce_link").last.click
       end
       assert_equal("/search/query/HTML+entry", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "HTML"],
                                    ["query", "entry"]],
                    :drilldown => {:type => ["html"],
@@ -216,8 +216,8 @@ class SearchTest < ActionDispatch::IntegrationTest
         assert_all(".topic_path_reduce_link").last.click
       end
       assert_equal("/search/query/HTML", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "HTML"]],
                    :drilldown => {:type => ["html"],
                                   :category => ["test"]},
@@ -238,8 +238,8 @@ class SearchTest < ActionDispatch::IntegrationTest
         query_items.last.find(".topic_path_reduce_link").click
       end
       assert_equal("/search/query/HTML/type/html", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "HTML"],
                                    ["type", "html"]],
                    :drilldown => {:category => ["test"]},
@@ -253,8 +253,8 @@ class SearchTest < ActionDispatch::IntegrationTest
 
       drilldown("xml (1)")
       assert_equal("/search/type/xml", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["type", "xml"]],
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
@@ -266,8 +266,8 @@ class SearchTest < ActionDispatch::IntegrationTest
 
       drilldown("xml (1)")
       assert_equal("/search/query/entry/type/xml", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "entry"],
                                    ["type", "xml"]],
                    :drilldown => {:category => ["test"]},
@@ -280,8 +280,8 @@ class SearchTest < ActionDispatch::IntegrationTest
 
       drilldown("HTML (1)")
       assert_equal("/search/query/entry/type/html", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "entry"],
                                    ["type", "html"]],
                    :drilldown => {:category => ["test"]},
@@ -289,8 +289,8 @@ class SearchTest < ActionDispatch::IntegrationTest
 
       drilldown("test (1)")
       assert_equal("/search/query/entry/type/html/category/test", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "entry"],
                                    ["type", "html"],
                                    ["category", "test"]],
@@ -307,8 +307,8 @@ class SearchTest < ActionDispatch::IntegrationTest
       drilldown("test (1)")
       assert_equal("/search/query/HTML+entry/type/html/category/test",
                    current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "HTML"],
                                    ["query", "entry"],
                                    ["type", "html"],
@@ -321,8 +321,8 @@ class SearchTest < ActionDispatch::IntegrationTest
 
       drilldown("test (1)")
       assert_equal("/search/query/text%2Fhtml/category/test", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "text/html"],
                                    ["category", "test"]],
                    :drilldown => {:type => ["html"]},
@@ -335,8 +335,8 @@ class SearchTest < ActionDispatch::IntegrationTest
 
       drilldown("test (1)")
       assert_equal("/search/query/unknown+type%3F/category/test", current_path)
-      assert_found(:total_count => 1,
-                   :entries_count => 1,
+      assert_found(:total => 1,
+                   :n_entries => 1,
                    :topic_path => [["query", "unknown"],
                                    ["query", "type?"],
                                    ["category", "test"]],
@@ -400,8 +400,8 @@ class SearchTest < ActionDispatch::IntegrationTest
       assert_not_find(".search_result_error_message")
     end
 
-    assert_total_count(options[:total_count]) unless options[:total_count].nil?
-    assert_entries_count(options[:entries_count]) unless options[:entries_count].nil?
+    assert_total(options[:total]) unless options[:total].nil?
+    assert_n_entries(options[:n_entries]) unless options[:n_entries].nil?
     assert_topic_path(options[:topic_path]) unless options[:topic_path].nil?
     if options[:drilldown]
       assert_drilldown(options[:drilldown])
@@ -460,7 +460,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def assert_total_count(count)
+  def assert_total(count)
     within("div.search_result") do
       within(".search_result_count") do
         assert_equal(I18n.t("search_result_count", :count => count),
@@ -469,7 +469,7 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def assert_entries_count(count)
+  def assert_n_entries(count)
     entries = find(:xpath, "/descendant::ol[@class='search_result_entries']")
     assert_equal(count,
                  entries.all(:xpath, "./li[@class='search_result_entry']").size)
