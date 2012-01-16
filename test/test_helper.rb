@@ -34,9 +34,12 @@ class ActiveSupport::TestCase
     FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.text")
     FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.text-template")
     FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.spreadsheet")
-    FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.spreadsheet-template")
-    FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.presentation")
-    FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.presentation-template")
+    FactoryGirl.create(:entry,
+                       :type => "vnd.oasis.opendocument.spreadsheet-template")
+    FactoryGirl.create(:entry,
+                       :type => "vnd.oasis.opendocument.presentation")
+    FactoryGirl.create(:entry,
+                       :type => "vnd.oasis.opendocument.presentation-template")
     FactoryGirl.create(:entry,
                        :type => "unknown",
                        :type_label => "unknown") do |entry|
