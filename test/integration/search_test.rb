@@ -10,11 +10,11 @@ class SearchTest < ActionDispatch::IntegrationTest
     @categories = []
     @entries_count = 0
     @test_category_entries_count = 0
-    @db_source.each do |key, value|
-      @types << value[:type]
-      @categories << value[:category]
+    Ranguba::Entry.all.each do |entry|
+      @types << entry.type
+      @categories << entry.category
       @entries_count += 1
-      @test_category_entries_count += 1 if value[:category] == "test"
+      @test_category_entries_count += 1 if entry.category == "test"
     end
     @types = @types.uniq.sort
     @categories = @categories.uniq.sort
@@ -329,7 +329,7 @@ class SearchTest < ActionDispatch::IntegrationTest
                    :pagination => "1/1")
     end
 
-    def test_drilldown_after_search_including_question
+    def test_question_in_context
       visit("/search/")
       search("unknown type?")
 

@@ -11,6 +11,14 @@ class Ranguba::Entry < ActiveGroonga::Base
   reference_class("category", Ranguba::Category)
   reference_class("extension", Ranguba::Extension)
 
+  before_validation do
+    if body.empty?
+      self.content_length = 0
+    else
+      self.content_length = body.bytesize
+    end
+  end
+
   def title
     _title = super
     if _title and !_title.valid_encoding?

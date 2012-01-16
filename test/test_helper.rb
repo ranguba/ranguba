@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
+
 ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 require 'test/unit/rails'
 require 'shellwords'
 require 'fileutils'
 require 'yaml'
-require 'groonga'
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
@@ -13,29 +14,43 @@ class ActiveSupport::TestCase
   # -- they do not yet inherit this setting
   # fixtures :all
 
+  private
   # Add more helper methods to be used by all tests here...
   def run_shell_command(*args)
     command_line = Shellwords.shelljoin(args)
     result = `#{command_line} 2>&1`
   end
 
-  def setup_database
-    source = YAML.load_file("#{::Rails.root.to_s}/test/fixtures/test_db.yml_")
-    @db_source = {}
-    source.each do |id, entry|
-      attributes = entry.symbolize_keys
-      [:modified_at, :updated_at].each do |key|
-        unless attributes[key].is_a?(Time)
-          attributes[key] = Time.parse(attributes[key])
-        end
-      end
-      Ranguba::Entry.create(attributes)
-      @db_source[id.to_sym] = attributes.merge(:url => entry["url"])
+  def create_entries
+    FactoryGirl.create(:entry, :type => "html", :type_label => "text/html")
+    FactoryGirl.create(:entry, :type => "plain")
+    FactoryGirl.create(:entry, :type => "css")
+    FactoryGirl.create(:entry, :type => "xml")
+    FactoryGirl.create(:entry, :type => "pdf", :category => "test")
+    FactoryGirl.create(:entry, :type => "pdf", :category => "misc")
+    FactoryGirl.create(:entry, :type => "msworddoc")
+    FactoryGirl.create(:entry, :type => "vnd.ms-excel")
+    FactoryGirl.create(:entry, :type => "vnd.ms-powerpoint")
+    FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.text")
+    FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.text-template")
+    FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.spreadsheet")
+    FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.spreadsheet-template")
+    FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.presentation")
+    FactoryGirl.create(:entry, :type => "vnd.oasis.opendocument.presentation-template")
+    FactoryGirl.create(:entry,
+                       :type => "unknown",
+                       :type_label => "unknown") do |entry|
+      entry.body += " What is the type?"
+      entry.save!
     end
+    FactoryGirl.create(:entry, :type => "jxw", :title => "一太郎のドキュメント")
+  end
+
+  def setup_database
+    create_entries
   end
 
   def teardown_database
-    Ranguba::Entry.select.each(&:delete)
-    @db_source = nil
+    Ranguba::Entry.all.each(&:delete)
   end
 end

@@ -48,4 +48,5 @@ gem 'kaminari'
 group :development, :test do
   gem "test-unit-rails"
   gem "launchy"
+  gem "factory_girl_rails"
 end
