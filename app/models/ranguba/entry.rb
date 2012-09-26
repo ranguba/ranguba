@@ -98,7 +98,7 @@ class Ranguba::Entry < ActiveGroonga::Base
         snippets = snippets.collect do |snippet|
           options[:part].sub("%S", "#{options[:separator]}#{snippet}#{options[:separator]}")
         end
-        summarized = snippets.join("")
+        summarized = snippets.join("").html_safe
       end
     end
     summarized
