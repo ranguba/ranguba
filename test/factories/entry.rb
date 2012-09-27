@@ -6,13 +6,24 @@ FactoryGirl.define do
   factory(:entry, :class => Ranguba::Entry) do
     ignore do
       type_label   {type}
-      default_body {"This is the contents of the #{type_label} entry."}
+      content_type do
+        case type
+        when "html", "plain", "css"
+          "text/#{type}"
+        else
+          "application/#{type}"
+        end
+      end
+      default_body do
+        "This is the contents of the #{type_label} entry. " +
+          "Content type is #{content_type}."
+      end
     end
 
     key do
       "http://www.example.com/#{type}/#{FactoryGirl.generate(:key_id)}"
     end
-    title       {"This is an #{type_label} entry!"}
+    title       {"This is a #{type_label} entry!"}
     encoding    {"UTF-8"}
     category    {"test"}
     author      {"#{type_label} author"}

@@ -22,7 +22,7 @@ class ActiveSupport::TestCase
   end
 
   def create_entries
-    FactoryGirl.create(:entry, :type => "html", :type_label => "text/html")
+    FactoryGirl.create(:entry, :type => "html", :type_label => "HTML")
     FactoryGirl.create(:entry, :type => "plain")
     FactoryGirl.create(:entry, :type => "css")
     FactoryGirl.create(:entry, :type => "xml")

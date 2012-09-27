@@ -15,67 +15,32 @@ class Ranguba::SearcherTest < ActiveSupport::TestCase
 
   def test_search_by_query__plain
     @searcher.query = "plain"
-    entry = @searcher.search.first
-    source = @db_source[:plain]
-    assert_equal(source[:key], entry.title)
-    assert_equal(source[:key], entry.url)
-    assert_equal(source[:category], entry.category)
-    assert_equal(source[:type], entry.type)
-    assert_equal(source[:body], entry.body)
+    titles = @searcher.search.collect(&:title)
+    assert_equal(["This is a plain entry!"], titles)
   end
 
   def test_search_by_query__html
     @searcher.query = "html"
-    entry = @searcher.search.first
-    source = @db_source[:html]
-    assert_equal(source[:title], entry.title)
-    assert_equal(source[:key], entry.url)
-    assert_equal(source[:category], entry.category)
-    assert_equal(source[:type], entry.type)
-    assert_equal(source[:body], entry.body)
+    titles = @searcher.search.collect(&:title)
+    assert_equal(["This is a HTML entry!"], titles)
   end
 
   def test_search_by_query__multibyte
     @searcher.query = "一太郎"
-    entry = @searcher.search.first
-    encoded = CGI.escape("一太郎")
-    source = @db_source[:jxw]
-    assert_equal(source[:title], entry.title)
-    assert_equal(source[:key], entry.url)
-    assert_equal(source[:category], entry.category)
-    assert_equal(source[:type], entry.type)
-    assert_equal(source[:body], entry.body)
+    titles = @searcher.search.collect(&:title)
+    assert_equal(["一太郎のドキュメント"], titles)
   end
 
   def test_search_by_type
     @searcher.type = "html"
-    entry = @searcher.search.first
-    source = @db_source[:html]
-    assert_equal(source[:title], entry.title)
-    assert_equal(source[:key], entry.url)
-    assert_equal(source[:category], entry.category)
-    assert_equal(source[:type], entry.type)
-    assert_equal(source[:body], entry.body)
+    types = @searcher.search.collect(&:type)
+    assert_equal(["html"], types)
   end
 
   def test_search_by_category
     @searcher.category = "misc"
-    entry = @searcher.search.first
-    source = @db_source[:pdf2]
-    assert_equal(source[:title], entry.title)
-    assert_equal(source[:key], entry.url)
-    assert_equal(source[:category], entry.category)
-    assert_equal(source[:type], entry.type)
-    assert_equal(source[:body], entry.body)
-  end
-
-  def test_search_class
-    @searcher.query = "html"
-    result = @searcher.search
-
-    assert_instance_of(Array, result.entries)
-    assert_instance_of(Ranguba::Entry, result.first)
-    assert_equal(1, result.n_records)
+    categories = @searcher.search.collect(&:category)
+    assert_equal(["misc"], categories)
   end
 
   def test_add_entry_and_search
