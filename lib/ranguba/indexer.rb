@@ -146,6 +146,7 @@ EOS
       return unless args.empty?
       Dir.open(base) {}
       process = proc {
+        log(:info, "[start][log]")
         if @log_file == '-'
           process_from_log(base, STDIN)
         else
@@ -153,12 +154,15 @@ EOS
             process_from_log(base, input)
           }
         end
+        log(:info, "[end][log]")
       }
     when @url_prefix
       # read local files
       return if args.empty?
       process = proc {
+        log(:info, "[start][file]")
         process_files(args)
+        log(:info, "[end][file]")
       }
     else
       # crawl
@@ -167,7 +171,9 @@ EOS
         return
       end
       process = proc {
+        log(:info, "[start][crawl]")
         process_crawl(args)
+        log(:info, "[start][crawl]")
       }
     end
 
