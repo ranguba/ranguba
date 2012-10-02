@@ -485,8 +485,11 @@ class SearchTest < ActionDispatch::IntegrationTest
   def assert_pagination(pagination_label)
     current, total = pagination_label.split("/")
 
-    pagination = find(".pagination")
-    assert_equal(current, pagination.find(".current").text)
+    within(".pagination") do
+      within(".current") do
+        assert_equal(current, text)
+      end
+    end
   end
 
   def assert_no_pagination
