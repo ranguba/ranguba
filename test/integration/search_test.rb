@@ -487,7 +487,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
     within(".pagination") do
       within(".current") do
-        assert_equal(current, text)
+        assert_equal(current, text.strip)
       end
     end
   end
