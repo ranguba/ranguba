@@ -436,7 +436,8 @@ class SearchTest < ActionDispatch::IntegrationTest
     within(".search_result") do
       assert_not_find(".search_result_entries")
       within(".search_result_error_message") do
-        assert_equal(options[:message], text) unless options[:message].nil?
+        message = options[:message]
+        assert_equal(message, text.strip) unless message.nil?
       end
     end
 
