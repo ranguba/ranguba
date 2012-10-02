@@ -1,4 +1,5 @@
-# coding: utf-8
+# -* coding: utf-8 -*-
+
 require 'test_helper'
 
 class Ranguba::DrilldownEntryTest < ActiveSupport::TestCase
