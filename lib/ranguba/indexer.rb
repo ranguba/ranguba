@@ -177,7 +177,11 @@ EOS
       }
     end
 
-    process
+    lambda do
+      log(:info, "[start]")
+      process.call
+      log(:info, "[end]")
+    end
   end
 
   def process_files(paths)
