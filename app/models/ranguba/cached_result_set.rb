@@ -5,7 +5,7 @@ module Ranguba::CachedResultSet
     records = group(key).sort([["_nsubrecs", :descending]])
     records.collect do |record|
       Ranguba::DrilldownEntry.new(:key => key,
-                                  :value => record.key.key,
+                                  :value => record.value.key.key,
                                   :count => record.n_sub_records)
     end
   end
