@@ -1,5 +1,3 @@
-require "racknga/will_paginate"
-
 class Ranguba::Entry < ActiveGroonga::Base
   DEFAULT_SUMMARY_SIZE = 140
 
