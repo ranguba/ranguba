@@ -24,7 +24,7 @@ gem 'chuparuby'
 
 gem 'rroonga'
 gem 'racknga'
-gem 'activegroonga', '>= 2.1.2'
+gem 'activegroonga', '>= 2.1.4'
 
 gem 'kaminari'
 
