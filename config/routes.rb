@@ -5,8 +5,8 @@ Ranguba::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root "ranguba/welcome#index"
 
-  match "search/(*search_request)", :to => "ranguba/search#index", :as => 'search'
-  match "help", :to => "ranguba/help#index", :as => "help"
+  get "search/(*search_request)" => "ranguba/search#index", :as => :search
+  get "help" => "ranguba/help#index", :as => :help
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
