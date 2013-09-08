@@ -44,9 +44,15 @@ gem 'glib2'
 gem 'nokogiri'
 gem 'chuparuby'
 
+base_dir = File.join(File.dirname(__FILE__), "..")
 gem 'rroonga'
 gem 'racknga'
-gem 'activegroonga', '>= 2.1.4'
+local_activegroonga = File.join(base_dir, "activegroonga")
+if File.exist?(local_activegroonga)
+  gem 'activegroonga', :path => local_activegroonga
+else
+  gem 'activegroonga'
+end
 
 gem 'kaminari'
 
