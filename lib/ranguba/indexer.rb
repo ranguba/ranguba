@@ -214,7 +214,7 @@ EOS
         if response = log[/^(?:  .*\n)+/]
           response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
         end
-        file = log[/^Saving to: \`(.+)\'$/, 1]
+        file = log[/^Saving to: [`'](.+)[`']$/, 1]
         next unless file      # failed to start download
         path = File.join(base, file.gsub(/\\'/, "'"))
         response ||= {}
