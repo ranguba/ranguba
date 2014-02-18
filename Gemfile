@@ -40,9 +40,11 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'glib2'
 gem 'nokogiri'
-gem 'chuparuby'
+gem 'chupa-text'
+gem 'chupa-text-decomposer-pdf'
+gem 'chupa-text-decomposer-libreoffice'
+gem 'chupa-text-decomposer-html'
 
 base_dir = File.join(File.dirname(__FILE__), "..")
 gem 'rroonga'

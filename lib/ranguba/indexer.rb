@@ -3,7 +3,7 @@ require 'shellwords'
 require 'tmpdir'
 require 'fileutils'
 require 'time'
-require 'chupatext'
+require 'chupa-text'
 
 class Ranguba::Indexer
   attr_accessor :wget, :log_file, :url_prefix, :level, :accept,
@@ -135,6 +135,9 @@ EOS
   end
 
   def prepare(args)
+    ChupaText::Decomposers.load
+    @extractor = ChupaText::Extractor.new
+    @extractor.apply_configuration(ChupaText::Configuration.default)
     if @log_file and @url_prefix
       raise OptionParser::InvalidOption, "--url-prefix and --from-log options are exclusive"
     end
@@ -376,24 +379,19 @@ EOS
   def decompose_file_in_same_process(url, path, response)
     data = nil
     begin
-      input_data = Chupa::Data.new(path)
-      feeder = Chupa::Feeder.new
-      feeder.signal_connect("accepted") do |_feeder, _data|
-        data = _data
+      input_data = ChupaText::InputData.new(path)
+      @extractor.extract(input_data) do |extracted_data|
+        data = extracted_data
       end
-      feeder.feed(input_data)
-    rescue Chupa::Error => e
+    rescue ChupaText::EncryptedError
+      nil
+    rescue ChupaText::Error => e
       log(:error, "[error] #{e.class}: #{e.message}")
       log(:error, "[error] path: #{path}")
-      case e.code
-      when Chupa::DecomposerErrorCode::ENCRYPTED
-        return nil
-      else
-        raise
-      end
     else
       return nil if data.nil?
-      decomposed_file = DecomposedFile.new(@resolver, url, path, response, data)
+      decomposed_file = DecomposedFile.new(@resolver, url, path, response,
+                                           input_data, data)
       decomposed_file.attributes
     end
   end
@@ -449,30 +447,25 @@ EOS
   end
 
   class DecomposedFile
-    include Loggable
-
-    def initialize(resolver, url, path, response, data)
+    def initialize(resolver, url, path, response, input_data, data)
       @resolver = resolver
       @url = url
       @path = path
       @response = response
-      @metadata = data.metadata
-      @body = data.read || ""
-      if @body.encoding == Encoding::ASCII_8BIT
-        @body.force_encoding(@metadata.encoding || Encoding::UTF_8)
-      end
+      @input_data = input_data
+      @data = data
     end
 
     def attributes
       {
         key: @url,
-        title: @metadata.title,
-        body: @body,
+        title: @data.attributes.title,
+        body: @data.body,
         basename: @url.split(/\//).last,
-        type: normalize_type(@metadata.original_mime_type),
-        encoding: @response["charset"] || @metadata.original_encoding || "",
+        type: normalize_type(@input_data.mime_type),
+        encoding: @response["charset"] || @input_data.attributes.encoding.to_s,
         category: category_for_url(@url) || "",
-        author: @metadata.author || "",
+        author: @data.attributes.author || "",
         modified_at: modification_time,
         updated_at: @response["x-update-time"],
       }
@@ -481,7 +474,7 @@ EOS
     private
     def modification_time
       modification_time = @response["last-modified"]
-      modification_time ||= @metadata.modification_time
+      modification_time ||= @data.attributes.modified_time
       if modification_time
         begin
           modification_time = Time.parse(modification_time)
@@ -499,31 +492,6 @@ EOS
 
     def normalize_type(source)
       @resolver.normalize_type(source) || "unknown"
-    end
-
-    def valid_encoding?(attributes)
-      url = attributes[:key]
-      invalid_encoding_attributes = attributes.reject do |key, value|
-        valid_utf8?(value)
-      end
-      invalid_encoding_keys = invalid_encoding_attributes.keys
-      if invalid_encoding_keys.blank?
-        true
-      else
-        message = "[#{invalid_encoding_keys.join(', ')}]"
-        log(:warn, "[encoding][invalid] key: #{url} - #{message}")
-        false
-      end
-    end
-
-    def valid_utf8?(value)
-      return true unless value.respond_to?(:encode)
-      value = value.dup
-      value.force_encoding("UTF-8").valid_encoding?
-    end
-
-    def log(level, message)
-      super(level, "[decompose]#{message}")
     end
   end
 end
