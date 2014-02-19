@@ -8,7 +8,7 @@
 secret_token_path = Rails.root + "config/secret_token.txt"
 unless secret_token_path.exist?
   secret_token_path.open("w") do |file|
-    file.puts(ActiveSupport::SecureRandom.hex(64))
+    file.puts(SecureRandom.hex(64))
   end
 end
 Ranguba::Application.config.secret_token = secret_token_path.read.chomp
