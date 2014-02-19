@@ -7,6 +7,8 @@ require "rails/test_unit/railtie"
 require "sprockets/railtie"
 
 require 'active_groonga/railtie'
+
+$LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
 require 'ranguba/railtie'
 
 # Require the gems listed in Gemfile, including any gems
