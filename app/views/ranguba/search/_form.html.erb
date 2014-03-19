@@ -1,5 +1,6 @@
 <div class="search_form">
-<%= form_tag(search_path(:search_request => @topic_path.search_request)) do %>
+<%= form_tag(search_path(:search_request => @topic_path.search_request),
+             :method => "get") do %>
   <p>
     <%= text_field_tag :query, @search_request.query, :size => 25 %>
     <%= submit_tag t(@search_request.empty? ? "search_button_label" : "search_button_add_label") %>
