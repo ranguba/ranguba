@@ -2,8 +2,8 @@ require 'csv'
 
 class Ranguba::FileReader
 
-  def self.read(path, external_encoding=Encoding::UTF_8)
-    return '' unless File.exist?(path)
+  def self.read(path, external_encoding=Encoding::UTF_8, default="")
+    return default unless File.exist?(path)
     if external_encoding == Encoding::UTF_8
       File.open(path, "r:utf-8") {|file| file.read}
     else

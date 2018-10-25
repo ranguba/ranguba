@@ -8,9 +8,9 @@ class Ranguba::Template
   end
 
   def title
-    @title ||=
-      Ranguba::FileReader.read(@title_path, @encodings['title.txt']) ||
-      "Ranguba"
+    @title ||= Ranguba::FileReader.read(@title_path,
+                                        @encodings['title.txt'],
+                                        "Ranguba")
   end
 
   def header
