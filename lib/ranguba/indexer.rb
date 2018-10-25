@@ -207,27 +207,29 @@ EOS
   def process_from_log(base, input)
     result = true
     url = response = file = path = nil
-    input.each("") do |log|
-      next unless log.valid_encoding?
-      case log
-      when /^--([-\d]+.*?)\s*--\s+(.+)/
+    input.each_line do |line|
+      next unless line.valid_encoding?
+      case line.chomp
+      when /\A--([-\d]+.*?)\s*--\s+(.+)/
         update = $1
         url = $2.sub(/\A\(try:\s*\d+\)\s*/, '')
-        log(:info, " URL: #{url}")
-        if response = log[/^(?:  .*\n)+/]
-          response = Hash[response.lines.grep(/^\s*([-A-Za-z0-9]+):\s*(.*)$/) {[$1.downcase, $2]}]
-        end
-        file = log[/^Saving to: [`'](.+)[`']$/, 1]
-        next unless file      # failed to start download
-        path = File.join(base, file.gsub(/\\'/, "'"))
-        response ||= {}
+        file = nil
+        path = nil
         update = Time.parse(update)
-        response["x-update-time"] = update
         if !@oldest or @oldest > update
           @oldest = update
         end
+        response = {
+          "x-update-time" => update,
+        }
+        log(:info, " URL: #{url}")
+      when /\A  ([-A-Za-z0-9]+):\s*(.*)\z/
+        response[$1] = $2
+      when /\ASaving to: [`'](.+)[`']\z/
+        file = $1
+        path = File.join(base, file.gsub(/\\'/, "'"))
       when /saved/
-        unless url and path and File.file?(path)
+        if url.nil? or path.nil? or !File.file?(path)
           log(:warn, "[file][not_found] path #{path}")
           next
         end
