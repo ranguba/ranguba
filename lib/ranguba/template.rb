@@ -3,6 +3,7 @@ class Ranguba::Template
     @encodings = encodings || default_encodings
     @base = Ranguba::Application.config.customize_base_path + 'templates'
     @title_path = @base + 'title.txt'
+    @head_path = @base + 'head.txt'
     @header_path = @base + 'header.txt'
     @footer_path = @base + 'footer.txt'
   end
@@ -11,6 +12,10 @@ class Ranguba::Template
     @title ||= Ranguba::FileReader.read(@title_path,
                                         @encodings['title.txt'],
                                         "Ranguba")
+  end
+
+  def head
+    @head ||= Ranguba::FileReader.read(@head_path, @encodings['head.txt'])
   end
 
   def header
@@ -25,6 +30,7 @@ class Ranguba::Template
   def default_encodings
     {
       'title.txt'  => Encoding::UTF_8,
+      'head.txt'  => Encoding::UTF_8,
       'header.txt' => Encoding::UTF_8,
       'footer.txt' => Encoding::UTF_8,
     }
