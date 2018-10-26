@@ -2,7 +2,11 @@ class Ranguba::CategoryLoader
 
   def initialize(encoding=Encoding::UTF_8)
     @base = Ranguba::Application.config.customize_base_path
-    @path = @base + 'categories.csv'
+    base_path = 'categories.csv'
+    @path = @base + base_path
+    unless @path.exist?
+      @path = @base + "#{base_path}.sample"
+    end
     @encoding = encoding
   end
 
