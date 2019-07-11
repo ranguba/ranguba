@@ -17,6 +17,7 @@ matrix:
 before_install:
   - curl --silent --location https://github.com/groonga/groonga/raw/master/data/travis/setup.sh | sh
   - sudo apt purge -y google-chrome-stable
+  - find / -name "*chrome*"
 script:
   - bundle exec bin/rails groonga:migrate
   - bundle exec bin/rails groonga:test:prepare
