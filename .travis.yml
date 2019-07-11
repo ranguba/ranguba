@@ -1,6 +1,11 @@
 notifications:
   webhooks:
     - https://webhook.commit-email.info/
+dist: xenial
+addons:
+  apt:
+    packages:
+      - chromium-chromedriver
 matrix:
   include:
     - name: "Ruby 2.4"
@@ -11,6 +16,7 @@ matrix:
       rvm: 2.6
 before_install:
   - curl --silent --location https://github.com/groonga/groonga/raw/master/data/travis/setup.sh | sh
+  - sudo apt purge -y google-chrome-stable
 script:
   - bundle exec bin/rails groonga:migrate
   - bundle exec bin/rails groonga:test:prepare
