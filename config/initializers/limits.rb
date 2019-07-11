@@ -1,3 +1,3 @@
-require 'ranguba/limiter'
+require "ranguba/limiter"
 
 Ranguba::Limiter.new.setup_default

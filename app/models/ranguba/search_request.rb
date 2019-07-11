@@ -15,7 +15,7 @@ class Ranguba::SearchRequest
 
   def initialize(path_info=nil, params={})
     @path_info = path_info
-    @params = params
+    @params = params || []
     clear
     hash = parse(@path_info)
     update(hash)

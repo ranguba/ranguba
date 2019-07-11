@@ -1,8 +1,6 @@
 class Ranguba::SearchController < ApplicationController
   SUMMARY_SIZE = 140
 
-  protect_from_forgery :except => :index
-
   if Rails.env.production?
     rescue_from StandardError do |exception|
       message = "#{exception.message} (#{exception.class}):\n"
@@ -28,20 +26,19 @@ class Ranguba::SearchController < ApplicationController
   def index
     start_time = Time.now.to_f
     search_request = params[:search_request]
-    if search_request.is_a?(Hash)
+    if search_request.is_a?(ActionController::Parameters)
       search_request = Ranguba::SearchRequest.new(request.path_info,
                                                   search_request)
       redirect_to(:search_request => search_request.to_s)
       return
     end
-    if request.post?
-      search_request = Ranguba::SearchRequest.new(request.path_info, params)
-      redirect_to(:search_request => search_request.to_s)
-      return
-    end
-    @search_request = Ranguba::SearchRequest.new(request.path_info, params)
+    @search_request = Ranguba::SearchRequest.new(search_request, params)
 
     if @search_request.valid?
+      if !@search_request.empty? and @search_request.to_s != search_request
+        redirect_to(:search_request => @search_request.to_s)
+        return
+      end
       search_options = @search_request.attributes.merge(:page => params[:page])
       setup_search_result
     else

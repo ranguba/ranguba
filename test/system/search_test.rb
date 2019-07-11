@@ -1,8 +1,6 @@
-# -* coding: utf-8 -*-
+require "application_system_test_case"
 
-require 'test_helper'
-
-class SearchTest < ActionDispatch::IntegrationTest
+class SearchTest < ApplicationSystemTestCase
   ENTRIES_PER_PAGE = 10
 
   def setup
@@ -55,7 +53,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
     def test_query_string
       visit("/search?search_request[type]=html&search_request[query]=HTML")
-      assert_equal("/search/type/html/query/HTML", current_full_path)
+      assert_equal("/search/type/html/query/HTML", current_path)
       assert_found(:n_entries => 1,
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
@@ -107,8 +105,10 @@ class SearchTest < ActionDispatch::IntegrationTest
       assert_topic_path([["query", "entry"]])
 
       within(".search_result") do
-        within(".pagination") do
-          click_link("2")
+        within("#pagination_top") do
+          within(".pagination") do
+            click_link("2")
+          end
         end
       end
       assert_equal("/search/query/entry?page=2", current_full_path)
@@ -178,7 +178,7 @@ class SearchTest < ActionDispatch::IntegrationTest
       visit("/search/query/HTML+entry/type/html")
 
       within(".topic_path") do
-        find(".topic_path_link").click
+        all(".topic_path_link").first.click
       end
       assert_equal("/search", current_path)
       assert_initial_view
@@ -312,10 +312,10 @@ class SearchTest < ActionDispatch::IntegrationTest
     end
 
     def test_slash_in_context
-      visit("/search/query/text%2Fhtml")
+      visit("/search/query/text%252Fhtml")
 
       drilldown("test (1)")
-      assert_equal("/search/query/text%2Fhtml/category/test", current_path)
+      assert_equal("/search/query/text%252Fhtml/category/test", current_path)
       assert_found(:n_entries => 1,
                    :drilldown => {:type => ["html"]},
                    :pagination => "1/1")
@@ -351,7 +351,10 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   private
   def current_full_path
-    URI.parse(current_url).route_from(current_host).to_s
+    uri = URI.parse(current_url)
+    full_path = uri.path
+    full_path += "?#{uri.query}" if uri.query
+    full_path
   end
 
   def search(query)
@@ -362,7 +365,9 @@ class SearchTest < ActionDispatch::IntegrationTest
       click_link_or_button("Search")
     end
 
-    assert_equal("#{before_path}/query/#{CGI.escape(query)}", current_path)
+    escaped_query = CGI.escape(query).gsub(/%/, "%25")
+    assert_equal("#{before_path}/query/#{escaped_query}",
+                 current_path)
   end
 
   def assert_have_search_form
@@ -451,10 +456,8 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def assert_total(count)
     within("div.search_result") do
-      within(".search_result_count") do
-        assert_equal(I18n.t("search_result_count", :count => count),
-                     text.gsub(/\([\d.]+ sec\)/m, "").strip)
-      end
+      assert_equal(count,
+                   find(".search_result_count")["data-count"]&.to_i)
     end
   end
 
@@ -470,8 +473,7 @@ class SearchTest < ActionDispatch::IntegrationTest
 
   def assert_topic_path(items)
     topic_path = find("ol.topic_path")
-    top_page_link, *topic_path_items = topic_path.all("li.topic_path_item")
-    _ = top_page_link
+    _top_page_link, *topic_path_items = topic_path.all("li.topic_path_item").to_a
     item_data_attributes = topic_path_items.collect do |item|
       [item["data-key"], item["data-value"]]
     end
@@ -485,17 +487,17 @@ class SearchTest < ActionDispatch::IntegrationTest
   def assert_pagination(pagination_label)
     current, total = pagination_label.split("/")
 
-    within(".pagination") do
-      within(".current") do
-        assert_equal(current, text.strip)
+    within("#pagination_top") do
+      within(".pagination") do
+        within(".current") do
+          assert_equal(current, text.strip)
+        end
       end
     end
   end
 
   def assert_no_pagination
     assert_not_find(".pagination")
-    assert_not_find("#pagination_top")
-    assert_not_find("#pagination_bottom")
   end
 
   def assert_drilldown(groups)

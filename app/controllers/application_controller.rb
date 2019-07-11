@@ -1,7 +1,5 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery
-
-  before_filter :set_locale, :set_ranguba_template, :load_labels
+  before_action :set_locale, :set_ranguba_template, :load_labels
 
   private
   def set_locale

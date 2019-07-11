@@ -13,11 +13,18 @@ module Ranguba::SearchHelper
 
   def file_type_drilldown_link(entry)
     topic_path = @topic_path.add(entry)
+    relative_image_path = "file_types/#{entry.value}.png"
+    full_image_path = Rails.root + "app/assets/images/#{relative_image_path}"
+    if full_image_path.exist?
+      content = image_tag("file_types/#{entry.value}.png",
+                          :alt => entry.label,
+                          :title => entry.label,
+                          :size => "24x24")
+    else
+      content = entry.label
+    end
     link_to_unless(@search_request.have_key?(entry.key),
-                   image_tag("file_types/#{entry.value}.png",
-                             :alt => entry.label,
-                             :title => entry.label,
-                             :size => "24x24"),
+                   content,
                    search_path(:search_request => topic_path.search_request))
   end
 

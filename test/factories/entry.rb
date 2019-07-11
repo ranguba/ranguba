@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-FactoryGirl.define do
+FactoryBot.define do
   sequence(:key_id)
 
   factory(:entry, :class => Ranguba::Entry) do
-    ignore do
+    transient do
       type_label   {type}
       content_type do
         case type
@@ -21,7 +21,7 @@ FactoryGirl.define do
     end
 
     key do
-      "http://www.example.com/#{type}/#{FactoryGirl.generate(:key_id)}"
+      "http://www.example.com/#{type}/#{FactoryBot.generate(:key_id)}"
     end
     title       {"This is a #{type_label} entry!"}
     encoding    {"UTF-8"}

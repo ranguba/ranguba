@@ -1,11 +1,10 @@
 #!/usr/bin/env ruby
-# -*- ruby -*-
 
 base_dir = File.expand_path(File.join(File.dirname(__FILE__), ".."))
 require File.join(base_dir, "config", "environment")
 $LOAD_PATH.unshift(File.join(base_dir, "lib"))
 
-require 'ranguba/indexer'
+require "ranguba/indexer"
 
 indexer = Ranguba::Indexer.new(ARGV)
 process = indexer.prepare(ARGV)
