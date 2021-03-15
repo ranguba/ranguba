@@ -1,3 +1,2 @@
-class Ranguba::MimeType < ActiveGroonga::Base
-  table_name("mime_types")
+class Ranguba::MimeType < ApplicationGroongaRecord
 end

@@ -1,11 +1,11 @@
 require "test_helper"
 
 class Ranguba::SearchControllerTest < ActionDispatch::IntegrationTest
-  def setup
+  setup do
     setup_database
   end
 
-  def teardown
+  teardown do
     teardown_database
   end
 
@@ -54,26 +54,5 @@ class Ranguba::SearchControllerTest < ActionDispatch::IntegrationTest
     get search_url(search_request: "query/q/unknown/value")
     assert_response 400
     assert_template "search/bad_request"
-  end
-
-  def test_too_large_page
-    get search_url(search_request: "query/q",
-                   page: 2)
-    assert_response 404
-    assert_template "search/not_found"
-  end
-
-  def test_too_small_page
-    get search_url(search_request: "query/q",
-                   page: 0)
-    assert_response 404
-    assert_template "search/not_found"
-  end
-
-  def test_too_small_negative
-    get search_url(search_request: "query/q",
-                   page: -1)
-    assert_response 404
-    assert_template "search/not_found"
   end
 end

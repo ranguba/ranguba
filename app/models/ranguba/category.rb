@@ -1,3 +1,2 @@
-class Ranguba::Category < ActiveGroonga::Base
-  table_name("categories")
+class Ranguba::Category < ApplicationGroongaRecord
 end

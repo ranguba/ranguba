@@ -1,18 +1,16 @@
   <ol class="search_result_entries">
-    <% @result_set.paginated_records.each do |entry| %>
+    <% @result_set.records.each do |entry| %>
       <li class="search_result_entry">
         <div class="search_result_entry_header">
-          <span class="search_result_title"><%= link_to entry.title, entry.key %></span>
-          <span class="search_result_score">(<%= entry.score %>)</span>
-          <span class="search_result_location"><%= link_to entry.key, entry.key %></span>
+          <span class="search_result_title">
+            <%= link_to(entry.label, entry.url) %>
+          </span>
+          <span class="search_result_score">(<%= entry._score %>)</span>
+          <span class="search_result_location">
+            <%= link_to(entry.url, entry.url) %>
+          </span>
         </div>
-        <div class="search_result_summary"><%=
-          entry.summary(@result_set.expression,
-                        :size => @summary_size,
-                        :highlight => "<em>%S</em>",
-                        :separator => t("search_result_summary_ellipses"),
-                        :html_escape => true)
-        %></div>
+        <div class="search_result_summary"><%= entry.summary %></div>
         <ul class="search_result_drilldown_entries">
           <% entry.drilldown_entries.each do |entry| %>
             <li class="search_result_drilldown_<%= entry.key %>_entry">

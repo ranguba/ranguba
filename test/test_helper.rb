@@ -1,21 +1,17 @@
 ENV['RAILS_ENV'] ||= 'test'
-require_relative '../config/environment'
+require_relative "../config/environment"
 require "test/unit/rails/test_help"
-
-require "shellwords"
+require "groonga_client_model/test_helper"
 
 class ActiveSupport::TestCase
-  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-  # fixtures :all
+  include GroongaClientModel::TestHelper
+
+  # Run tests in parallel with specified workers
+  # parallelize(workers: :number_of_processors)
 
   # Add more helper methods to be used by all tests here...
 
   private
-  def run_shell_command(*args)
-    command_line = Shellwords.shelljoin(args)
-    result = `#{command_line} 2>&1`
-  end
-
   def create_entries
     FactoryBot.create(:entry, :type => "html", :type_label => "HTML")
     FactoryBot.create(:entry, :type => "plain")
@@ -49,6 +45,5 @@ class ActiveSupport::TestCase
   end
 
   def teardown_database
-    Ranguba::Entry.all.each(&:delete)
   end
 end

@@ -143,7 +143,7 @@ class Ranguba::SearchRequest
   end
 
   def empty?
-    (query || category || type) ? false : true
+    query.blank? and category.blank? and type.blank?
   end
 
   def persisted?
@@ -151,7 +151,11 @@ class Ranguba::SearchRequest
   end
 
   def process(params)
-    RequestHandler.new(self, params).handle
+    searcher = Ranguba::Searcher.new(query: query,
+                                     type: type,
+                                     category: category,
+                                     page: params[:page])
+    searcher.search
   end
 
   private
@@ -195,27 +199,6 @@ class Ranguba::SearchRequest
       options.delete(key) if options[key]
     end
     options
-  end
-
-  class RequestHandler
-    def initialize(request, params)
-      @request = request
-      @params = params
-    end
-
-    def handle
-      searcher = Ranguba::Searcher.new(:query => @request.query,
-                                       :type => @request.type,
-                                       :category => @request.category)
-      set = searcher.search
-      set.extend(Ranguba::CachedResultSet)
-      drilldown_targets = [:category, :type].find_all do |column|
-        @request.send(column).blank?
-      end
-      set.compute_drilldowns(drilldown_targets)
-      set.compute_pagination(@params[:page], @params[:per_page])
-      set
-    end
   end
 end
 

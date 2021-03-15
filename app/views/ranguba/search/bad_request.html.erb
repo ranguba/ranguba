@@ -11,8 +11,8 @@
     <%= link_to(t("please_back_to_top_page_message"), search_path) %>
   </p>
   <ul class="search_result_error_messages">
-    <% @bad_request.errors.each do |field, message| %>
-      <li><%= message %></li>
+    <% @bad_request.errors.each do |error| %>
+      <li><%= error.message %></li>
     <% end %>
   </ul>
 </div>

@@ -1,11 +1,23 @@
-development:
-  database: db/groonga/development/db
+default: &default
+  url: http://127.0.0.1:10041/
+  # url: https://127.0.0.1:10041/
+  # protocol: http
+  # host: 127.0.0.1
+  # port: 10041
+  # user: alice
+  # password: secret
+  read_timeout: -1
+  # read_timeout: 3
+  backend: synchronous
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
+development:
+  <<: *default
+
 test:
-  database: db/groonga/test/db
+  <<: *default
+  url: http://127.0.0.1:20041/
 
 production:
-  database: db/groonga/production/db
+  <<: *default
+  # url: http://production.example.com:10041/
+  read_timeout: 10

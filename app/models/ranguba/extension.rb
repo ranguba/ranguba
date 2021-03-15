@@ -1,3 +1,2 @@
-class Ranguba::Extension < ActiveGroonga::Base
-  table_name("extensions")
+class Ranguba::Extension < ApplicationGroongaRecord
 end

@@ -6,18 +6,18 @@
 
 <% unless @search_request.empty? %>
 <div class="search_result">
-  <% if @result_set.n_records > 0 %>
-    <p class="search_result_count" data-count="<%= @result_set.n_records %>">
-      <%= t("search_result_count", :count => @result_set.n_records) %>
+  <% if @result_set.n_hits > 0 %>
+    <p class="search_result_count" data-count="<%= @result_set.n_hits %>">
+      <%= t("search_result_count", :count => @result_set.n_hits) %>
       <%= t("search_elapsed_time", :elapsed_time => ("%.3f" % @elapsed_time)) %>
     </p>
     <div class="autopagerize_page_element">
       <div id="pagination_top">
-        <%= paginate @result_set.paginated_records %>
+        <%= paginate @result_set %>
       </div>
       <%= render(:partial => "entries") %>
       <div id="pagination_bottom">
-        <%= paginate @result_set.paginated_records %>
+        <%= paginate @result_set %>
       </div>
     </div>
   <% else %>

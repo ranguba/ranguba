@@ -20,7 +20,7 @@ FactoryBot.define do
       end
     end
 
-    key do
+    _key do
       "http://www.example.com/#{type}/#{FactoryBot.generate(:key_id)}"
     end
     title       {"This is a #{type_label} entry!"}

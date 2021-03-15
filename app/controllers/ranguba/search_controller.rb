@@ -18,11 +18,6 @@ class Ranguba::SearchController < ApplicationController
     end
   end
 
-  rescue_from Groonga::TooSmallPage, Groonga::TooLargePage do |ex|
-    handle_bad_request
-    render :action => "not_found", :status => 404
-  end
-
   def index
     start_time = Time.now.to_f
     search_request = params[:search_request]
@@ -57,7 +52,6 @@ class Ranguba::SearchController < ApplicationController
   end
 
   private
-
   def handle_bad_request
     @bad_request = @search_request
     @search_request ||= Ranguba::SearchRequest.new(request.path_info, params)
@@ -71,17 +65,15 @@ class Ranguba::SearchController < ApplicationController
 
   def setup_search_result_title
     return if @search_request.empty?
-    paginated_records = @result_set.paginated_records
-    if paginated_records.total_pages > 1
+    if @result_set.total_pages > 1
       title = I18n.t("search_result_title_paginated",
                      :conditions => @search_request.to_readable_string,
-                     :page => paginated_records.current_page,
-                     :max_page => paginated_records.total_pages)
+                     :page => @result_set.current_page,
+                     :max_page => @result_set.total_pages)
     else
       title = I18n.t("search_result_title",
                      :conditions => @search_request.to_readable_string)
     end
     @title = [title, @ranguba_template.title].join(I18n.t("title_delimiter"))
   end
-
 end

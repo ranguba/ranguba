@@ -309,7 +309,7 @@ EOS
     begin
       unless need_update?(url, path, response)
         log(:info, "[skip] <#{url}>")
-        entry = Ranguba::Entry.find(url)
+        entry = Ranguba::Entry.where(_key: url)
         entry.category = @resolver.category_for_url(url) || "unknown"
         entry.save!
         return true
@@ -319,7 +319,7 @@ EOS
         log(:warn, "[decompose][failure] <#{url}>")
         return false
       end
-      Ranguba::Entry.create!(attributes)
+      Ranguba::Entry.new(attributes).save!
     rescue => e
       unless @ignore_errors
         log(:error, "[error] #{e.class}: #{e.message}")
@@ -404,7 +404,7 @@ EOS
     old_entries = ::Ranguba::Entry.select do |record|
       record.updated_at < base_time
     end
-    old_entries.each(&:delete)
+    old_entries.each(&:destroy)
     log(:info, "[purge][end] <#{base_time.iso8601}>")
     flush_log
   end
@@ -460,7 +460,7 @@ EOS
 
     def attributes
       {
-        key: @url,
+        _key: @url,
         title: @data.attributes.title,
         body: @data.body,
         basename: @url.split(/\//).last,

@@ -1,18 +1,24 @@
-<% if @result_set and !@result_set.drilldowns.empty? %>
+<% if @result_set and
+      @result_set.drilldowns.any? {|_label, drilldown| drilldown.n_hits > 0} %>
   <ul class="drilldown_groups">
-    <% @result_set.drilldowns.each do |name, entries| %>
+    <% @result_set.drilldowns.each do |label, drilldown| %>
+      <% next if drilldown.n_hits.zero? %>
       <li class="drilldown_group"
-          data-key="<%= entries[0].key %>">
+          data-key="<%= drilldown.label %>">
         <span class="drilldown_group_name">
-          <%= drilldown_group_name(@search_request, name) %>
+          <%= drilldown_group_name(@search_request, label) %>
         </span>
         <ul>
-          <% entries.each do |entry| %>
+          <% drilldown.records.each do |record| %>
+            <% entry = Ranguba::DrilldownEntry.new(key: drilldown.label,
+                                                   value: record._key,
+                                                   count: record._nsubrecs) %>
             <% new_topic_path = @topic_path.add(entry) %>
             <li class="drilldown_entry"
                 data-key="<%= entry.key %>"
                 data-value="<%= entry.value %>">
-              <%= link_to(entry.label_with_count, search_path(:search_request => new_topic_path.search_request)) %>
+              <%= link_to(entry.label_with_count,
+                          search_path(:search_request => new_topic_path.search_request)) %>
             </li>
           <% end %>
         </ul>

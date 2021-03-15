@@ -3,7 +3,7 @@ require "application_system_test_case"
 class SearchTest < ApplicationSystemTestCase
   ENTRIES_PER_PAGE = 10
 
-  def setup
+  setup do
     setup_database
     @types = []
     @categories = []
@@ -19,7 +19,7 @@ class SearchTest < ApplicationSystemTestCase
     @categories = @categories.uniq.sort
   end
 
-  def teardown
+  teardown do
     teardown_database
   end
 
@@ -77,12 +77,6 @@ class SearchTest < ApplicationSystemTestCase
   end
 
   class PaginationTest < self
-    def test_too_large
-      visit("/search/query/entry?page=9999")
-      assert_error(:message => I18n.t("not_found_message"))
-      assert_topic_path([["query", "entry"]])
-    end
-
     def test_one_page
       visit("/search/")
       search("HTML entry")
@@ -261,7 +255,8 @@ class SearchTest < ApplicationSystemTestCase
       visit("/search/")
       search("entry")
 
-      drilldown("xml (1)")
+      xml_label = I18n.t("type.xml")
+      drilldown("#{xml_label} (1)")
       assert_equal("/search/query/entry/type/xml", current_path)
       assert_found(:n_entries => 1,
                    :drilldown => {:category => ["test"]},
@@ -328,8 +323,9 @@ class SearchTest < ApplicationSystemTestCase
       visit("/search/")
       search("unknown type?")
 
-      drilldown("test (1)")
-      assert_equal("/search/query/unknown+type%3F/category/test", current_path)
+      label = I18n.t("category.test")
+      drilldown("#{label} (1)")
+      assert_equal("/search/query/unknown+type%253F/category/test", current_path)
       assert_found(:n_entries => 1,
                    :drilldown => {:type => ["unknown"]},
                    :pagination => "1/1")
@@ -362,7 +358,7 @@ class SearchTest < ApplicationSystemTestCase
 
     within("div.search_form") do
       fill_in("query", :with => query)
-      click_link_or_button("Search")
+      click_link_or_button(I18n.t("search_button_label"))
     end
 
     escaped_query = CGI.escape(query).gsub(/%/, "%25")

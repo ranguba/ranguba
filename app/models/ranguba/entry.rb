@@ -1,13 +1,12 @@
-class Ranguba::Entry < ActiveGroonga::Base
+class Ranguba::Entry < ApplicationGroongaRecord
   DEFAULT_SUMMARY_SIZE = 140
 
-  table_name("entries")
-  reference_class("encoding", Ranguba::Encoding)
-  reference_class("mime_type", Ranguba::MimeType)
-  reference_class("type", Ranguba::Type)
-  reference_class("author", Ranguba::Author)
-  reference_class("category", Ranguba::Category)
-  reference_class("extension", Ranguba::Extension)
+  # reference_class("encoding", Ranguba::Encoding)
+  # reference_class("mime_type", Ranguba::MimeType)
+  # reference_class("type", Ranguba::Type)
+  # reference_class("author", Ranguba::Author)
+  # reference_class("category", Ranguba::Category)
+  # reference_class("extension", Ranguba::Extension)
 
   before_validation do
     if body.empty?
@@ -17,8 +16,11 @@ class Ranguba::Entry < ActiveGroonga::Base
     end
   end
 
-  def title
-    _title = super
+  def label
+    if respond_to?(:highlighted_title)
+      return highlighted_title.html_safe
+    end
+    _title = title
     if _title and !_title.valid_encoding?
       logger.warn("#{Time.now} [encoding][invalid][title] " +
                   "key: #{key}: #{_title.inspect}")
@@ -35,90 +37,28 @@ class Ranguba::Entry < ActiveGroonga::Base
   end
 
   def url
-    key
+    _key
   end
 
-  def category
-    _category = super
-    _category = _category.key if _category
-    _category
-  end
-
-  def type
-    _type = super
-    _type = _type.key if _type
-    _type
+  def summary
+    return "" unless respond_to?(:snippets)
+    snippets.join(I18n.t("search_result_summary_ellipses")).html_safe
   end
 
   def drilldown_entries
     @drilldown_entries ||= compute_drilldown_entries
   end
 
-  def summary(expression, options={})
-    if body && !body.valid_encoding?
-      logger.warn "#{Time.now} [encoding][invalid][body] key: #{key}"
-      return ""
-    end
-    summary = summary_by_query(expression, options)
-    summary = summary_by_head(options) if summary.blank?
-    summary
-  end
-
-  def summary_by_head(options={})
-    options = normalize_summary_options(options)
-    summary = body
-    if !summary.blank? && summary.size > options[:size]
-      summary = summary[0..(options[:size]-1)] + options[:separator]
-    end
-    summary
-  end
-
-  def summary_by_query(expression, options={})
-    return "" unless expression
-
-    options = normalize_summary_options(options)
-
-    highlight_tags = options[:highlight].split("%S")
-
-    snippet_options = {
-      :normalize => true,
-      :width => options[:size],
-      :html_escape => options[:html_escape]
-    }
-
-    snippet = expression.snippet(highlight_tags, snippet_options)
-    snippet ||= Groonga::Snippet.new(snippet_options)
-
-    summarized = ""
-    if snippet && !body.blank?
-      snippets = snippet.execute(body)
-      unless snippets.empty?
-        snippets = snippets.collect do |snippet|
-          options[:part].sub("%S", "#{options[:separator]}#{snippet}#{options[:separator]}")
-        end
-        summarized = snippets.join("").html_safe
-      end
-    end
-    summarized
-  end
-
   private
   def compute_drilldown_entries
     entries = []
     Ranguba::SearchRequest::KEYS.each do |key|
-      next if key == :query || send(key).blank?
-      entries << Ranguba::DrilldownEntry.new(:key => key,
-                                             :value => send(key))
+      next if key == :query
+      value = public_send(key)
+      next if value.blank?
+      entries << Ranguba::DrilldownEntry.new(key: key, value: value)
     end
     entries
-  end
-
-  def normalize_summary_options(options={})
-    options[:size] ||= DEFAULT_SUMMARY_SIZE
-    options[:highlight] ||= "*%S*"
-    options[:separator] ||= "..."
-    options[:part] ||= "%S"
-    options
   end
 end
 

@@ -1,3 +1,2 @@
-class Ranguba::Encoding < ActiveGroonga::Base
-  table_name("encodings")
+class Ranguba::Encoding < ApplicationGroongaRecord
 end

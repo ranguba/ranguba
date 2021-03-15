@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title><%= @title || @ranguba_template.title %></title>
-  <%= stylesheet_link_tag    "application" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
-  <% if @canonical %>
-    <link rel="canonical" href="<%= @canonical %>" />
-  <% end %>
-  <%=raw @ranguba_template.head %>
-</head>
-<body>
-  <div class="header">
-    <%=raw @ranguba_template.header %>
-  </div>
-  <div class="content">
-    <%= yield %>
-  </div>
-  <div class="footer">
-    <%=raw @ranguba_template.footer %>
-  </div>
-</body>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title><%= @title || @ranguba_template.title %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <% if @canonical %>
+      <link rel="canonical" href="<%= @canonical %>" />
+    <% end %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <%=raw @ranguba_template.head %>
+  </head>
+
+  <body>
+    <div class="header">
+      <%=raw @ranguba_template.header %>
+    </div>
+    <div class="content">
+      <%= yield %>
+    </div>
+    <div class="footer">
+      <%=raw @ranguba_template.footer %>
+    </div>
+  </body>
 </html>

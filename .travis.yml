@@ -19,5 +19,4 @@ before_install:
   - sudo apt purge -y google-chrome-stable
 script:
   - bundle exec bin/rails groonga:migrate
-  - bundle exec bin/rails groonga:test:prepare
   - bundle exec bin/rails test
