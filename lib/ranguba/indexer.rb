@@ -319,7 +319,7 @@ EOS
         log(:warn, "[decompose][failure] <#{url}>")
         return false
       end
-      Ranguba::Entry.new(attributes).save!
+      Ranguba::Entry.create!(attributes)
     rescue => e
       unless @ignore_errors
         log(:error, "[error] #{e.class}: #{e.message}")
