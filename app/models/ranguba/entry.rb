@@ -41,8 +41,11 @@ class Ranguba::Entry < ApplicationGroongaRecord
   end
 
   def summary
-    return "" unless respond_to?(:snippets)
-    snippets.join(I18n.t("search_result_summary_ellipses")).html_safe
+    if respond_to?(:snippets)
+      snippets.join(I18n.t("search_result_summary_ellipses")).html_safe
+    else
+      body.truncate(DEFAULT_SUMMARY_SIZE)
+    end
   end
 
   def drilldown_entries

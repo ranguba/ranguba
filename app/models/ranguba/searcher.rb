@@ -18,19 +18,6 @@ class Ranguba::Searcher
                                  "title * 100",
                                  "body",
                                ])
-                .query(query)
-                .query_flags([
-                               "ALLOW_COLUMN",
-                               "QUERY_NO_SYNTAX_ERROR",
-                             ])
-                .columns("highlighted_title").stage("output")
-                .columns("highlighted_title").flags("COLUMN_SCALAR")
-                .columns("highlighted_title").type("ShortText")
-                .columns("highlighted_title").value("highlight_html(title)")
-                .columns("snippets").stage("output")
-                .columns("snippets").flags("COLUMN_VECTOR")
-                .columns("snippets").type("Text")
-                .columns("snippets").value("snippet_html(body)")
                 .output_columns([
                                   "*",
                                   "_key",
@@ -38,6 +25,22 @@ class Ranguba::Searcher
                                 ])
                 .sort_keys(["-_score", "title"])
                 .paginate(page)
+    if query
+      request = request
+                  .query(query)
+                  .query_flags([
+                                 "ALLOW_COLUMN",
+                                 "QUERY_NO_SYNTAX_ERROR",
+                               ])
+                  .columns("highlighted_title").stage("output")
+                  .columns("highlighted_title").flags("COLUMN_SCALAR")
+                  .columns("highlighted_title").type("ShortText")
+                  .columns("highlighted_title").value("highlight_html(title)")
+                  .columns("snippets").stage("output")
+                  .columns("snippets").flags("COLUMN_VECTOR")
+                  .columns("snippets").type("Text")
+                  .columns("snippets").value("snippet_html(body)")
+    end
     if type
       request = request.filter(:type, type)
     else
