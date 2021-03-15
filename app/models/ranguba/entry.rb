@@ -8,6 +8,15 @@ class Ranguba::Entry < ApplicationGroongaRecord
   # reference_class("category", Ranguba::Category)
   # reference_class("extension", Ranguba::Extension)
 
+  class << self
+    def purge_old(base_time)
+      GroongaClientModel::Client.open do |client|
+        client.delete(table: table_name,
+                      filter: "updated_at < #{base_time.to_f}")
+      end
+    end
+  end
+
   before_validation do
     if body.blank?
       self.content_length = 0

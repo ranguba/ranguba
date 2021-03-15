@@ -401,10 +401,7 @@ EOS
   def purge_old_records(base_time)
     log(:info, "[purge][start] <#{base_time.iso8601}>")
     flush_log
-    old_entries = ::Ranguba::Entry.select do |record|
-      record.updated_at < base_time
-    end
-    old_entries.each(&:destroy)
+    ::Ranguba::Entry.purge_old(base_time)
     log(:info, "[purge][end] <#{base_time.iso8601}>")
     flush_log
   end
