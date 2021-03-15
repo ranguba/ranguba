@@ -9,7 +9,7 @@ class Ranguba::Entry < ApplicationGroongaRecord
   # reference_class("extension", Ranguba::Extension)
 
   before_validation do
-    if body.empty?
+    if body.blank?
       self.content_length = 0
     else
       self.content_length = body.bytesize
