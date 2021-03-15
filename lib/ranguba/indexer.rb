@@ -3,7 +3,11 @@ require 'shellwords'
 require 'tmpdir'
 require 'fileutils'
 require 'time'
-require 'chupa-text'
+
+require "chupa-text"
+
+require "ranguba/crawl_target_loader"
+require "ranguba/crawlers/plone"
 
 class Ranguba::Indexer
   attr_accessor :wget, :log_file, :url_prefix, :level, :accept,
@@ -108,10 +112,9 @@ EOS
               "Log to PATH.") do |path|
       original_logger = Rails.logger
       path = STDOUT if path == "-"
-      logger = ActiveSupport::BufferedLogger.new(path)
+      logger = ActiveSupport::Logger.new(path)
       logger.level = original_logger.level
-      logger.auto_flushing = original_logger.auto_flushing
-      Rails.logger = logger
+      Rails.logger = ActiveSupport::TaggedLogging.new(logger)
       original_logger.flush
     end
     parser.on("--[no-]redirect-stdout-to-log",
@@ -125,6 +128,10 @@ EOS
       if boolean
         STDERR.reopen(Rails.logger.instance_variable_get("@log"))
       end
+    end
+    parser.on("--crawl-targets=PATH",
+              "Read crawl targets from PATH") do |path|
+      @resolver.load_crawl_targets(path)
     end
     begin
       parser.parse!(argv)
@@ -169,13 +176,16 @@ EOS
       }
     else
       # crawl
-      if args.empty? and (args = @resolver.urls).empty?
-        raise OptionParser::MissingArgument, "no URL"
+      args.each do |url|
+        @resolver.add_crawl_url(url)
+      end
+      if @resolver.crawl_targets.empty?
+        raise OptionParser::MissingArgument, "no crawl targets"
         return
       end
       process = proc {
         log(:info, "[start][crawl]")
-        process_crawl(args)
+        process_crawl(@resolver.crawl_targets)
         log(:info, "[start][crawl]")
       }
     end
@@ -241,64 +251,113 @@ EOS
     result
   end
 
-  def process_crawl(urls)
-    url_auth_groups = {}
+  def process_crawl(targets)
+    auth_groups = {}
 
     @authinfo_records.each do |record|
-      url_auth_groups[record[:url]] = {
+      auth_groups[record[:url]] = {
         :authinfo => record,
-        :urls => []
+        :targets => [],
       }
     end
 
-    no_auth_urls = []
-    protected_urls = @authinfo_records.map{|record| record[:url]}
+    no_auth_targets = []
+    protected_urls = @authinfo_records.map {|record| record[:url]}
 
-    urls.each do |target_url|
-      protected_url = protected_urls.find{|protected_url|
-        target_url.index(protected_url) == 0
-      }
+    targets.each do |target|
+      protected_url = protected_urls.find do |protected_url|
+        target.match?(protected_url)
+      end
       if protected_url
-        url_auth_groups[protected_url][:urls].push(target_url)
+        auth_groups[protected_url][:targets] << target
       else
-        no_auth_urls.push(target_url)
+        no_auth_targets << target
       end
     end
 
-    url_auth_groups.each do |_,group|
-      unless group[:urls].empty?
+    auth_groups.each do |_, group|
+      grouped_targets = group[:targets]
+      unless grouped_targets.empty?
         authinfo = group[:authinfo]
-        process_crawl_urls(group[:urls],
-                           :username => authinfo[:username],
-                           :password => authinfo[:password])
+        process_crawl_targets(grouped_targets,
+                              :username => authinfo[:username],
+                              :password => authinfo[:password])
       end
     end
-    unless no_auth_urls.empty?
-      process_crawl_urls(no_auth_urls)
+    unless no_auth_targets.empty?
+      process_crawl_targets(no_auth_targets)
     end
   end
 
-  def process_crawl_urls(urls, options = {})
-    base = Dir.mktmpdir("ranguba", @tmpdir)
-    wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
-    wget << "--max-redirect=0"
-    wget << "--adjust-extension"
-    wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
-    wget << "--reject=#{@reject.join(',')}" unless @reject.empty?
-    wget << "--exclude-directories=#{@exclude_directories.join(',')}" unless @exclude_directories.empty?
-    wget << "--restrict-file-names=ascii"
-    if options[:username] && options[:password]
-      wget << "--http-user=#{options[:username]}"
-      wget << "--http-password=#{options[:password]}"
-    end
-    wget.concat(urls)
-    wget << {chdir: base, err: [:child, :out]}
-    begin
-      IO.popen(wget, "r", encoding: "utf-8") {|input|
-        process_from_log(base, input)
-      }
-    ensure
-      FileUtils.rm_rf(base) if @auto_delete
+  def process_crawl_targets(targets, options = {})
+    grouped_targets = targets.group_by(&:type)
+    grouped_targets.each do |type, targets_per_type|
+      case type
+      when :web
+        base = Dir.mktmpdir("ranguba", @tmpdir)
+        wget = [{"LC_ALL"=>"C"}, *@wget, "-r", "-l#{@level}", "-np", "-S"]
+        wget << "--max-redirect=0"
+        wget << "--adjust-extension"
+        wget << "--accept=#{@accept.join(',')}" unless @accept.empty?
+        wget << "--reject=#{@reject.join(',')}" unless @reject.empty?
+        wget << "--exclude-directories=#{@exclude_directories.join(',')}" unless @exclude_directories.empty?
+        wget << "--restrict-file-names=ascii"
+        if options[:username] && options[:password]
+          wget << "--http-user=#{options[:username]}"
+          wget << "--http-password=#{options[:password]}"
+        end
+        wget.concat(targets_per_type.collect(&:url))
+        wget << {chdir: base, err: [:child, :out]}
+        begin
+          IO.popen(wget, "r", encoding: "utf-8") {|input|
+            process_from_log(base, input)
+          }
+        ensure
+          FileUtils.rm_rf(base) if @auto_delete
+        end
+      when :plone
+        targets_per_type.each do |target|
+          crawler = Ranguba::Crawlers::Plone.new(target.url,
+                                                 user: options[:username],
+                                                 password: options[:password])
+          crawler.crawl do |content|
+            @oldest ||= Time.now
+            extension = File.extname(content.basename)
+            if content.body.blank? or content.type.blank?
+              body = content.body&.encode("utf-8", content.encoding)
+              type = content.type
+              encoding = "utf-8"
+            else
+              file = Tempfile.new(["ranguba-indexer-plone", extension],
+                                  binmode: true)
+              file.write(content.body)
+              file.close
+              attributes = decompose_file(content.url,
+                                          file.path,
+                                          "content-type" => content.type)
+              body = attributes[:body]
+              type = attributes[:type]
+              encoding = attributes[:encoding]
+              file.delete
+            end
+            Ranguba::Entry.create!(_key: content.url,
+                                   title: content.title,
+                                   body: body,
+                                   type: type,
+                                   mime_type: content.type,
+                                   encoding: encoding,
+                                   basename: content.basename,
+                                   extension: extension,
+                                   category: @resolver.category_for_url(content.url),
+                                   modified_at: content.modified_time)
+          end
+        end
+      else
+        message =
+          "target type must be :web or :plone: <#{type.inspect}>: " +
+          targets_per_type.inspect
+        raise ArgumentError, message
+      end
     end
     if @oldest
       purge_old_records(@oldest)
@@ -382,6 +441,7 @@ EOS
     data = nil
     begin
       input_data = ChupaText::InputData.new(path)
+      input_data.mime_type = response["content-type"]
       @extractor.extract(input_data) do |extracted_data|
         data = extracted_data
       end
@@ -407,24 +467,30 @@ EOS
   end
 
   class Resolver
+    attr_reader :crawl_targets
+
     def initialize
       encodings = Rails.configuration.ranguba_config_encodings
-      @url_category_pair = Ranguba::CategoryLoader.new(encodings['categories.csv']).load
+      @crawl_targets = []
+      categories = Ranguba::CategoryLoader.new(encodings['categories.csv']).load
+      categories.each do |url, category_id|
+        @crawl_targets << Ranguba::CrawlTarget.new(url,
+                                                   type: :web,
+                                                   category: {
+                                                     "id" => category_id,
+                                                   })
+      end
       @mime_type_pair = Ranguba::TypeLoader.new(encodings['types.csv']).load
-    end
-
-    def urls
-      @url_category_pair.map(&:first)
     end
 
     def category_for_url(url)
       url ||= ''
-      prefix, category = @url_category_pair.select do |prefix, category|
-        url.start_with?(prefix)
-      end.max_by do |prefix, category|
-        prefix.length
+      target = @crawl_targets.select do |target|
+        target.match?(url)
+      end.max_by do |target|
+        target.url.length
       end
-      category.blank? ? nil : category
+      target.category&.id.presence
     end
 
     def normalize_type(source)
@@ -442,6 +508,14 @@ EOS
         mime.length
       end
       type
+    end
+
+    def load_crawl_targets(path)
+      @crawl_targets.concat(Ranguba::CrawlTargetLoader.new(path).load)
+    end
+
+    def add_crawl_url(url)
+      @crawl_targets << Ranguba::CrawlTargt.new(url, type: :web)
     end
   end
 

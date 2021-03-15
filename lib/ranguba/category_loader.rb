@@ -4,9 +4,6 @@ class Ranguba::CategoryLoader
     @base = Ranguba::Application.config.customize_base_path
     base_path = 'categories.csv'
     @path = @base + base_path
-    unless @path.exist?
-      @path = @base + "#{base_path}.sample"
-    end
     @encoding = encoding
   end
 
