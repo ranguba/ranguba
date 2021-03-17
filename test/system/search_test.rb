@@ -325,7 +325,7 @@ class SearchTest < ApplicationSystemTestCase
 
       label = I18n.t("category.test")
       drilldown("#{label} (1)")
-      assert_equal("/search/query/unknown+type%253F/category/test", current_path)
+      assert_equal("/search/query/unknown+type%3F/category/test", current_path)
       assert_found(:n_entries => 1,
                    :drilldown => {:type => ["unknown"]},
                    :pagination => "1/1")
