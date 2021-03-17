@@ -176,11 +176,11 @@ li.search_result_drilldown_category_entry {
 }
 
 li.search_result_drilldown_type_entry {
-  background-image: url(keys/type-small.png);
+  background-image: asset-url("keys/type-small.png");
 }
 
 li.search_result_drilldown_category_entry {
-  background-image: url(keys/category-small.png);
+  background-image: asset-url("keys/category-small.png");
 }
 
 /* pagination */
