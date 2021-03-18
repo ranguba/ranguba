@@ -82,15 +82,15 @@
 }
 
 .topic_path_item_type_label {
-  background-image: url(keys/type-small.png);
+  background-image: asset-url("keys/type-small.png");
 }
 
 .topic_path_item_category_label {
-  background-image: url(keys/category-small.png);
+  background-image: asset-url("keys/category-small.png");
 }
 
 .topic_path_item_query_label {
-  background-image: url(keys/query-small.png);
+  background-image: asset-url("keys/query-small.png");
 }
 
 /* search results */
