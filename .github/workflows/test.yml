@@ -15,15 +15,15 @@ jobs:
           - "2.7"
           - "3.0"
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           repository: "ranguba/groonga-client"
           path: "groonga-client"
       - name: Fix groonga-client path
         run: |
           mv groonga-client ../
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           repository: "ranguba/groonga-client-model"
           path: "groonga-client-model"
