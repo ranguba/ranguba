@@ -74,6 +74,8 @@ end
 gem "kaminari-core"
 gem "kaminari-actionview"
 
+gem "sprockets-rails"
+
 group :development, :test do
   gem "test-unit"
   gem "test-unit-rails"
