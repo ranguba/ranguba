@@ -74,7 +74,7 @@ end
 gem "kaminari-core"
 gem "kaminari-actionview"
 
-gem "sprockets-rails"
+gem "sprockets-rails", :require => "sprockets/railtie"
 
 group :development, :test do
   gem "test-unit"
