@@ -67,7 +67,7 @@ Rails.application.config.action_mailer.smtp_timeout = 5
 # Rails.application.config.active_record.partial_inserts = false
 
 # Protect from open redirect attacks in `redirect_back_or_to` and `redirect_to`.
-# Rails.application.config.action_controller.raise_on_open_redirects = true
+Rails.application.config.action_controller.raise_on_open_redirects = true
 
 # Added: We dont' use Active Storage in Ranguba. So we don't need it.
 # Change the variant processor for Active Storage.
