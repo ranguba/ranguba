@@ -137,7 +137,7 @@ Rails.application.config.action_dispatch.cookies_serializer = :json
 # See https://guides.rubyonrails.org/action_controller_overview.html#cookies for more information.
 
 # Change the return value of `ActionDispatch::Request#content_type` to the Content-Type header without modification.
-# Rails.application.config.action_dispatch.return_only_request_media_type_on_content_type = false
+Rails.application.config.action_dispatch.return_only_request_media_type_on_content_type = false
 
 # Added: We dont' use Active Storage in Ranguba. So we don't need it.
 # Active Storage `has_many_attached` relationships will default to replacing the current collection instead of appending to it.
