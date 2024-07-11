@@ -27,7 +27,7 @@ Bundler.require(*Rails.groups)
 module Ranguba
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.1
+    config.load_defaults 7.0
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -36,10 +36,5 @@ module Ranguba
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-
-    # TODO: After upgrading load_defaults to v7.0, we will remove this line because of the default value.
-    # Disables the deprecated #to_s override in some Ruby core classes
-    # See https://guides.rubyonrails.org/configuring.html#config-active-support-disable-to-s-conversion for more information.
-    config.active_support.disable_to_s_conversion = true
   end
 end
