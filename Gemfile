@@ -68,6 +68,8 @@ else
   gem "groonga-client-model"
 end
 
+gem "importmap-rails", "~> 2.0"
+
 gem "kaminari-core"
 gem "kaminari-actionview"
 
