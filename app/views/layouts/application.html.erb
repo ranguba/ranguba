@@ -11,10 +11,9 @@
     <% end %>
 
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= javascript_pack_tag 'application' %>
+    <%= javascript_importmap_tags %>
 
     <%=raw @ranguba_template.head %>
-    <%= javascript_importmap_tags %>
   </head>
 
   <body>
