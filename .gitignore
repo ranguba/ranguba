@@ -33,7 +33,6 @@
 /db/groonga/schema.rb
 /db/groonga/test/
 
-/config/cable.yml
 /config/groonga.yml
 /config/storage.yml
 
