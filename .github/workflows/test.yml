@@ -40,8 +40,6 @@ jobs:
           sudo apt install -y groonga-bin
       - run: |
           bundle install
-      - run: |
-          bin/rails webpacker:install
       - name: Test
         run: |
           bin/rails test
