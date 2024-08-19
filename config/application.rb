@@ -34,6 +34,11 @@ module Ranguba
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
 
+    # Zeitwerk uses absolute file names internally, and your application should
+    # not issue require calls for autoloadable files, so those directories are
+    # actually not needed in $LOAD_PATH anymore.
+    config.add_autoload_paths_to_load_path = false
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
