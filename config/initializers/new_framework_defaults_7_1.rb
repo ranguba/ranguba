@@ -27,6 +27,7 @@ Rails.application.config.action_dispatch.default_headers = {
 #++
 Rails.application.config.action_controller.allow_deprecated_parameters_hash_equality = false
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Active Record Encryption now uses SHA-256 as its hash digest algorithm.
 #
@@ -48,6 +49,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.active_record.encryption.support_sha1_for_non_deterministic_encryption = false
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # No longer run after_commit callbacks on the first of multiple Active Record
 # instances to save changes to the same database row within a transaction.
@@ -57,6 +59,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction = false
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Configures SQLite with a strict strings mode, which disables double-quoted string literals.
 #
@@ -68,6 +71,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.active_record.sqlite3_adapter_strict_strings_by_default = true
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Disable deprecated singular associations names.
 #++
@@ -93,6 +97,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.active_support.raise_on_invalid_cache_expiration_time = true
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Specify whether Query Logs will format tags using the SQLCommenter format
 # (https://open-telemetry.github.io/opentelemetry-sqlcommenter/), or using the legacy format.
@@ -153,6 +158,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #   Rails.application.config.log_file_size = 100 * 1024 * 1024
 # end
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Enable raising on assignment to attr_readonly attributes. The previous
 # behavior would allow assignment but silently not persist changes to the
@@ -160,6 +166,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.active_record.raise_on_assign_to_attr_readonly = true
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Enable validating only parent-related columns for presence when the parent is mandatory.
 # The previous behavior was to validate the presence of the parent record, which performed an extra query
@@ -173,6 +180,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.precompile_filter_parameters = true
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Enable before_committed! callbacks on all enrolled records in a transaction.
 # The previous behavior was to only run the callbacks on the first copy of a record
@@ -180,6 +188,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.active_record.before_committed_on_all_records = true
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Disable automatic column serialization into YAML.
 # To keep the historic behavior, you can set it to `YAML`, however it is
@@ -188,6 +197,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.active_record.default_column_serializer = nil
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Enable a performance optimization that serializes Active Record models
 # in a faster and more compact way.
@@ -199,6 +209,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.active_record.marshalling_format_version = 7.1
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Run `after_commit` and `after_*_commit` callbacks in the order they are defined in a model.
 # This matches the behaviour of all other callbacks.
@@ -206,11 +217,13 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.active_record.run_after_transaction_callbacks_in_order_defined = true
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Whether a `transaction` block is committed or rolled back when exited via `return`, `break` or `throw`.
 #++
 # Rails.application.config.active_record.commit_transaction_on_non_local_return = true
 
+# Added: We dont' use Active Record in Ranguba. So we don't need it.
 ###
 # Controls when to generate a value for <tt>has_secure_token</tt> declarations.
 #++
@@ -243,7 +256,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.action_view.sanitizer_vendor = Rails::HTML::Sanitizer.best_supported_vendor
 
-
+# Added: We dont' use Action Text in Ranguba. So we don't need it.
 ###
 # Configure Action Text to use an HTML5 standards-compliant sanitizer when it is supported on your
 # platform.
