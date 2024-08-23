@@ -27,56 +27,6 @@ Rails.application.config.action_dispatch.default_headers = {
 #++
 Rails.application.config.action_controller.allow_deprecated_parameters_hash_equality = false
 
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Active Record Encryption now uses SHA-256 as its hash digest algorithm.
-#
-# There are 3 scenarios to consider.
-#
-# 1. If you have data encrypted with previous Rails versions, and you have
-# +config.active_support.key_generator_hash_digest_class+ configured as SHA1 (the default
-# before Rails 7.0), you need to configure SHA-1 for Active Record Encryption too:
-#++
-# Rails.application.config.active_record.encryption.hash_digest_class = OpenSSL::Digest::SHA1
-#
-# 2. If you have +config.active_support.key_generator_hash_digest_class+ configured as SHA256 (the new default
-# in 7.0), then you need to configure SHA-256 for Active Record Encryption:
-#++
-# Rails.application.config.active_record.encryption.hash_digest_class = OpenSSL::Digest::SHA256
-#
-# 3. If you don't currently have data encrypted with Active Record encryption, you can disable this setting to
-# configure the default behavior starting 7.1+:
-#++
-# Rails.application.config.active_record.encryption.support_sha1_for_non_deterministic_encryption = false
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# No longer run after_commit callbacks on the first of multiple Active Record
-# instances to save changes to the same database row within a transaction.
-# Instead, run these callbacks on the instance most likely to have internal
-# state which matches what was committed to the database, typically the last
-# instance to save.
-#++
-# Rails.application.config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction = false
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Configures SQLite with a strict strings mode, which disables double-quoted string literals.
-#
-# SQLite has some quirks around double-quoted string literals.
-# It first tries to consider double-quoted strings as identifier names, but if they don't exist
-# it then considers them as string literals. Because of this, typos can silently go unnoticed.
-# For example, it is possible to create an index for a non existing column.
-# See https://www.sqlite.org/quirks.html#double_quoted_string_literals_are_accepted for more details.
-#++
-# Rails.application.config.active_record.sqlite3_adapter_strict_strings_by_default = true
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Disable deprecated singular associations names.
-#++
-# Rails.application.config.active_record.allow_deprecated_singular_associations_name = false
-
 ###
 # Enable the Active Job `BigDecimal` argument serializer, which guarantees
 # roundtripping. Without this serializer, some queue adapters may serialize
@@ -96,14 +46,6 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 # as `handled` and logged instead.
 #++
 # Rails.application.config.active_support.raise_on_invalid_cache_expiration_time = true
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Specify whether Query Logs will format tags using the SQLCommenter format
-# (https://open-telemetry.github.io/opentelemetry-sqlcommenter/), or using the legacy format.
-# Options are `:legacy` and `:sqlcommenter`.
-#++
-# Rails.application.config.active_record.query_log_tags_format = :sqlcommenter
 
 ###
 # Specify the default serializer used by `MessageEncryptor` and `MessageVerifier`
@@ -158,76 +100,11 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #   Rails.application.config.log_file_size = 100 * 1024 * 1024
 # end
 
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Enable raising on assignment to attr_readonly attributes. The previous
-# behavior would allow assignment but silently not persist changes to the
-# database.
-#++
-# Rails.application.config.active_record.raise_on_assign_to_attr_readonly = true
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Enable validating only parent-related columns for presence when the parent is mandatory.
-# The previous behavior was to validate the presence of the parent record, which performed an extra query
-# to get the parent every time the child record was updated, even when parent has not changed.
-#++
-# Rails.application.config.active_record.belongs_to_required_validates_foreign_key = false
-
 ###
 # Enable precompilation of `config.filter_parameters`. Precompilation can
 # improve filtering performance, depending on the quantity and types of filters.
 #++
 # Rails.application.config.precompile_filter_parameters = true
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Enable before_committed! callbacks on all enrolled records in a transaction.
-# The previous behavior was to only run the callbacks on the first copy of a record
-# if there were multiple copies of the same record enrolled in the transaction.
-#++
-# Rails.application.config.active_record.before_committed_on_all_records = true
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Disable automatic column serialization into YAML.
-# To keep the historic behavior, you can set it to `YAML`, however it is
-# recommended to explicitly define the serialization method for each column
-# rather than to rely on a global default.
-#++
-# Rails.application.config.active_record.default_column_serializer = nil
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Enable a performance optimization that serializes Active Record models
-# in a faster and more compact way.
-#
-# To perform a rolling deploy of a Rails 7.1 upgrade, wherein servers that have
-# not yet been upgraded must be able to read caches from upgraded servers,
-# leave this optimization off on the first deploy, then enable it on a
-# subsequent deploy.
-#++
-# Rails.application.config.active_record.marshalling_format_version = 7.1
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Run `after_commit` and `after_*_commit` callbacks in the order they are defined in a model.
-# This matches the behaviour of all other callbacks.
-# In previous versions of Rails, they ran in the inverse order.
-#++
-# Rails.application.config.active_record.run_after_transaction_callbacks_in_order_defined = true
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Whether a `transaction` block is committed or rolled back when exited via `return`, `break` or `throw`.
-#++
-# Rails.application.config.active_record.commit_transaction_on_non_local_return = true
-
-# Added: We dont' use Active Record in Ranguba. So we don't need it.
-###
-# Controls when to generate a value for <tt>has_secure_token</tt> declarations.
-#++
-# Rails.application.config.active_record.generate_secure_token_on = :initialize
 
 ###
 # ** Please read carefully, this must be configured in config/application.rb **
@@ -244,7 +121,6 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 # this file):
 #   config.active_support.cache_format_version = 7.1
 
-
 ###
 # Configure Action View to use HTML5 standards-compliant sanitizers when they are supported on your
 # platform.
@@ -256,25 +132,11 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 #++
 # Rails.application.config.action_view.sanitizer_vendor = Rails::HTML::Sanitizer.best_supported_vendor
 
-# Added: We dont' use Action Text in Ranguba. So we don't need it.
-###
-# Configure Action Text to use an HTML5 standards-compliant sanitizer when it is supported on your
-# platform.
-#
-# `Rails::HTML::Sanitizer.best_supported_vendor` will cause Action Text to use HTML5-compliant
-# sanitizers if they are supported, else fall back to HTML4 sanitizers.
-#
-# In previous versions of Rails, Action Text always used `Rails::HTML4::Sanitizer` as its vendor.
-#++
-# Rails.application.config.action_text.sanitizer_vendor = Rails::HTML::Sanitizer.best_supported_vendor
-
-
 ###
 # Configure the log level used by the DebugExceptions middleware when logging
 # uncaught exceptions during requests.
 #++
 # Rails.application.config.action_dispatch.debug_exception_log_level = :error
-
 
 ###
 # Configure the test helpers in Action View, Action Dispatch, and rails-dom-testing to use HTML5
