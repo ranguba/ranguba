@@ -45,7 +45,7 @@ Rails.application.config.active_job.use_big_decimal_serializer = true
 # Options are `true`, and `false`. If `false`, the exception will be reported
 # as `handled` and logged instead.
 #++
-# Rails.application.config.active_support.raise_on_invalid_cache_expiration_time = true
+Rails.application.config.active_support.raise_on_invalid_cache_expiration_time = true
 
 ###
 # Specify the default serializer used by `MessageEncryptor` and `MessageVerifier`
