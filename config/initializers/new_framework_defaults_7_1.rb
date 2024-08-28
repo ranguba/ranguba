@@ -75,7 +75,7 @@ Rails.application.config.active_support.raise_on_invalid_cache_expiration_time =
 # servers, first deploy without changing the serializer, then set the serializer
 # in a subsequent deploy.
 #++
-# Rails.application.config.active_support.message_serializer = :json_allow_marshal
+Rails.application.config.active_support.message_serializer = :json_allow_marshal
 
 ###
 # Enable a performance optimization that serializes message data and metadata
