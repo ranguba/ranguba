@@ -46,5 +46,10 @@ module Ranguba
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # TODO: Remove this configuration at Rails 7.2 because it will be default.
+    #       Use `ActiveSupport::JSON` as the default serializer for `MessageEncryptor`
+    #       and `MessageVerifier` instances.
+    config.active_support.message_serializer = :json
   end
 end
