@@ -74,7 +74,7 @@ end
 # Enable precompilation of `config.filter_parameters`. Precompilation can
 # improve filtering performance, depending on the quantity and types of filters.
 #++
-# Rails.application.config.precompile_filter_parameters = true
+Rails.application.config.precompile_filter_parameters = true
 
 ###
 # ** Please read carefully, this must be configured in config/application.rb **
