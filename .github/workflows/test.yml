@@ -2,18 +2,23 @@ name: Test
 on:
   - push
   - pull_request
+concurrency:
+  group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   test:
     name: ${{ matrix.ruby-version }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         ruby-version:
-          - "3.0"
-          - "3.1"
-          - "3.2"
           - "3.3"
+          - "3.4"
+          - "4.0"
     steps:
       - uses: actions/checkout@v7
       - uses: actions/checkout@v7
@@ -30,18 +35,18 @@ jobs:
       - name: Fix groonga-client-model path
         run: |
           mv groonga-client-model ../
+      - name: Install Groonga
+        run: |
+          sudo apt update
+          sudo apt install -y -V ca-certificates lsb-release wget
+          wget https://packages.groonga.org/ubuntu/groonga-apt-source-latest-$(lsb_release --codename --short).deb
+          sudo apt install -y -V ./groonga-apt-source-latest-$(lsb_release --codename --short).deb
+          sudo apt update
+          sudo apt install -y -V groonga-bin
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-      - uses: actions/setup-node@v7
-      - name: Install Groonga
-        run: |
-          sudo apt install -y -V software-properties-common
-          sudo add-apt-repository -y ppa:groonga/ppa
-          sudo apt update
-          sudo apt install -y groonga-bin
-      - run: |
-          bundle install
+          bundler-cache: true
       - name: Test
         run: |
           bin/rails test
