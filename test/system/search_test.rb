@@ -53,7 +53,7 @@ class SearchTest < ApplicationSystemTestCase
 
     def test_query_string
       visit("/search?search_request[type]=html&search_request[query]=HTML")
-      assert_equal("/search/type/html/query/HTML", current_path)
+      assert_path("/search/type/html/query/HTML")
       assert_found(:n_entries => 1,
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
@@ -105,7 +105,7 @@ class SearchTest < ApplicationSystemTestCase
           end
         end
       end
-      assert_equal("/search/query/entry?page=2", current_full_path)
+      assert_full_path("/search/query/entry?page=2")
       assert_found(:n_entries => @n_entries - ENTRIES_PER_PAGE,
                    :drilldown => {:type => @types,
                                   :category => @categories},
@@ -119,7 +119,7 @@ class SearchTest < ApplicationSystemTestCase
     def test_not_found
       visit("/search/")
       search("nonexistent")
-      assert_equal("/search/query/nonexistent", current_path)
+      assert_path("/search/query/nonexistent")
       assert_not_found
     end
 
@@ -174,7 +174,7 @@ class SearchTest < ApplicationSystemTestCase
       within(".topic_path") do
         all(".topic_path_link").first.click
       end
-      assert_equal("/search", current_path)
+      assert_path("/search")
       assert_initial_view
     end
 
@@ -184,7 +184,7 @@ class SearchTest < ApplicationSystemTestCase
       within(".topic_path") do
         assert_all(".topic_path_reduce_link").last.click
       end
-      assert_equal("/search/query/HTML+entry/type/html", current_path)
+      assert_path("/search/query/HTML+entry/type/html")
       assert_found(:n_entries => 1,
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
@@ -196,7 +196,7 @@ class SearchTest < ApplicationSystemTestCase
       within(".topic_path") do
         assert_all(".topic_path_reduce_link").last.click
       end
-      assert_equal("/search/query/HTML+entry", current_path)
+      assert_path("/search/query/HTML+entry")
       assert_found(:n_entries => 1,
                    :drilldown => {:type => ["html"],
                                   :category => ["test"]},
@@ -207,7 +207,7 @@ class SearchTest < ApplicationSystemTestCase
       within(".topic_path") do
         assert_all(".topic_path_reduce_link").last.click
       end
-      assert_equal("/search/query/HTML", current_path)
+      assert_path("/search/query/HTML")
       assert_found(:n_entries => 1,
                    :drilldown => {:type => ["html"],
                                   :category => ["test"]},
@@ -218,7 +218,7 @@ class SearchTest < ApplicationSystemTestCase
       within(".topic_path") do
         assert_all(".topic_path_reduce_link").last.click
       end
-      assert_equal("/search", current_path)
+      assert_path("/search")
       assert_initial_view
     end
 
@@ -229,7 +229,7 @@ class SearchTest < ApplicationSystemTestCase
         query_items = assert_all(".topic_path_item[data-key=\"query\"]")
         query_items.last.find(".topic_path_reduce_link").click
       end
-      assert_equal("/search/query/HTML/type/html", current_path)
+      assert_path("/search/query/HTML/type/html")
       assert_found(:n_entries => 1,
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
@@ -243,7 +243,7 @@ class SearchTest < ApplicationSystemTestCase
       visit("/search/")
 
       drilldown("xml (1)")
-      assert_equal("/search/type/xml", current_path)
+      assert_path("/search/type/xml")
       assert_found(:n_entries => 1,
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
@@ -257,7 +257,7 @@ class SearchTest < ApplicationSystemTestCase
 
       xml_label = I18n.t("type.xml")
       drilldown("#{xml_label} (1)")
-      assert_equal("/search/query/entry/type/xml", current_path)
+      assert_path("/search/query/entry/type/xml")
       assert_found(:n_entries => 1,
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
@@ -270,7 +270,7 @@ class SearchTest < ApplicationSystemTestCase
       search("entry")
 
       drilldown("HTML (1)")
-      assert_equal("/search/query/entry/type/html", current_path)
+      assert_path("/search/query/entry/type/html")
       assert_found(:n_entries => 1,
                    :drilldown => {:category => ["test"]},
                    :pagination => "1/1")
@@ -278,7 +278,7 @@ class SearchTest < ApplicationSystemTestCase
       assert_topic_path([["query", "entry"], ["type", "html"]])
 
       drilldown("test (1)")
-      assert_equal("/search/query/entry/type/html/category/test", current_path)
+      assert_path("/search/query/entry/type/html/category/test")
       assert_found(:n_entries => 1,
                    :pagination => "1/1")
       assert_total(1)
@@ -292,11 +292,10 @@ class SearchTest < ApplicationSystemTestCase
       search("HTML entry")
 
       drilldown("HTML (1)")
-      assert_equal("/search/query/HTML+entry/type/html", current_path)
+      assert_path("/search/query/HTML+entry/type/html")
 
       drilldown("test (1)")
-      assert_equal("/search/query/HTML+entry/type/html/category/test",
-                   current_path)
+      assert_path("/search/query/HTML+entry/type/html/category/test")
       assert_found(:n_entries => 1,
                    :pagination => "1/1")
       assert_total(1)
@@ -310,7 +309,7 @@ class SearchTest < ApplicationSystemTestCase
       visit("/search/query/text%252Fhtml")
 
       drilldown("test (1)")
-      assert_equal("/search/query/text%252Fhtml/category/test", current_path)
+      assert_path("/search/query/text%252Fhtml/category/test")
       assert_found(:n_entries => 1,
                    :drilldown => {:type => ["html"]},
                    :pagination => "1/1")
@@ -325,7 +324,7 @@ class SearchTest < ApplicationSystemTestCase
 
       label = I18n.t("category.test")
       drilldown("#{label} (1)")
-      assert_equal("/search/query/unknown+type%253F/category/test", current_path)
+      assert_path("/search/query/unknown+type%253F/category/test")
       assert_found(:n_entries => 1,
                    :drilldown => {:type => ["unknown"]},
                    :pagination => "1/1")
@@ -346,6 +345,26 @@ class SearchTest < ApplicationSystemTestCase
   end
 
   private
+  # Navigation is asynchronous. We need to wait for it.
+  def wait_until
+    limit = Process.clock_gettime(Process::CLOCK_MONOTONIC) +
+            Capybara.default_max_wait_time
+    until yield
+      break if Process.clock_gettime(Process::CLOCK_MONOTONIC) > limit
+      sleep(0.05)
+    end
+  end
+
+  def assert_path(expected)
+    wait_until {current_path == expected}
+    assert_equal(expected, current_path)
+  end
+
+  def assert_full_path(expected)
+    wait_until {current_full_path == expected}
+    assert_equal(expected, current_full_path)
+  end
+
   def current_full_path
     uri = URI.parse(current_url)
     full_path = uri.path
@@ -362,8 +381,7 @@ class SearchTest < ApplicationSystemTestCase
     end
 
     escaped_query = CGI.escape(query).gsub(/%/, "%25")
-    assert_equal("#{before_path}/query/#{escaped_query}",
-                 current_path)
+    assert_path("#{before_path}/query/#{escaped_query}")
   end
 
   def assert_have_search_form
