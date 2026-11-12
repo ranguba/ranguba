@@ -27,7 +27,7 @@ Bundler.require(*Rails.groups)
 module Ranguba
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
+    config.load_defaults 8.1
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
@@ -47,9 +47,9 @@ module Ranguba
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    # TODO: Remove this configuration at Rails 7.2 because it will be default.
-    #       Use `ActiveSupport::JSON` as the default serializer for `MessageEncryptor`
-    #       and `MessageVerifier` instances.
+    # Use `ActiveSupport::JSON` as the default serializer for `MessageEncryptor`
+    # and `MessageVerifier` instances. The default is still
+    # `:json_allow_marshal` with `load_defaults 8.1`.
     config.active_support.message_serializer = :json
   end
 end
